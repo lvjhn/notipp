@@ -5,7 +5,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests/* --recursive", 
+    "postinstall": "npm link notipp"
   },
   "repository": {
     "type": "git",
@@ -27,5 +28,13 @@
   "bugs": {
     "url": "https://github.com/lvjhn/notipp/issues"
   },
-  "homepage": "https://github.com/lvjhn/notipp#readme", 
+  "homepage": "https://github.com/lvjhn/notipp#readme",
+  "dependencies": {
+    "assert": "^2.1.0",
+    "chai": "^5.0.0",
+    "chance": "^1.1.11",
+    "esm-module-alias": "^2.1.0",
+    "mocha": "^10.2.0",
+    "sinon": "^17.0.1"
+  }
 }
