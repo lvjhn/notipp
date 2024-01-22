@@ -1,0 +1,15 @@
+[Unit]
+Description=<<DESCRIPTION>>
+Documentation=http://github.com/lvjhn/notipp
+After=network.target
+
+[Service]
+Environment=
+Type=simple
+Group=sudo
+ExecStart=<<NODE_EXEC>> <<TARGET_MODULE>>
+WorkingDirectory=<<WORKING_DIRECTORY>>
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

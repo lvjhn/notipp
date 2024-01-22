@@ -1,0 +1,15 @@
+[Unit]
+Description=System service for notifications listener of notipp.
+Documentation=http://github.com/lvjhn/notipp
+After=network.target
+
+[Service]
+Environment=
+Type=simple
+Group=sudo
+ExecStart=/home/lvjhn/.nvm/versions/node/v20.11.0/bin/node /home/lvjhn/Documents/Projects/notipp/rdt/receiver/index.js
+WorkingDirectory=/home/lvjhn/Documents/Projects/notipp
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

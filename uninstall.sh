@@ -3,4 +3,4 @@
 ################################ 
 
 # run installer script from common module 
-node common/installer/uninstall.js 
+bash common/installer/uninstaller.sh $@
