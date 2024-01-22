@@ -1,0 +1,31 @@
+{
+  "name": "notipp",
+  "version": "1.0.0",
+  "description": "Web-based notifications system for Linux and Android device in a LAN/WLAN.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lvjhn/notipp.git"
+  },
+  "keywords": [
+    "notifications",
+    "web-based",
+    "node.js",
+    "javascript",
+    "notipp",
+    "websockets",
+    "vue",
+    "express",
+    "commander"
+  ],
+  "author": "LJ S.A.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lvjhn/notipp/issues"
+  },
+  "homepage": "https://github.com/lvjhn/notipp#readme", 
+}
