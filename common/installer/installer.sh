@@ -29,6 +29,9 @@ function install {
     # identify OS 
     determine_os
 
+    # cache hostname 
+    cache_hostname
+
     # get username from user 
     get_username_from_user
 
@@ -75,6 +78,15 @@ function determine_os {
     # update info:os
     echo $OS > ./hdt/info/os
 
+    echo "|"
+}
+
+function cache_hostname {
+    display_header "| @ Caching hostname...\n" 
+
+    # cache hostname 
+    echo $(hostname) > ./hdt/info/hostname 
+    
     echo "|"
 }
 
