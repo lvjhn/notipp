@@ -32,10 +32,18 @@ async function checkCertificates() {
     await Core.Certificates.generateServerSSLCertificate()
 }
 
+async function checkServer() {
+    await Core.Server.generateServerId()
+    await Core.Server.generateServerSecret()
+}
+
+async function checkConfig() {
+    // await Core.Config.setConfig((config) => {
+    //     config.server.portNo = 10443
+    // })
+    console.log(await Core.Config.getConfig())
+}
 
 (async () => {  
-    // await checkGeneralInfo()
-    await checkCertificates()
-    
-    process.exit()
+    // checkConfig();
 })()
