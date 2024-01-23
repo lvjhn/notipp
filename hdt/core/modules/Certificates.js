@@ -14,8 +14,8 @@ export default class Certificates
      * Gets CA cerificate object. 
      */
     static async getCACertificate() {
-        const CA_CERT_BASEDIR = BASE_PATH + "/common/certificates"
-        const CA_PREFIX = await Core.GeneralInfo.getUsername() + ".notipp" 
+        const CA_CERT_BASEDIR = BASE_PATH + "/common/ca"
+        const CA_PREFIX = "hdt-ca"
         const CA_CERT_FILE = CA_CERT_BASEDIR + "/" + CA_PREFIX + ".pem" 
         const CA_CONTENT = (await fs.readFile(CA_CERT_FILE)).toString()
         const CERT = new crypto.X509Certificate(CA_CONTENT)
@@ -116,9 +116,7 @@ export default class Certificates
                 throw Error("Unknown certificate type [" + type + "]") 
             }
     
-            const expirationDate = new Date(cert.fingerprint);
-    
-            return expirationDate
+            resolve(cert.fingerprint)
         })
     }
 }

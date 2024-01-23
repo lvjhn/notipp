@@ -5,19 +5,41 @@
 import { BASE_PATH } from "../../../index.js";
 import fs from "fs/promises"
 import { exec } from "child_process"
+import Config from "./Config.js";
+import { Certificate } from "crypto";
+import Certificates from "./Certificates.js";
+import axios from "axios";
 
 export default class GeneralInfo 
 {
     /** 
-     * Get public info as JSON object. 
+     * Get information.
      */
-    static async getPublicInfo() {
+    static async getFullInfo() {
         return {
-            serverId: await GeneralInfo.getServerId(), 
-            username: await GeneralInfo.getUsername(), 
-            hostname: await GeneralInfo.getHostName(), 
-            operatingSystem: await GeneralInfo.getOperatingSystem(), 
-            serverSecret: await GeneralInfo.getServerSecret()
+            "notipp" : {
+                "version" : await GeneralInfo.getNotippVersion(),
+                "username" : await GeneralInfo.getUsername()
+            },
+            "server" : {
+                "id" : await GeneralInfo.getServerId(), 
+                "hostname" : await GeneralInfo.getHostName(), 
+                "ip" : await GeneralInfo.getServerIp(), 
+                "port" : await GeneralInfo.getServerPort(), 
+                "os" : await GeneralInfo.getOperatingSystem(),
+                "ssl-cert" : {
+                    "expiration" : 
+                        await Certificates.getExpirationDate("server-ssl-cert"), 
+                    "fingerprint" : 
+                        await Certificates.getFingerprint("server-ssl-cert")
+                }
+            }, 
+            "ca-cert" : {
+                "expiration" : 
+                    await Certificates.getExpirationDate("ca-cert"), 
+                "fingerprint" : 
+                    await Certificates.getFingerprint("ca-cert")
+            }
         }
     }
 
@@ -75,4 +97,38 @@ export default class GeneralInfo
     static async getServerSecret() {
         return await GeneralInfo.readInfoFile("server-secret")
     }
+
+    /**
+     * Get server ip.
+     */
+    static async getServerIp() {
+        return new Promise((resolve, reject) => {
+            exec(`hostname -I | awk '{print $1}'`, 
+                (error, stdout, stderr) => {
+                    if(error) {
+                        reject(error) 
+                    }
+                    resolve(stdout.trim())
+                }
+            )
+        })
+    }
+
+    /**
+     * Get server port.
+     */
+    static async getServerPort() {
+        return (await Config.getConfig()).server.portNo
+    }
+
+    /**
+     * Get CA certificate.
+     */
+    static async getCACert() {
+        const CERTIFICATE_PATH = 
+            BASE_PATH + "/common/ca/hdt-ca.pem" 
+            
+        return (await fs.readFile(CERTIFICATE_PATH)).toString()
+    }
+
 }

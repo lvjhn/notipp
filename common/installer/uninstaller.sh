@@ -15,6 +15,10 @@ display_header "### Uninstalling... ###\n"
 emphasize "> Removing node_modules folder...\n" 
 rm -rf node_modules/ 
 
+# clear dist/* folder
+emphasize "> Removing node_modules folder...\n" 
+rm -rf dist/*
+
 # clear hdt info directory 
 emphasize "> Clearing hdt/info directory...\n"
 rm -rf hdt/info/* 
@@ -23,12 +27,8 @@ touch hdt/info/.gitignore
 # remove ca certificates
 emphasize "> Removing CA certificate related files...\n" 
 
-rm -rf common/certificates/host/*
-touch common/certificates/host/.gitignore
-
-rm -rf common/certificates/remote/*
-touch common/certificates/remote/.gitignore
-
+rm -rf common/ca/*
+touch common/ca/.gitignore
 
 # remove server-ssl certificates
 emphasize "> Removing CA certificate related files...\n" 

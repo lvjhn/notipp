@@ -11,9 +11,9 @@
 USERNAME=$1
 
 # build output paths 
-CA_FILENAME="$USERNAME.notipp"
-CA_KEY_FILE="./common/certificates/host/$CA_FILENAME.key"
-CA_CERT_FILE="./common/certificates/host/$CA_FILENAME.pem"
+CA_DIST_FILENAME="$USERNAME.notipp"
+CA_KEY_FILE="./common/ca/hdt-ca.key"
+CA_CERT_FILE="./common/ca/hdt-ca.pem"
 CA_CONF_FILE="./common/utils/templates/ca.openssl.conf"
 
 
@@ -40,6 +40,4 @@ echo -e "|\t> Generating root certificate..."
 echo "" 
 
 echo -e "|\t> Copying root certificate to dists/ folder..."
-cp $CA_CERT_FILE dist/$USERNAME.notipp.pem
-cp $CA_CERT_FILE common/certificates/remote/$USERNAME.notipp.pem
-
+cp $CA_CERT_FILE dist/$CA_DIST_FILENAME.pem

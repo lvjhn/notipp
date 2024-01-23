@@ -14,6 +14,8 @@ import fs from "fs/promises"
 import { BASE_PATH } from "../../../index.js";
 import Core from "../../core/Core.js";
 import colors from  "@colors/colors"
+import cors from "cors"
+import bodyParser from "body-parser";
 
 export default class Server 
 {
@@ -45,29 +47,42 @@ export default class Server
      * Set up plugins.
      */
     static async setupPlugins() {
-    
+        // create ping page   
+        Server.app.get("/~ping", (req, res) => {
+            res.send("PONG")
+        })
+
+        // set up body parser 
+        Server.app.use(bodyParser.json())
+        Server.app.use(bodyParser.urlencoded({ extended: false }))
+
+        // setup cors 
+        Server.app.use(cors())
+
     }
 
     /** 
      * Set up routes. 
      */
     static async setupRoutes() {
-
+        await HttpController.setupRoutes(Server.app)
     }
 
     /** 
      * Start server. 
      */
     static async start() {
-        console.log("@ Starting server...")
+        console.log("@ Starting server...".bgBlack.white.bold)
 
-        // create express app
-        Server.app = express()  
-        Server.app.get("/~ping", (req, res) => {
-            res.send("PONG")
-        })
+        // ----- create express app
+        console.log("\t> Creating express app...")
+        Server.app = express() 
+
+        await Server.setupPlugins()
+        await Server.setupRoutes()
     
-        // create websocket server
+        // ----- create websocket server
+        console.log("\t> Creating websocket server...")
         Server.wsServer = new WebSocketServer({ noServer: true })
         Server.app.on("upgrade", (request, socket, head) => {
             Server.app.handleUpgrade(request, socket, head, (websocket) => {
@@ -75,18 +90,24 @@ export default class Server
             })
         })
         
-        // create https serevr
+        // ----- create https server
+        console.log("\t> Creating https server...")
         Server.httpsServer = 
             https.createServer(await Server.loadCertificates(), Server.app)
 
-        // start listening on port
+        
+        // ----- start listening on port
+        console.log("\t> Starting listener...")
         const portNo  = (await Core.Config.getConfig()).server.portNo; 
         const address = "0.0.0.0"
+        
         Server.httpsServer.listen(
             portNo, address, () => {
                 const addressPort = address + ":" + portNo
                 console.log(
-                    ("@ Notipp-Server is listening on " + addressPort).cyan.bold
+                    ("\t>> Notipp-Server is listening on " + 
+                         addressPort + 
+                     " <<").cyan.bold 
                 ) 
             }
         )

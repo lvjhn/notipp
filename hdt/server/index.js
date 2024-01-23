@@ -7,4 +7,10 @@
 
 import Server from "./modules/Server.js";
 
-Server.start()
+(async () => {
+    try {
+        await Server.start()
+    } catch(error) {
+        throw error
+    }
+})();
