@@ -47,6 +47,9 @@ function install {
     # install os dependencies 
     install_os_dependencies 
 
+    # generate server id and server secret
+    generate_server_id_and_secret
+
     # create ca certificate 
     create_ca_certificate
 
@@ -55,9 +58,6 @@ function install {
 
     # create system service for client 
     create_client_system_service
-
-    # generate server id and server secret
-    generate_server_id_and_secret
 
     # create system service for server
     create_server_system_service

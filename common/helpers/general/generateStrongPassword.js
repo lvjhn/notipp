@@ -5,7 +5,7 @@
 /**
  * Generates a strong password with letters, numbers, and some symbols. 
  */
-import { chance, randomGen } from "../../../index.js"
+import { randomGen } from "../../../index.js"
 
 const CHARACTER_SELECTION =     
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + 

@@ -21,13 +21,14 @@ echo -e "|\t> Generating CA's private key..."
 openssl genrsa -out $CA_KEY_FILE  4096
 
 echo -e "|\t> Generating root certificate..."
+
 {
     echo "PH";
     echo "Camarines Sur"; 
     echo "Naga";
-    echo "Notipp";
-    echo "Notipp";
-    echo "Notipp";
+    echo "Notipp-CA";
+    echo "$USERNAME";
+    echo "$USERNAME.notipp";
     echo "notipp@gmail.com";
 } | openssl req -new -x509 \
     -key $CA_KEY_FILE \
@@ -35,3 +36,10 @@ echo -e "|\t> Generating root certificate..."
     -days 3650 \
     -set_serial 0 \
     -config $CA_CONF_FILE
+
+echo "" 
+
+echo -e "|\t> Copying root certificate to dists/ folder..."
+cp $CA_CERT_FILE dist/$USERNAME.notipp.pem
+cp $CA_CERT_FILE common/certificates/remote/$USERNAME.notipp.pem
+

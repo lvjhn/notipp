@@ -22,8 +22,13 @@ touch hdt/info/.gitignore
 
 # remove ca certificates
 emphasize "> Removing CA certificate related files...\n" 
+
 rm -rf common/certificates/host/*
 touch common/certificates/host/.gitignore
+
+rm -rf common/certificates/remote/*
+touch common/certificates/remote/.gitignore
+
 
 # remove server-ssl certificates
 emphasize "> Removing CA certificate related files...\n" 
@@ -39,3 +44,4 @@ sudo systemctl daemon-reload
 # set uninstalled status
 echo "UNINSTALLED" > ./common/installer/.install-status
 
+echo "> Done."

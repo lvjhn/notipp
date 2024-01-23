@@ -31,14 +31,14 @@ echo -e "|\t> Generate SSL certificate's .csr file..."
     echo "PH";
     echo "Camarines Sur";
     echo "Naga"; 
-    echo "Notipp";
-    echo "Notipp";
+    echo "Notipp-Server";
+    echo "$(cat ./info/hdt/server-id)";
     echo "Notipp";
     echo "notipp@gmail.com";
     echo "$SERVER_CERT_PASSWORD"
-    echo "Notipp";
+echo "Notipp";
 } | openssl req -sha256 -new \
-    -key $SERVER_CERT_KEY_FILE \
+-key $SERVER_CERT_KEY_FILE \
     -out $SERVER_CERT_CSR_FILE \
     -config $SERVER_CERT_CONF_FILE
 

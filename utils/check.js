@@ -1,3 +1,4 @@
+import ConnectionManager from "../common/utils/AgentManager.js/index.js"
 import Core from "../hdt/core/Core.js"
 import Clients from "../hdt/core/modules/Clients.js"
 import DatabaseSeeder from "../hdt/data/DatabaseSeeder.js"
@@ -35,8 +36,10 @@ async function checkCertificates() {
 }
 
 async function checkServer() {
-    await Core.Server.generateServerId()
-    await Core.Server.generateServerSecret()
+    // await Core.Server.generateServerId()
+    // await Core.Server.generateServerSecret()
+
+    console.log(await Core.Server.isUp())
 }
 
 async function checkConfig() {
@@ -90,8 +93,13 @@ async function checkClients() {
     // await Clients.removeAll() 
 }
 
-(async () => {  
-    await checkClients(); 
+async function checkConnectionManager() {
+    console.log(await ConnectionManager.loadGroupMap("47:91:AF:2A:1F:25:A3:8B:8E:BF:D8:98:81:78:C7:A4:1B:99:C8:08"))
+    console.log(ConnectionManager.groupMap)
+    console.log(await ConnectionManager.useHttpsAgent("47:91:AF:2A:1F:25:A3:8B:8E:BF:D8:98:81:78:C7:A4:1B:99:C8:08"))
+}
 
-    process.exit()
+
+(async () => {  
+    await checkConnectionManager() 
 })()

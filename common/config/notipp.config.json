@@ -5,7 +5,6 @@
         "keepAliveInterval": 1
     },
     "client": {
-        "isEnabled": 10443,
         "keepAliveInterval": 1,
         "notificationScript": {
             "common": "common",

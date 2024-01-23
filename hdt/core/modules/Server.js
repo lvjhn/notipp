@@ -4,6 +4,8 @@
 import fs from "fs/promises"
 import { BASE_PATH } from "../../../index.js"
 import generateSecret from "../../../common/helpers/general/generateSecret.js"
+import Core from "../Core.js"
+import axios from "axios"
 
 export default class Server
 {
@@ -27,7 +29,7 @@ export default class Server
      * Check if server is up. 
      */
     static async isUp() {
-
+       
     }
 
     /** 

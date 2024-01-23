@@ -8,7 +8,3 @@
 import Server from "./modules/Server.js";
 
 Server.start()
-
-setTimeout(() => {
-    Server.restart()
-}, 5000)

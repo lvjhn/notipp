@@ -14,7 +14,7 @@ export default class Certificates
      * Gets CA cerificate object. 
      */
     static async getCACertificate() {
-        const CA_CERT_BASEDIR = BASE_PATH + "/common/certificates/host"
+        const CA_CERT_BASEDIR = BASE_PATH + "/common/certificates"
         const CA_PREFIX = await Core.GeneralInfo.getUsername() + ".notipp" 
         const CA_CERT_FILE = CA_CERT_BASEDIR + "/" + CA_PREFIX + ".pem" 
         const CA_CONTENT = (await fs.readFile(CA_CERT_FILE)).toString()
@@ -97,5 +97,28 @@ export default class Certificates
             })
         })
     }
+
+    /**
+     * Get CA's fingerprint. 
+     */
+    static async getFingerprint(type = 'ca-cert') {
+        return new Promise(async (resolve, reject) => {
+            let cert;
+
+            // get certificate object
+            if(type == "ca-cert") {
+                cert = await Certificates.getCACertificate()
+            }
+            else if(type == "server-ssl-cert") {
+                cert = await Certificates.getServerSSLCertificate()
+            }
+            else {
+                throw Error("Unknown certificate type [" + type + "]") 
+            }
     
+            const expirationDate = new Date(cert.fingerprint);
+    
+            return expirationDate
+        })
+    }
 }

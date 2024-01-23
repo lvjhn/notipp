@@ -63,6 +63,9 @@ export default class Server
 
         // create express app
         Server.app = express()  
+        Server.app.get("/~ping", (req, res) => {
+            res.send("PONG")
+        })
     
         // create websocket server
         Server.wsServer = new WebSocketServer({ noServer: true })
