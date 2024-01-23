@@ -1,4 +1,5 @@
 import Core from "../hdt/core/Core.js"
+import DatabaseSeeder from "../hdt/data/DatabaseSeeder.js"
 
 async function checkGeneralInfo() {
     console.log("Server-ID: " + await Core.GeneralInfo.getServerId())
@@ -44,6 +45,23 @@ async function checkConfig() {
     console.log(await Core.Config.getConfig())
 }
 
+async function checkQueries() {
+    // const results = await Core.Queries.search("Notifications", {
+    //     query: "%a%",
+    //     queryFields: ["data"],
+    //     perPage: 10
+    // })
+    // console.log(results)
+
+    await DatabaseSeeder.seed()
+    await Core.Queries.prune("Notifications", new Date(2022, 0, 1))
+    await Core.Queries.prune("Notifications", new Date(2023, 12, 31), {
+        modifier: "after"
+    })
+}
+
 (async () => {  
-    // checkConfig();
+    await checkQueries(); 
+
+    process.exit()
 })()
