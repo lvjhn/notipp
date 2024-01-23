@@ -30,7 +30,7 @@ export default class GeneralInfo
             (await fs.readFile(INFO_FILE)).toString().trim() 
         return INFO_VALUE
     }
-
+    
     /** 
      * Get server id.
      */

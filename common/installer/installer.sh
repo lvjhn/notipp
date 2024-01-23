@@ -18,7 +18,7 @@ function main {
 }
 
 function elevate_privileges {
-    sudo echo
+    sudo echo -n ""
 }
 
 # --- INSTALLATION STEPS --- #
@@ -109,10 +109,9 @@ function check_if_already_installed {
     
     elif [ "$INSTALL_STATUS" == "INSTALLED" ] ; then
         echo -e "|\t> Already installed. Please manually uninstall before installing again."
-    
+        exit
     else    
         echo -e "|\t> Unknown installation status [$INSTALL_STATUS]"
-
     fi
 
     echo "|"
@@ -195,32 +194,9 @@ function install_os_dependencies {
 function create_ca_certificate {
     display_header "| @ Creating CA certificate...\n" 
 
-    CA_FILENAME="$USERNAME.notipp"
-
-    CA_KEY_FILE="./common/certificates/host/$CA_FILENAME.key"
-    CA_CERT_FILE="./common/certificates/host/$CA_FILENAME.pem"
-
-    CA_CONF_FILE="./common/utils/templates/ca.openssl.conf"
-
-
-    echo -e "|\t> Generating CA's private key..."
-    openssl genrsa -out $CA_KEY_FILE  4096
-
-    echo -e "|\t> Generating root certificate..."
-    {
-        echo "PH";
-        echo "Camarines Sur"; 
-        echo "Naga";
-        echo "Notipp";
-        echo "Notipp";
-        echo "Notipp";
-        echo "notipp@gmail.com";
-    } | openssl req -new -x509 \
-        -key $CA_KEY_FILE \
-        -out $CA_CERT_FILE \
-        -days 3650 \
-        -set_serial 0 \
-        -config $CA_CONF_FILE
+    bash \
+        $(pwd)/common/utils/generators/generate-ca-certificate.sh \
+        $USERNAME
 
     echo -e -n "\n"
     echo "|"
@@ -229,44 +205,11 @@ function create_ca_certificate {
 function create_server_ssl_certificate {
     display_header "| @ Creating server's SSL certificate...\n" 
 
-    SERVER_CERT_KEY_FILE="./hdt/data/certificate/server-ssl.key"
-    SERVER_CERT_PEM_FILE="./hdt/data/certificate/server-ssl.pem"
-    SERVER_CERT_CSR_FILE="./hdt/data/certificate/server-ssl.csr"
-    SERVER_CERT_CONF_FILE="./common/utils/templates/server-ssl.openssl.conf"
-
-    echo -e "|\t> Generating server certificate's password..." 
-    SERVER_CERT_PASSWORD="$(node ./common/utils/generators/strong-password.js)"
-    echo $SERVER_CERT_PASSWORD > "./hdt/data/certificate/server-ssl.pw"
-
-    echo -e "|\t> Generate SSL certificate's private .key file..." 
-    openssl genrsa -out $SERVER_CERT_KEY_FILE 4096
-
-    echo -e "|\t> Generate SSL certificate's .csr file..." 
-    { 
-        echo "PH";
-        echo "Camarines Sur";
-        echo "Naga"; 
-        echo "Notipp";
-        echo "Notipp";
-        echo "Notipp";
-        echo "notipp@gmail.com";
-        echo "$SERVER_CERT_PASSWORD"
-        echo "Notipp";
-    } | openssl req -sha256 -new \
-        -key $SERVER_CERT_KEY_FILE \
-        -out $SERVER_CERT_CSR_FILE \
-        -config $SERVER_CERT_CONF_FILE
+    bash \
+        $(pwd)/common/utils/generators/generate-server-ssl-certificate.sh \
+        $USERNAME
     
-    echo 
-
-    echo -e "|\t> Generate child certificate and sign with RootCA..." 
-    openssl x509 -req -days 3650 \
-        -in $SERVER_CERT_CSR_FILE \
-        -CA $CA_CERT_FILE \
-        -CAkey $CA_KEY_FILE \
-        -set_serial 01 \
-        -out $SERVER_CERT_PEM_FILE
-
+    echo -e -n "\n"
     echo "|"
 }
 

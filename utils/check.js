@@ -11,9 +11,31 @@ async function checkGeneralInfo() {
     console.log(await Core.GeneralInfo.getPublicInfo())
 }
 
+async function checkCertificates() {
+    console.log(
+        "CA-Certificate:\n" +
+        await Core.Certificates.getCACertificate()
+    )
+    console.log(
+        "Server-SSL-Certificate:\n" +
+        await Core.Certificates.getServerSSLCertificate()
+    )
+    console.log(
+        "CA-Certificate-Expiration: \n" + 
+        await Core.Certificates.getExpirationDate("ca-cert")
+    )
+    console.log(
+        "Server-SSL-Certificate-Expiration: \n" + 
+        await Core.Certificates.getExpirationDate("server-ssl-cert")
+    )
+
+    await Core.Certificates.generateServerSSLCertificate()
+}
+
 
 (async () => {  
-    await checkGeneralInfo()
+    // await checkGeneralInfo()
+    await checkCertificates()
     
     process.exit()
 })()
