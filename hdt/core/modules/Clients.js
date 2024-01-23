@@ -208,7 +208,6 @@ export default class Clients
      */
     static async removeAll() {
         let qb = Database.connection("Clients")
-        
         await qb.del() 
     }
 }   
