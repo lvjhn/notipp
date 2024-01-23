@@ -5,7 +5,7 @@
 /**
  * Generates a strong password with letters, numbers, and some symbols. 
  */
-import Chance from "chance"
+import { chance, randomGen } from "../../../index.js"
 
 const CHARACTER_SELECTION =     
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + 
@@ -16,7 +16,7 @@ const CHARACTER_SELECTION =
 export default function generateStrongPassword(
     length = 32, 
     { 
-        chance = new Chance() ?? null
+        chance = randomGen
     } = {}
 ) {
     let secret = "" 

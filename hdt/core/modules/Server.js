@@ -22,4 +22,46 @@ export default class Server
         const secret = generateSecret()
         await fs.writeFile(BASE_PATH + "/hdt/info/server-secret", secret)
     }
+
+    /**
+     * Check if server is up. 
+     */
+    static async isUp() {
+
+    }
+
+    /** 
+     * Check if server is down. 
+     */
+    static async isDown() {
+
+    }
+
+    /** 
+     * Turn off server. 
+     */
+    static async turnOff() {
+
+    }
+
+    /** 
+     * Turn on server.
+     */
+    static async turnOn() {
+
+    }
+
+    /** 
+     * Enable 
+     */
+    static async enable() {
+
+    }
+
+    /**
+     * Disable
+     */
+    static async disable() {
+        
+    }
 }

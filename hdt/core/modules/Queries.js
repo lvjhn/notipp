@@ -110,8 +110,6 @@ export default class Queries
 
         qb = qb.del() 
 
-        // console.log(qb.toQuery())
-
         await qb
     }
 

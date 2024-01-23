@@ -10,8 +10,7 @@ import generateDeviceName from "../../common/helpers/general/generateDeviceName.
 import Database from "./Database.js"
 import randomUserAgent from "random-useragent"
 import generateSecret from "../../common/helpers/general/generateSecret.js"
-
-const chance = new Chance()
+import { randomGen } from "../../index.js"
 
 export default class DatabaseSeeder 
 {
@@ -37,13 +36,13 @@ export default class DatabaseSeeder
 
         await Database.connection("Clients").del()
 
-        for(let i = 0; i < 100; i++) {
+        for(let i = 0; i < 20; i++) {
             await Clients.insert({
-                id: crypto.randomUUID(),
+                id: randomGen.guid(),
                 name: generateDeviceName(), 
                 secret: generateSecret(), 
                 userAgent: randomUserAgent.getRandom(), 
-                isPaired: chance.pickone([true, false])
+                isPaired: randomGen.pickone([true, false])
             })
         }
     }
@@ -58,13 +57,13 @@ export default class DatabaseSeeder
         for(let i = 0; i < 100; i++) {
             await Notifications.insert({
                 data: JSON.stringify({
-                    title: chance.sentence({ words: 5 }), 
+                    title: randomGen.sentence({ words: 5 }), 
                     options: {
-                        body: chance.paragraph({ sentences: 5 })
+                        body: randomGen.paragraph({ sentences: 5 })
                     }
                 }),
-                createdAt: chance.date({
-                    year: chance.pickone([ 2021, 2022, 2023, 2024 ])
+                createdAt: randomGen.date({
+                    year: randomGen.pickone([ 2021, 2022, 2023, 2024 ])
                 }).toISOString()
             })
         }
