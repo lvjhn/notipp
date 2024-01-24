@@ -26,7 +26,7 @@ import CommandHandlers from "./modules/CommandHandlers.js";
     program 
         .command("info") 
         .description("show information about the server") 
-        .option("-p, --p", "whether to show private information or not")
+        .option("-p, --private", "whether to show private information or not")
         .action(CommandHandlers.handleInfo)
 
     program 
@@ -44,22 +44,51 @@ import CommandHandlers from "./modules/CommandHandlers.js";
             "-q, --qr", 
             "displays a QR for pairing a client"
         ) 
-        .option("-r, --regenerate", "option to regenerate QR code")
+        .option(
+            "-a, --all", 
+            "pairs all unpaired clients"
+        )
+        .option(
+            "-r, --regenerate", 
+            "option to regenerate QR code"
+            )
         .action(CommandHandlers.handlePair)
 
     program 
         .command("unpair") 
         .description("unpairs a specified client")
         .argument(
-            "<identifier>", 
+            "[identifier]", 
             "name (or id) of the client to pair"
         )
         .option(
             "-i, --by-id", 
             "specifies that the identifier should be the client's ID"
         ) 
+        .option(
+            "-a, --all", 
+            "unpairs all paired clients"
+        )
         .action(CommandHandlers.handleUnpair)
 
+    program 
+        .command("remove") 
+        .description("unpairs a specified client")
+        .argument(
+            "[identifier]", 
+            "name (or id) of the client to pair"
+        )
+        .option(
+            "-i, --by-id", 
+            "specifies that the identifier should be the client's ID"
+        ) 
+        .option(
+            "-a, --all", 
+            "unpairs all paired clients"
+        )
+        .action(CommandHandlers.handleRemove)
+
+    
     program
         .command("show:clients")
         .description("shows clients that are registered in the server") 

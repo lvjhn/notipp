@@ -42,7 +42,8 @@ export default class DatabaseSeeder
                 name: generateDeviceName(), 
                 secret: generateSecret(), 
                 userAgent: randomUserAgent.getRandom(), 
-                isPaired: randomGen.pickone([true, false])
+                isPaired: randomGen.pickone([true, false]),
+                isConnected: randomGen.pickone([true, false])
             })
         }
     }
@@ -59,7 +60,7 @@ export default class DatabaseSeeder
                 data: JSON.stringify({
                     title: randomGen.sentence({ words: 5 }), 
                     options: {
-                        body: randomGen.paragraph({ sentences: 5 })
+                        body: randomGen.paragraph({ sentences: 1 })
                     }
                 }),
                 createdAt: randomGen.date({

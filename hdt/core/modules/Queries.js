@@ -32,7 +32,12 @@ export default class Queries
             return qb 
         },
         nextCursorModifier = (data, qb) =>{ 
-            return data.at(-1).id
+            if(data.length == 0) {
+                return null 
+            } 
+            else { 
+                return data.at(-1).id
+            }
         },
         modifier = (qb) => {
             return qb

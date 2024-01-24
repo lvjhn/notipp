@@ -9,5 +9,5 @@ export const BASE_PATH =
     dirname(fileURLToPath(import.meta.url))
 
 export const randomGen = 
-    new Chance(1234)
+    new Chance()
     

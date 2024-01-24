@@ -6,6 +6,7 @@ import generateSecret from "../../../common/helpers/general/generateSecret.js";
 import DataItems from "../../data/DataItems.js";
 import Database from "../../data/Database.js";
 import Core from "../Core.js";
+import GeneralInfo from "./GeneralInfo.js";
 import Queries from "./Queries.js";
 
 export default class Clients 
@@ -16,11 +17,14 @@ export default class Clients
     static async add(details, extras) {
         // handle auto-pairing 
         const autoPair = (await Core.Config.getConfig()).server.autoPair
+       
         if(autoPair) {
             details.isPaired = 1; 
         } else {
             details.isPaired = 0
         }
+
+        details.isConnected = 0
 
         // check if pairing secret is valid 
         if(!autoPair && extras.pairSecret) {
@@ -115,14 +119,18 @@ export default class Clients
      * Get disconnected clients.
      */
     static async getDisconnected() {
-
+        return (
+            await Database.connection("Clients").where("isConnected", 0)
+        )
     }
 
     /**
      * Get connected clients. 
      */
     static async getConnected() {
-
+        return (
+            await Database.connection("Clients").where("isConnected", 1)
+        )
     }
 
     /**
@@ -169,7 +177,7 @@ export default class Clients
     static async unpair(clientId) {
         let qb = Database.connection("Clients")
         
-        qb.update() 
+        qb.update({ isPaired: 0 }) 
           .where("id", clientId)
 
         await qb
@@ -303,5 +311,17 @@ export default class Clients
      */
     static async getPairingSecret() {
         return await DataItems.getItem("PAIRING-SECRET")
+    }
+
+    /** 
+     * Generate QR data.
+     */
+    static async generateQRData() {
+        const ip = await GeneralInfo.getServerIp() 
+        const port = await GeneralInfo.getServerPort() 
+        const pairSecret = await Clients.getPairingSecret() 
+        return {
+            ip, port, pairSecret
+        }
     }
 }   
