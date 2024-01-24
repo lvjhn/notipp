@@ -68,6 +68,8 @@ export default class Queries
 
         metaQb = metaQb.count('id as count')
 
+        const lastCursorQb = Object.create(metaQb) 
+
         const results = {
             meta : (await metaQb)[0],
             data : await qb

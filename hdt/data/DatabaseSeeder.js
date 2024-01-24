@@ -54,9 +54,11 @@ export default class DatabaseSeeder
         const Notifications = Database.connection("Notifications")
 
         await Database.connection("Notifications").del()
+        
+        let notifs = []
 
         for(let i = 0; i < 100; i++) {
-            await Notifications.insert({
+            notifs.push({
                 data: JSON.stringify({
                     title: randomGen.sentence({ words: 5 }), 
                     options: {
@@ -67,6 +69,16 @@ export default class DatabaseSeeder
                     year: randomGen.pickone([ 2021, 2022, 2023, 2024 ])
                 }).toISOString()
             })
+        }
+
+        notifs.sort(
+            (a, b) => new Date(a.createdAt) > new Date(b.createdAt) ? 1 : -1
+        )
+
+        notifs = notifs.map((item, index) => ({ ...item, id: index }))
+
+        for(let i = 0; i < 100; i++) {
+            await Notifications.insert(notifs[i])
         }
     }
 

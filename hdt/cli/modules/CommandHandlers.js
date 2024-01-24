@@ -16,6 +16,9 @@ import Database from "../../data/Database.js";
 import detectBrowser from "../../../common/helpers/general/detectBrowser.js";
 import Queries from "../../core/modules/Queries.js";
 import readableDate from "../../../common/helpers/general/readableDate.js";
+import Notifications from "../../core/modules/Notifications.js";
+import prompts from "prompts";
+import e from "express";
 
 export default class CommandHandlers 
 {
@@ -472,85 +475,131 @@ export default class CommandHandlers
     }
 
     static async handleShowNotifs(options) {
-        const query = options.query 
-        const startDate = options.startDate 
-        const modifier = options.modifier 
+        const query = options.query ?? "%%"
+        const startDate = options.startDate ?? null 
+        const modifier = options.modifier ?? "before"
 
-        let dateString;
+        async function displayForCursor(cursor) {
+            const results = 
+                await Notifications.generalSearch({
+                    jumpToDate: startDate, 
+                    modifier: modifier, 
+                    query: query,
+                    cursor: cursor
+                })
+                
+            if(results.data.length == 0) {
+                console.log("@ Reached end of data... exiting.") 
+                process.exit()
+            }
+            
+            // create display table 
+            const tableData = [
+                [
+                    "ID".bold, 
+                    "MESSAGE".bold,
+                    "CREATED-AT".bold
+                ]
+            ] 
 
+            for(let notification of results.data) {
+                const dateFormatted = 
+                    readableDate(new Date(notification.createdAt))
+
+                tableData.push([
+                    notification.id.toString().bold, 
+                    JSON.parse(notification.data).options.body, 
+                    dateFormatted.dateString.bold + "\n" + dateFormatted.timeString
+                ])
+            }
+
+            const tableConfig = {
+                columns: [
+                    {},
+                    { width: 30, wrapWord: true }
+                ]
+            }
+
+            return { 
+                nextCursor: results.meta.next,
+                tableData, 
+                tableConfig 
+            }
+        }
+
+        let cursor;
         
-        if(startDate) {
-            const dateTokens = startDate.split("/").map(x => parseInt(x))
+        if(modifier == "before") {
+            cursor = Infinity;
+        } 
+        else if(modifier == "after") {
+            cursor = 0
+        }
+
+        while(true) {
+            const next = await displayForCursor(cursor) 
+          
+            if(modifier == "before" && next.nextCursor > cursor) {
+                console.log("@ End of data, exiting.") 
+                process.exit()
+            } 
+            else if(modifier == "after" && next.nextCursor < cursor) {
+                console.log("@ End of data, exiting.") 
+                process.exit()
+            }
+            else {
+                console.log(table(next.tableData, next.tableConfig))
+            }
+              
+            const continuePage =    
+                await prompts({
+                    type: "toggle", 
+                    name: "value",
+                    message: "Show more?", 
+                    active: "yes", 
+                    inactive: "no",
+                    initial: true
+                })
+
+            if(continuePage.value) {
+                cursor = next.nextCursor
+                continue;
+            } else {
+                process.exit()
+            }
+        }
+
+    }
+
+    static async handlePruneNotifs(options) {
+        const modifier = options.modifier
+        const keyDate = options.keyDate 
+
+        if(!keyDate || !modifier) {
+            console.log("@ Key date and modifier are required.".bold.red)
+            process.exit()
+        }
+
+        // get date string
+        let targetDate; 
+        if(keyDate) {
+            const dateTokens = keyDate.split("/").map(x => parseInt(x))
             dateTokens[0] -= 1
             const date = new Date(dateTokens[2], dateTokens[0], dateTokens[1])
-            dateString = date.toISOString() 
+            targetDate = date
         }
 
-        const results = 
-            await Queries.search("Notifications", {
-                query: query,
-                modifier: (qb) => {
-                    if(dateString && modifier) {
-                        if(modifier == "before") {
-                            qb = qb.whereRaw(
-                                (
-                                    'strftime("%s", ??)' +
-                                    ' < ' +
-                                    'strftime("%s", ?)'
-                                ), 
-                                ['createdAt', dateString]
-                            )
-                        }
-                        else if(modifier == "after") {
-                            qb = qb.whereRaw(
-                                (
-                                    'strftime("%s", ??)' +
-                                    ' >' +
-                                    'strftime("%s", ?)'
-                                ), 
-                                ['createdAt', dateString]
-                            )
-                        }
-                    } 
-                    qb = qb.orderByRaw('strftime("%s", createdAt) DESC')
-                    return qb
-                }
-            })
-            
-        // create display table 
-        const tableData = [
-            [
-                "ID".bold, 
-                "MESSAGE".bold,
-                "CREATED-AT".bold
-            ]
-        ] 
+        // prune notifications 
+        await Queries.prune("Notifications", targetDate, {
+            modifier: modifier 
+        })
 
-        for(let notification of results.data) {
-            const dateFormatted = 
-                readableDate(new Date(notification.createdAt))
-
-            tableData.push([
-                notification.id.toString().bold, 
-                JSON.parse(notification.data).options.body, 
-                dateFormatted.dateString.bold + "\n" + dateFormatted.timeString
-            ])
-        }
-
-        const tableConfig = {
-            columns: [
-                {},
-                { width: 30, wrapWord: true }
-            ]
-        }
-
-        console.log(table(tableData, tableConfig))
-
+        console.log("@ Pruned notifications.".bold.cyan) 
         process.exit()
     }
         
-    static async handleConfig() {
-
+    static async handleConfig(x) {
+        
     }
 
     static async handleConfigSet() {

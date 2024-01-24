@@ -12,6 +12,7 @@ import fs from "fs/promises"
 import Clients from "../../core/modules/Clients.js"
 import Auth from "../modules/Auth.js"
 import Queries from "../../core/modules/Queries.js"
+import Notifications from "../../core/modules/Notifications.js"
 
 export default class HttpController 
 {   
@@ -90,13 +91,17 @@ export default class HttpController
 
     static async getNotifications(req, res) {
         const options = req.query
+
         try { 
             const results =
-                await Queries.search("Notifications", {
-                    query: options.query,
-                    queryFields: ["data"],
-                    perPage: options.perPage
+                await Notifications.generalSearch({
+                    query: options.query, 
+                    jumpToDate: options.jumpToDate, 
+                    cursor: options.cursor, 
+                    perPage: options.perPage,
+                    modifier: options.modifier
                 })
+
             res.send(results)
         } catch(e) {
             console.error(e)

@@ -127,6 +127,19 @@ import CommandHandlers from "./modules/CommandHandlers.js";
         )
         .action(CommandHandlers.handleShowNotifs)
 
+    program    
+        .command("prune:notifs")
+        .description("prune notifications in the database") 
+        .option(
+            "-m, --modifier <modifier>", 
+            "whether pruning is 'before' or 'after' the key date"
+        )
+        .option(
+            "-k, --key-date <keyDate>", 
+            "reference date for the modifier"
+        )
+        .action(CommandHandlers.handlePruneNotifs)
+
     program 
         .command("config") 
         .description("shows the system's configuration") 
