@@ -2,10 +2,90 @@
  * Clients Module 
  */
 
+import generateSecret from "../../../common/helpers/general/generateSecret.js";
+import DataItems from "../../data/DataItems.js";
 import Database from "../../data/Database.js";
+import Core from "../Core.js";
+import Queries from "./Queries.js";
 
 export default class Clients 
 {
+    /** 
+     * Add a client.
+     */
+    static async add(details, extras) {
+        // handle auto-pairing 
+        const autoPair = (await Core.Config.getConfig()).server.autoPair
+        if(autoPair) {
+            details.isPaired = 1; 
+        } else {
+            details.isPaired = 0
+        }
+
+        // check if pairing secret is valid 
+        if(!autoPair && extras.pairSecret) {
+            if(extras.pairSecret == await Clients.getPairingSecret()) {
+                details.isPaired = 1
+            }
+        }
+
+        // check if already added 
+        const alreadyExists = await Clients.has(details.id)
+        if(alreadyExists) {
+            throw Error("CLIENT_ALREADY_EXISTS") 
+        }
+  
+        // insert client details to database
+        const insertQb = Database.connection("Clients") 
+        const insertQuery = insertQb.insert(details)
+        await insertQuery; 
+    } 
+
+    /** 
+     * Remove a client.
+     */
+    static async remove(clientId) {
+        const deleteQb = Database.connection("Clients") 
+        deleteQb.where("clientId", clientId) 
+        await deleteQb
+    }
+
+    /** 
+     * Check for existence. 
+     */
+    static async has(clientId) {
+        return await Queries.exists("Clients", (qb) => {
+            qb.where("id", clientId)
+        })
+    }
+
+    /** 
+     * Update a client 
+     */
+    static async update(clientId, details) {
+        let updateQb = Database.connection("Clients") 
+        updateQb = updateQb.update(details) 
+        updateQb = updateQb.where("id", clientId) 
+        await updateQb
+    } 
+
+    /** 
+     * Get a specific client. 
+     */
+    static async get(clientId) {
+        let query = Database.connection("Clients")
+        query = query.where("id", clientId) 
+        query = query.limit(1)
+
+        const results = await query 
+
+        if(results.length == 0) {
+            return null 
+        } else {
+            return results[0]
+        }
+    }
+
     /** 
      * Get all clients.
      */
@@ -209,5 +289,19 @@ export default class Clients
     static async removeAll() {
         let qb = Database.connection("Clients")
         await qb.del() 
+    }
+
+    /** 
+     * Generate pairing secret. 
+     */
+    static async generatePairingSecret() {
+        await DataItems.setItem("PAIRING-SECRET", generateSecret())
+    }
+
+    /** 
+     * Get pairing secret/ 
+     */
+    static async getPairingSecret() {
+        return await DataItems.getItem("PAIRING-SECRET")
     }
 }   

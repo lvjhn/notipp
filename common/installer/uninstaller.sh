@@ -41,6 +41,9 @@ sudo rm -rf /etc/systemd/system/notipp-client.service
 sudo rm -rf /etc/systemd/system/notipp-server.service
 sudo systemctl daemon-reload 
 
+# reset database 
+node utils/database/reset-database.js  
+
 # set uninstalled status
 echo "UNINSTALLED" > ./common/installer/.install-status
 

@@ -113,4 +113,14 @@ export default class Queries
         await qb
     }
 
+    /** 
+     * Check for existence. 
+     */
+    static async exists(tableName, modifier) {
+        const query = Database.connection(tableName) 
+        modifier(query) 
+        query.limit(1) 
+        const results = await query;
+        return results.length > 0;
+    }
 }

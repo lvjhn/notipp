@@ -39,12 +39,12 @@ export default class ConnectionManager
             }
 
             // register ca through fingerprint
-            const ca = await preClient.get("/ca")
+            const ca = await preClient.get("/ca-string")
             ConnectionManager.certificates[fingerprint.data] = ca.data 
 
             return ConnectionManager.useHttpClient({ ip, port })
         } catch(e) {
-            console.error(e)
+            throw e
         }
     }
 }

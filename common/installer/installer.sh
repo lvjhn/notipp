@@ -61,6 +61,9 @@ function install {
 
     # create system service for server
     create_server_system_service
+    
+    # generate pairing secret
+    generate_pairing_secret
 
     # finish installation 
     finish_installation
@@ -256,6 +259,10 @@ function create_server_system_service {
 
     echo "|"
 }   
+
+function generate_pairing_secret {
+    node common/utils/generators/generate-pairing-secret.js
+}
 
 function finish_installation {
     echo "INSTALLED" > ./common/installer/.install-status
