@@ -2,6 +2,7 @@
  * Server Module
  */
 import fs from "fs/promises"
+import fsb  from "fs"
 import { BASE_PATH } from "../../../index.js"
 import generateSecret from "../../../common/helpers/general/generateSecret.js"
 import Core from "../Core.js"
@@ -10,9 +11,17 @@ import ConnectionManager from "../../../common/utils/ConnectionManager.js"
 import Config from "./Config.js"
 import { execSync } from "child_process"
 import inputPassword from "password-prompt"
+import { Agent } from "https"
+
+
 
 export default class Server
 {
+    /** 
+     * Constants
+     */
+    static SWITCH_PATH = BASE_PATH + "/hdt/server/switch";
+
     /** 
      * Generate random server id. 
      */
@@ -34,12 +43,18 @@ export default class Server
      */
     static async isUp() {
         const portNo = (await Config.getConfig()).server.portNo 
-        const client = await ConnectionManager.useHttpClient({
-            ip: "127.0.0.1", 
-            port: 10443
-        })
-        const ping = await client.get("/~ping") 
-        return ping.data == "PONG" 
+        try {
+            const client = axios.create({
+                baseURL: `https://127.0.0.1:${portNo}`,
+                httpsAgent: Agent({
+                    rejectUnauthorized: false
+                })
+            })
+            const ping = await client.get("/~ping") 
+            return ping.data == "PONG" 
+        } catch(e) {
+            return false
+        }
     }
 
     /** 
@@ -73,13 +88,98 @@ export default class Server
      * Enable 
      */
     static async enable() {
-        execSync(`sudo systemctl enable notipp-server`)
+        return new Promise(
+            "sudo systemctl enable notipp-server", 
+            (error, stdout, stderr) => {
+                if(error) {
+                    reject(error)
+                }
+                resolve(stdout)
+            }   
+        )
     }
 
     /**
      * Disable
      */
     static async disable() {
-        execSync(`sudo systemctl disable notipp-server`)
+        return new Promise((resolve, reject) => {
+            exec(
+                "sudo systemctl disable notipp-server",
+                (error, stdout, stderr) => {
+                    if(error) {
+                        reject(error) 
+                    }
+                    resolve(stdout)
+                }
+            )
+        })
+    }
+
+    /**
+     * Check if enabled 
+     */
+    static async isEnabled() {
+        return new Promise((resolve, reject) => {
+            exec(
+                "sudo systemctl is-enabled notipp-server", 
+                (error, stdout, stderr) => {
+                    if(error) {
+                        reject(stderr)
+                    }
+                    resolve(stdout)
+                }
+            )
+        })
+    }
+
+    /** 
+     * Reload 
+     */
+    static async reload() {
+        await Server.turnOff() 
+        await Server.turnOn()
+    }
+
+    /** 
+     * Read state. 
+     */
+    static async readState() {
+        const content = await fs.readFile(Server.SWITCH_PATH); 
+        const contentStr = content.toString() 
+        const tokens = contentStr.split(":")
+        return tokens[0]
+    }
+    
+    /** 
+     * Should on
+     */
+    static async shouldOn() {
+        return (await Server.readState()) == "ON"
+    }
+
+    /** 
+     * Auto-switch
+     */
+    static async autoSwitch(ServerClass) {
+        // first time startup 
+        await ServerClass.start();
+
+        let prevMessage = ""
+
+        // check if listening 
+        fsb.watch(Server.SWITCH_PATH, async (event, filename) => {
+            const currMessage = await Server.readState()
+            if(event == "change" &&  prevMessage != currMessage) {
+                console.log("@ <-- Received " + currMessage + " message...")
+                prevMessage = currMessage
+                if(await Server.shouldOn()) {
+                    await ServerClass.start() 
+                }
+                else if(!(await Server.shouldOn())) {
+                    await ServerClass.stop()
+                }
+            }
+        })
     }
 }

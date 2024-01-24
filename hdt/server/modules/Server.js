@@ -16,6 +16,7 @@ import Core from "../../core/Core.js";
 import colors from  "@colors/colors"
 import cors from "cors"
 import bodyParser from "body-parser";
+import GeneralInfo from "../../core/modules/GeneralInfo.js";
 
 export default class Server 
 {
@@ -29,6 +30,10 @@ export default class Server
 
     static wsController = new WsController()
     static httpController = new HttpController() 
+    
+    static isListening = false
+    static isStarting = false 
+    static isStopping = false
 
     /**
      * Load certificates.
@@ -71,8 +76,18 @@ export default class Server
     /** 
      * Start server. 
      */
-    static async start() {
-        console.log("@ Starting server...".bgBlack.white.bold)
+    static async start(onListen = () => {}) {
+        console.log("@ Starting server...")
+        
+        if(!(await Core.Server.shouldOn())) {
+            console.log("\t> Cannot start server. Server is turned off.".bold.red)
+            return;
+        }
+        
+        if(await Core.Server.isUp()) {
+            console.log("\t> Cannot start server. Server is already up.".bold.red)
+            return;
+        }
 
         // ----- create express app
         console.log("\t> Creating express app...")
@@ -102,13 +117,15 @@ export default class Server
         const address = "0.0.0.0"
         
         Server.httpsServer.listen(
-            portNo, address, () => {
+            portNo, address, async () => {
                 const addressPort = address + ":" + portNo
                 console.log(
                     ("\t>> Notipp-Server is listening on " + 
                          addressPort + 
                      " <<").cyan.bold 
                 ) 
+                Server.isStarting = false
+                Server.isListening = true
             }
         )
     }
@@ -117,9 +134,28 @@ export default class Server
      * Stop server.
      */
     static async stop () {
-        console.log("@ Stopping server...")
-        Server.wsServer.close() 
-        Server.httpsServer.close()
+        console.log("\t> Stopping server.".bold.grey)
+
+        // guard
+        if(Server.isStopping) {
+            return 
+        }
+
+        Server.isStopping = true
+
+        // sotp server
+        if(Server.wsServer) {
+            console.log("\t> Stopping websockets server...")
+            await Server.wsServer.close()
+        } 
+        if(Server.httpsServer) { 
+            console.log("\t> Stopping htts server...")
+            await Server.httpsServer.close()
+        }
+
+        console.log("\t> Stopped server.".bold.italic.grey)
+
+        Server.isStopping = false
     } 
 
     /** 
