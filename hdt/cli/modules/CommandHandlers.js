@@ -8,7 +8,7 @@
 export default class CommandHandlers 
 {
     static async handleInfo() {
-
+        
     }
 
     static async handlePair() {

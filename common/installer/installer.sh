@@ -159,12 +159,28 @@ function self_link_package {
     echo "|"
 }
 
-function insta {
-    display_header "| @ Self-install package (globally)..." 
-    unlink $(yarn global bin)/notipp-server
-    unlink $(yarn global bin)/notipp-client
-    ln -s $(pwd)/hdt/cli/index.js $(yarn global bin)/notipp-server
-    ln -s $(pwd)/rdt/pc-client-cli/index.js $(yarn global bin)/notipp-client
+function install_binaries {
+    display_header "| @ Installing binaries...\n" 
+    source ~/.bashrc 
+    
+    echo -e "|\t> Unlinking previous binaries, if any..."
+    if [ -L "$(yarn global bin)/notipp-server" ] ; then 
+        unlink "$(yarn global bin)/notipp-server"
+        rm -rf "$(yarn global bin)/notipp-server"
+    fi 
+    if [ -L "$(yarn global bin)/notipp-client" ] ; then 
+        unlink "$(yarn global bin)/notipp-client"
+        rm -rf "$(yarn global bin)/notipp-client"
+    fi
+
+    echo -e "|\t> Making executables..."
+    chmod +x hdt/cli/index.js 
+    chmod +x rdt/pc-client-cli/index.js
+    
+    echo -e "|\t> Linking binaries to yarn's binaries..."
+    ln -s "$(pwd)/hdt/cli/index.js" "$(yarn global bin)/notipp-server"
+    ln -s "$(pwd)/rdt/pc-client-cli/index.js" "$(yarn global bin)/notipp-client"
+
     echo "|"
 }
 

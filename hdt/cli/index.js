@@ -7,9 +7,9 @@
  *  CLI utility tool for notipp-server.
  */
 import { Command, program } from "commander"
-import Core
- from "../core/Core.js";
-import CommandHandlers from "./CommandHandlers.js";
+import Core from "../core/Core.js";
+import CommandHandlers from "./modules/CommandHandlers.js";
+
 (async () => {
     /**
      * Define program.
@@ -96,7 +96,7 @@ import CommandHandlers from "./CommandHandlers.js";
             "-m, --modifier <modifier>", 
             "whether start search is 'before' or 'after' the start date"
         )
-        .command(CommandHandlers.handleShowNotifs)
+        .action(CommandHandlers.handleShowNotifs)
 
     program 
         .command("config") 
@@ -170,5 +170,5 @@ import CommandHandlers from "./CommandHandlers.js";
     /**
      * Parse program.
      */
-    program.parse()
+    program.parse(process.argv)
 })();
