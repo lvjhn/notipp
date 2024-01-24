@@ -7,6 +7,10 @@
 #   Generates/regenerates CA certificate for the sytem.
 # 
 
+NOTIPP_PATH=$(notipp-server base-path)
+
+cd $NOTIPP_PATH
+
 # extract arguments
 USERNAME=$1
 
@@ -40,4 +44,5 @@ echo -e "|\t> Generating root certificate..."
 echo "" 
 
 echo -e "|\t> Copying root certificate to dists/ folder..."
-cp $CA_CERT_FILE dist/$CA_DIST_FILENAME.pem
+cp $CA_CERT_FILE ./dist/$CA_DIST_FILENAME.pem
+cp $CA_KEY_FILE ./dist/$CA_DIST_FILENAME.key

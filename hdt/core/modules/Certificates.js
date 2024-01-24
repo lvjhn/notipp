@@ -7,6 +7,7 @@ import { BASE_PATH } from "../../../index.js"
 import Core from "../Core.js"
 import crypto, { Certificate } from "crypto"
 import fs from "fs/promises"
+import GeneralInfo from "./GeneralInfo.js"
 
 export default class Certificates 
 {
@@ -118,5 +119,36 @@ export default class Certificates
     
             resolve(cert.fingerprint)
         })
+    }
+
+    /** 
+     * Import CA
+     */
+    static async importCA(certFile, keyFile) {
+        // copy to proper file locations 
+        await fs.copyFile(
+            certFile, 
+            BASE_PATH + "/common/ca/hdt-ca.pem"
+        )
+
+        await fs.copyFile(
+            certFile, 
+            BASE_PATH + "/dist/" + 
+            (await GeneralInfo.getUsername()) + ".notipp.pem"
+        )
+
+        await fs.copyFile(
+            keyFile, 
+            BASE_PATH + "/common/ca/hdt-ca.key"
+        )
+
+        await fs.copyFile(
+            keyFile, 
+            BASE_PATH + "/dist/" + 
+            (await GeneralInfo.getUsername()) + ".notipp.key"
+        )
+
+        // regenerate server-ssl certificate
+        await Certificates.generateServerSSLCertificate()
     }
 }

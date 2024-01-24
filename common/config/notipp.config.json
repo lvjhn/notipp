@@ -1,7 +1,7 @@
 {
     "server": {
-        "portNo": 10443,
-        "autoPair": false,
+        "portNo": "10442",
+        "autoPair": true,
         "keepAliveInterval": 1
     },
     "client": {

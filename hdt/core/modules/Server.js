@@ -9,7 +9,7 @@ import Core from "../Core.js"
 import axios from "axios"
 import ConnectionManager from "../../../common/utils/ConnectionManager.js"
 import Config from "./Config.js"
-import { execSync } from "child_process"
+import { exec, execSync } from "child_process"
 import inputPassword from "password-prompt"
 import { Agent } from "https"
 
@@ -88,15 +88,17 @@ export default class Server
      * Enable 
      */
     static async enable() {
-        return new Promise(
-            "sudo systemctl enable notipp-server", 
-            (error, stdout, stderr) => {
-                if(error) {
-                    reject(error)
-                }
-                resolve(stdout)
-            }   
-        )
+        return new Promise((resolve, reject) => {
+            exec(
+                "sudo systemctl enable notipp-server", 
+                (error, stdout, stderr) => {
+                    if(error) {
+                        reject(error)
+                    }
+                    resolve(stdout)
+                }  
+            )
+        })
     }
 
     /**

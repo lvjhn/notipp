@@ -30,6 +30,13 @@ import CommandHandlers from "./modules/CommandHandlers.js";
         .action(CommandHandlers.handleInfo)
 
     program 
+        .command("emit:notif") 
+        .description("emits notification to clients") 
+        .argument("<body>", "message body") 
+        .option("-d, --other-details", "other details for the message") 
+        .action(CommandHandlers.handleInfo)
+
+    program 
         .command("pair")
         .description("pair a client") 
         .argument(
@@ -143,10 +150,6 @@ import CommandHandlers from "./modules/CommandHandlers.js";
     program 
         .command("config") 
         .description("shows the system's configuration") 
-        .option(
-            "-k, --key <key>", 
-            "which key to show"
-        )
         .action(CommandHandlers.handleConfig)
 
     program 
@@ -156,11 +159,21 @@ import CommandHandlers from "./modules/CommandHandlers.js";
             "-k, --key <key>", 
             "the key to set"
         )
-        .command(
+        .option(
             "-v, --value <value>", 
             "the value of the key to set"
         )
         .action(CommandHandlers.handleConfigSet)
+
+        program 
+        .command("config:unset") 
+        .description("unsets a configuration value")
+        .option(
+            "-k, --key <key>", 
+            "the key to unset"
+        )
+        .action(CommandHandlers.handleConfigUnset)
+
 
     program 
         .command("enable")
@@ -201,13 +214,22 @@ import CommandHandlers from "./modules/CommandHandlers.js";
         .action(CommandHandlers.handleAutoPair)
 
     program 
-        .command("install:ca") 
-        .description("installs or replaces the CA for the current server")
-        .argument(
-            "<filepath>", 
-            "the filepath of the CA to install (relative to current directory)" 
+        .command("import:ca") 
+        .description("imports/replaces the CA for the current server")
+        .option(
+            "-k, --keyFile <file>", 
+            "absolute path to the key file" 
         )
-        .action(CommandHandlers.handleInstallCA)
+        .option(
+            "-c, --certFile <file>", 
+            "absolute for the to cert file"
+        )
+        .action(CommandHandlers.handleImportCA)
+
+    program 
+        .command("base-path") 
+        .description("gets path of notipp")
+        .action(CommandHandlers.handleBasePath)
         
     /**
      * Parse program.

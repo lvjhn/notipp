@@ -9,6 +9,10 @@
 
 
 # build certificate
+NOTIPP_PATH=$(notipp-server base-path)
+
+cd $NOTIPP_PATH
+
 CA_KEY_FILE="./common/ca/hdt-ca.key"
 CA_CERT_FILE="./common/ca/hdt-ca.pem"
 
@@ -60,6 +64,8 @@ echo -e "|\t> Generate SSL certificate's .csr file..."
    
 echo -e "|\t> Generate child certificate and sign with RootCA..." 
 SANS=$(node ./common/utils/generators/sans.js)
+
+
 openssl x509 -req -days 3650 \
     -in $SERVER_CERT_CSR_FILE \
     -CA $CA_CERT_FILE \

@@ -20,6 +20,13 @@ import Notifications from "../../core/modules/Notifications.js";
 import prompts from "prompts";
 import e from "express";
 import NotificationsViewer from "../../../common/ui/cli/presenters/NotificationsViewer.js";
+import Config from "../../core/modules/Config.js";
+import Server from "../../core/modules/Server.js";
+import Certificates from "../../core/modules/Certificates.js";
+import { cwd } from "process";
+import path from "path";
+import { stat } from "fs/promises";
+import { existsSync } from "fs";
 
 export default class CommandHandlers 
 {
@@ -527,43 +534,142 @@ export default class CommandHandlers
         process.exit()
     }
         
-    static async handleConfig(x) {
-        
+    static async handleConfig(options) {
+        const key = options.key 
+        console.log(JSON.stringify(await Config.getConfig(), null, 4))
+        process.exit()
     }
 
-    static async handleConfigSet() {
+    static async handleConfigSet(options) {
+        const key = options.key  
+        const value = options.value 
 
+        if(!key || !value) {
+            console.log("The `key` and `value` options are required.")
+            process.exit()
+        }
+
+        function set(item, path, value) {
+            let base = item; 
+            const pathTokens = path.split(".") 
+            for(let i = 0; i < pathTokens.length - 1; i++) {
+                const token = pathTokens[i]
+                base = base[token]    
+            }
+            base[pathTokens.at(-1)] = value
+        }
+
+        await Config.setConfig((item) => set(item, key, value))
+
+        console.log("@ Config set -> " + (key +  " = " + value).italic) 
+    }
+
+
+    static async handleConfigUnset(options) {
+        const key = options.key  
+
+        if(!key) {
+            console.log("The `key` options is required.")
+            process.exit()
+        }
+
+        function unset(item, path, value) {
+            let base = item; 
+            const pathTokens = path.split(".") 
+            for(let i = 0; i < pathTokens.length - 1; i++) {
+                const token = pathTokens[i]
+                base = base[token]    
+            }
+                
+            if(pathTokens.at(-1) in base) {
+                delete base[pathTokens.at(-1)]
+            } 
+            else {
+                console.log("@ Key not set.".gray)
+                process.exit()
+            }
+        }
+
+        await Config.setConfig((item) => unset(item, key))
+
+        console.log("@ Config unset -> " + (key).italic) 
     }
 
     static async handleEnable() {
-
+        await Server.enable()
+        console.log("@ Enabled on startup.")
     }
 
     static async handleDisable() {
-
+        await Server.disable()
+        console.log("@ Disabled on startup.")
     }
 
     static async handleStart() {
-
+        await Server.turnOn()
+        console.log("@ Server started.")
     }
 
     static async handleStop() {
-
+        await Server.turnOff()
+        console.log("@ Server stopped.")
     }
 
     static async handleUpdateCertificates() {
+        console.log("@ Updating CA certificates...")
+        await Certificates.generateCACertificate()
+        console.log("@ Updating SSL certificate...")
+        await Certificates.generateServerSSLCertificate()
+        console.log("@ Certificates regenerated.".bold)
+    }
+
+    static async handleAutoPair(options) {
+        if(options.disable) {
+            console.log("@ Auto-pair is now OFF.".bold) 
+            process.exit()
+        }
+
+        await Config.setConfig((config) => config.server.autoPair = true) 
+        console.log("@ Auto-pair is now ON.".bold)
+    }
+
+
+    static async handleImportCA(options) {
+        let keyFile = options.keyFile 
+        let certFile = options.certFile 
+
+        if(!keyFile && !certFile) {
+            const username = await GeneralInfo.getUsername()
+            certFile = process.cwd() + "/" + username + ".notipp.pem"
+            keyFile = process.cwd() + "/" + username + ".notipp.key"
+        }
+
+        let shouldExit = false;
+
+        if(!await existsSync(keyFile)) {
+            console.log("@ Cannot find key file  : " + keyFile.italic.bold)
+            shouldExit = true;
+        }
+
+        if(!await existsSync(certFile)) {
+            console.log("@ Cannot find cert file : " + keyFile.italic.bold)
+            shouldExit = true;
+        }
+
+        if(shouldExit) {
+            console.log("@ Missing files, aborting.".bold)
+            process.exit()
+        }
+
+        await Certificates.importCA(certFile, keyFile)
+        console.log("@ Imported CA files.".bold)
+    }
+
+    static async handleEmitNotif() {
 
     }
 
-    static async handleAutoPair() {
-
-    }
-
-    static async handleAutoPair() {
-
-    }
-
-    static async handleInstallCA() {
-
+    static async handleBasePath() {
+        console.log(BASE_PATH)
     }
 }   
