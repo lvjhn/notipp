@@ -41,8 +41,8 @@ function install {
     # self-link package 
     self_link_package
 
-    # self-install package
-    self_install_package
+    # install binaries
+    install_binaries
 
     # install os dependencies 
     install_os_dependencies 
@@ -61,6 +61,9 @@ function install {
 
     # create system service for server
     create_server_system_service
+
+    # create empty database 
+    create_empty_database
     
     # generate pairing secret
     generate_pairing_secret
@@ -156,9 +159,12 @@ function self_link_package {
     echo "|"
 }
 
-function self_install_package {
+function insta {
     display_header "| @ Self-install package (globally)..." 
-    yarn global add $(pwd) 
+    unlink $(yarn global bin)/notipp-server
+    unlink $(yarn global bin)/notipp-client
+    ln -s $(pwd)/hdt/cli/index.js $(yarn global bin)/notipp-server
+    ln -s $(pwd)/rdt/pc-client-cli/index.js $(yarn global bin)/notipp-client
     echo "|"
 }
 
@@ -260,8 +266,17 @@ function create_server_system_service {
     echo "|"
 }   
 
+function create_empty_database {
+    display_header "| @ Creating empty database...\n" 
+    touch hdt/data/database/notipp.db
+    node utils/database/create-database.js
+    echo "|"
+}
+
 function generate_pairing_secret {
+    display_header "| @ Generating pairing secret...\n" 
     node common/utils/generators/generate-pairing-secret.js
+    echo "|"
 }
 
 function finish_installation {

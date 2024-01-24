@@ -14,7 +14,7 @@ export const DATABASE_PATH =
 
 export default class Database 
 {
-    /**
+/**
      * Create connection.
      */
     static connection = knex({
