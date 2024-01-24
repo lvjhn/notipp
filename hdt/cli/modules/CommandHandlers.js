@@ -19,6 +19,7 @@ import readableDate from "../../../common/helpers/general/readableDate.js";
 import Notifications from "../../core/modules/Notifications.js";
 import prompts from "prompts";
 import e from "express";
+import NotificationsViewer from "../../../common/ui/cli/presenters/NotificationsViewer.js";
 
 export default class CommandHandlers 
 {
@@ -475,100 +476,28 @@ export default class CommandHandlers
     }
 
     static async handleShowNotifs(options) {
+        const startDate = options.startDate 
+        const modifier = options.modifier 
         const query = options.query ?? "%%"
-        const startDate = options.startDate ?? null 
-        const modifier = options.modifier ?? "before"
+        const cursor = options.cursor
 
-        async function displayForCursor(cursor) {
-            const results = 
-                await Notifications.generalSearch({
-                    jumpToDate: startDate, 
-                    modifier: modifier, 
-                    query: query,
-                    cursor: cursor
-                })
-                
-            if(results.data.length == 0) {
-                console.log("@ Reached end of data... exiting.") 
-                process.exit()
-            }
-            
-            // create display table 
-            const tableData = [
-                [
-                    "ID".bold, 
-                    "MESSAGE".bold,
-                    "CREATED-AT".bold
-                ]
-            ] 
-
-            for(let notification of results.data) {
-                const dateFormatted = 
-                    readableDate(new Date(notification.createdAt))
-
-                tableData.push([
-                    notification.id.toString().bold, 
-                    JSON.parse(notification.data).options.body, 
-                    dateFormatted.dateString.bold + "\n" + dateFormatted.timeString
-                ])
-            }
-
-            const tableConfig = {
-                columns: [
-                    {},
-                    { width: 30, wrapWord: true }
-                ]
-            }
-
-            return { 
-                nextCursor: results.meta.next,
-                tableData, 
-                tableConfig 
-            }
-        }
-
-        let cursor;
-        
-        if(modifier == "before") {
-            cursor = Infinity;
-        } 
-        else if(modifier == "after") {
-            cursor = 0
-        }
-
-        while(true) {
-            const next = await displayForCursor(cursor) 
-          
-            if(modifier == "before" && next.nextCursor > cursor) {
-                console.log("@ End of data, exiting.") 
-                process.exit()
-            } 
-            else if(modifier == "after" && next.nextCursor < cursor) {
-                console.log("@ End of data, exiting.") 
-                process.exit()
-            }
-            else {
-                console.log(table(next.tableData, next.tableConfig))
-            }
-              
-            const continuePage =    
-                await prompts({
-                    type: "toggle", 
-                    name: "value",
-                    message: "Show more?", 
-                    active: "yes", 
-                    inactive: "no",
-                    initial: true
-                })
-
-            if(continuePage.value) {
-                cursor = next.nextCursor
-                continue;
-            } else {
-                process.exit()
-            }
-        }
-
+        await NotificationsViewer.show({
+            startDate, 
+            modifier,
+            query,
+            cursor
+        }, async (cursor) => {
+            // console.log(startDate) 
+            // console.log(modifier) 
+            // console.log(query) 
+            // console.log(cursor)
+            return await Notifications.generalSearch({
+                jumpToDate: startDate, 
+                modifier: modifier, 
+                query: query,
+                cursor: cursor
+            })
+        })  
     }
 
     static async handlePruneNotifs(options) {

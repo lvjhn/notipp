@@ -38,10 +38,10 @@ export default class Notifications
                 perPage: perPage, 
                 cursor: cursor,
                 cursorModifier: (cursor, qb) => {
-                    if(cursor > 0 && modifier == "before") {
+                    if(cursor >= 0 && modifier == "before") {
                         qb = qb.where("id", "<", cursor)
                     }
-                    else if (cursor > 0 && modifier == "after") {
+                    else if (cursor >= 0 && modifier == "after") {
                         qb = qb.where("id", ">", cursor)
                     }
                     return qb
@@ -71,7 +71,13 @@ export default class Notifications
                             qb = qb.orderByRaw('strftime("%s", createdAt) ASC')
                         }
                     }
-                    qb = qb.orderByRaw('strftime("%s", createdAt) DESC')
+                    
+                    if(modifier == "before") {
+                        qb = qb.orderByRaw('strftime("%s", createdAt) DESC')
+                    } 
+                    else if(modifier == "after") {
+                        qb = qb.orderByRaw('strftime("%s", createdAt) ASC')
+                    }
                     return qb
                 }
             }) 
