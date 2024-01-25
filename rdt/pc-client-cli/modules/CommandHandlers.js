@@ -50,25 +50,26 @@ export default class CommandHandlers
     }
 
     static async handleServers(options) {
-        const hasOnlineFlag = options.hasOnlineFlag
-        const hasOfflineFlag = options.hasOfflineFlag
-        const hasUnpairedFlag = options.hasUnpairedFlag
+        const hasOnlineFlag = options.online
+        const hasOfflineFlag = options.offline
+        const hasUnpairedFlag = options.unpaired
+
 
         let servers; 
 
         if(hasOnlineFlag) {
             servers = App.state.servers.filter(
-                server => server.status == "online"
+                server => server.status == "ONLINE"
             )
         }
         else if(hasOfflineFlag) {
             servers = App.state.servers.filter(
-                server => server.status == "offline"
+                server => server.status == "OFFLINE"
             )
         }
         else if(hasUnpairedFlag) {
             servers = App.state.servers.filter(
-                server => server.status == "unpaired"
+                server => server.status == "UNPAIRED"
             )
         }
         else {
@@ -76,7 +77,7 @@ export default class CommandHandlers
         }
 
         if(servers.length == 0) {
-            console.log("@ No servers currently added.".bold.grey) 
+            console.log("@ No servers to show.".bold.grey) 
             process.exit()
         }
 
@@ -85,6 +86,18 @@ export default class CommandHandlers
         function formatStatusText(status) {
             if(status == "ADDED") {
                 return status.bold.grey
+            }
+            else if(status == "ONLINE") {
+                return status.bold.cyan
+            }
+            else if(status == "OFFLINE") {
+                return status.bold.red
+            }
+            else if(status == "UNPAIRED") {
+                return status.bold.yellow
+            }
+            else {
+                return status 
             }
         }
 
@@ -126,6 +139,9 @@ export default class CommandHandlers
                 App.state.servers.find(
                     item => item.server.id == info.data.server.id
                 )
+
+            info.data.server.ip = ip 
+            info.data.server.port = port
 
             if(!serverExists) {
                 await App.onAddServer(info.data)

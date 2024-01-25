@@ -11,6 +11,8 @@ import Config from "../../../hdt/core/modules/Config.js";
 import App from "../../common/App.js";
 import https from "https"
 import fs from "fs/promises"
+import colors from "@colors/colors"
+import ConnectionManager from "../../../common/utils/ConnectionManager.js";
 
 export default class Receiver 
 {
@@ -19,6 +21,7 @@ export default class Receiver
      */
     static eb = null;
     static sockets = {}
+    static isChangingName = {}
 
     /**
      * Methods 
@@ -83,7 +86,14 @@ export default class Receiver
             App.state.servers.slice(index, 1)
         }
         else if(event == "change:name") {
-            // ...
+            App.state.client.name = data[0]
+            console.log(data[1])
+            for(let serverId in data[1]) {
+                App.state.servers
+                   .find((item) => item.server.id == serverId)
+                   .mustChangeName = true
+            }
+            App.saveData()
         }
     }
 
@@ -105,7 +115,7 @@ export default class Receiver
         const ip = server.server.ip 
         const port = server.server.port 
 
-        const address = `wss://${ip}:${port}/`; 
+        const address = `wss://${ip}:${port}/?id=4321&secret=1234`; 
 
         const agent = new https.Agent({
             ca: (await fs.readFile("./common/ca/hdt-ca.pem")).toString()
@@ -120,6 +130,10 @@ export default class Receiver
                 console.error(error)
                 clearInterval(createSocketInt)
                 clearInterval(socket.refreshInt)
+                
+                server.status = "OFFLINE"
+                App.saveData() 
+
                 reconnect()
             })
 
@@ -129,21 +143,29 @@ export default class Receiver
 
                 clearInterval(createSocketInt)
                 Receiver.sockets[serverId] = socket
+                
+                server.status = "ONLINE"
+                App.saveData() 
+
+                console.log("@ Connected to: " + server.server.hostname.bold)
 
                 socket.refreshInt = setInterval(() => { 
                     socket.send("keep:alive")
                 }, keepAliveInterval)
-
             })
 
             socket.on("message", async (message) => {
-                await Receiver.handleSocketMessage(message)
+                await Receiver.handleSocketMessage(server, socket, message)
             })
 
             socket.on("close", async () => {
                 // console.log("@ Disconnected...")
                 clearInterval(createSocketInt)
                 clearInterval(socket.refreshInt)
+
+                server.status = "OFFLINE"
+                App.saveData() 
+
                 reconnect()
             })
         }   
@@ -163,6 +185,28 @@ export default class Receiver
         socket.close()
     }
 
-    static async handleSocketMessage(message) {
+    static async handleSocketMessage(server, socket, message) {
+        if(message == "keep:alive") {
+            if(server.mustChangeName) {
+                if(!(server.server.id in Receiver.isChangingName)) {
+                    Receiver.isChangingName[server.server.id] = true 
+                    const client = 
+                        await ConnectionManager.useHttpClient({
+                            ip: server.server.ip, 
+                            port: server.server.port,
+                            clientId: App.state.client.id,
+                            clientSecret: App.state.client.secret
+                        })
+
+                    await client.put("/clients/name", {
+                        name: App.state.client.name
+                    }) 
+
+                    delete Receiver.isChangingName[server.server.id]
+                    server.mustChangeName = false
+                    Receiver.eb.publish(["changed:name", server])
+                }
+            }
+        }
     }
 }

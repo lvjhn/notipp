@@ -34,7 +34,10 @@ export default class ConnectionManager
                     axios.create({
                         baseURL: address,
                         httpsAgent: new Agent({
-                            ca: (await fs.readFile("./common/ca/hdt-ca.pem")).toString()
+                            ca: (
+                                await fs.readFile(
+                                    BASE_PATH + "/common/ca/hdt-ca.pem")
+                                ).toString()
                         })
                     })
                 

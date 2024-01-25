@@ -45,6 +45,15 @@ export default class App
             console.log("@ Warning: Cannot connect to event bus.")
         }
 
+        // receive events 
+        App.eb.subscribe((event) => {
+            if(event[0] == "changed:name") {
+                App.state.servers 
+                   .find((item) => item.server.id == event[1].server.id)
+                   .mustChangeName = false
+            }
+        })
+
         // load data
         await App.loadData()
     }
@@ -122,11 +131,10 @@ export default class App
 
     static async onChangeName(name)  {
         App.state.client.name = name;
+        const toChange = {}
         
         for(let server of App.state.servers) {
             console.log("@ Updating name for [" + server.server.hostname + "]")
-            server.mustChangeName = true;  
-
             try {
                 const client = 
                     await ConnectionManager.useHttpClient({
@@ -147,11 +155,12 @@ export default class App
                     "[" + server.server.hostname + "] : " +
                     "Postponed."
                 )
+                toChange[server.server.id] = true
             }
         }
 
         await App.saveData()
 
-        App.eb && App.eb.publish("change:name", name)
+        App.eb && App.eb.publish(["change:name", App.state.client.name, toChange])
     }
 }

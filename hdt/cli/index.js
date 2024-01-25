@@ -8,6 +8,7 @@
  */
 import { Command, program } from "commander"
 import CommandHandlers from "./modules/CommandHandlers.js";
+import GeneralInfo from "../core/modules/GeneralInfo.js";
 
 (async () => {
     /**

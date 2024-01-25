@@ -661,7 +661,7 @@ export default class CommandHandlers
     }
 
     static async handleEmitNotif() {
-
+        
     }
 
     static async handleBasePath() {

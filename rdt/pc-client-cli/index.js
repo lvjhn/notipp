@@ -39,15 +39,15 @@ import App from "../common/App.js"
         .command("servers")
         .description("shows currently added servers")
         .option(
-            "--offline",
+            "-d, --offline",
             "show offline servers only"
         )
         .option(
-            "--online",
+            "-u, ---online",
             "show online servers only"
         )
         .option(
-            "--unpaired", 
+            "-t, --unpaired", 
             "show unpaired servers only"
         )
         .action(CommandHandlers.handleServers)

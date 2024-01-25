@@ -110,26 +110,9 @@ export default class Server
         })
 
         Server.wsServer.on('connection', async (socket) => {
+            await fs.writeFile("out", JSON.stringify(socket, null, 4))
             console.log("\t> @ New WS connection...")
-            
-            socket.on('error', console.error);
-            
-            socket.on('message', async (message) => {
-                try {
-                    message = JSON.parse(message) 
-                } catch(e) {
-                    message = message.toString()
-                }
-
-                await WsController.receiveMessage(message)
-            });
-
-            const keepAliveInterval = 
-                (await Config.getConfig()).server.keepAliveInterval * 1000
-
-            setInterval(() => {
-                socket.send("keep:alive")
-            }, keepAliveInterval)
+            await WsController.handleConnection(socket)
         });
     
         // ----- start listening on port
