@@ -203,6 +203,9 @@ function install_os_dependencies {
         emphasize "| > Installing 'imagemagick'...\n"
         sudo apt install imagemagick
 
+        emphasize "| > Installing 'redis'...\n"
+        sudo apt install redis
+
     elif [ $OS == "fedora" ] ; then 
         emphasize "| > Installing 'openssl'...\n"
         sudo dnf install openssl
@@ -215,6 +218,9 @@ function install_os_dependencies {
         
         emphasize "| > Installing 'imagemagick'...\n"
         sudo dnf install imagemagick
+
+        emphasize "| > Installing 'redis'...\n"
+        sudo dnf install redis
     fi  
     echo "|"
 }
@@ -300,17 +306,7 @@ function generate_pairing_secret {
 
 function install_node_modules_folders {
     display_header "| @ Installing node_modules/ folder of components...\n" 
-   
-    echo -e "|\t> Installing for Server-GUI..." 
-    cd hdt/gui 
-    yarn 
-    cd ../../ 
 
-    echo -e "|\t> Installing for PC-Client-GUI..." 
-    cd rdt/pc-client-gui
-    yarn 
-    cd ../../  
-    
     echo -e "|\t> Installing for Mobile-Client-PWA..." 
     cd rdt/mobile-client-pwa
     yarn 

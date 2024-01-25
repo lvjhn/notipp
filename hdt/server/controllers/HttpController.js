@@ -65,6 +65,11 @@ export default class HttpController
             Auth.authorizeServer, 
             HttpController.postUnpair
         )
+
+        app.get("/connected-clients",
+            Auth.authorizeServer, 
+            HttpController.getConnectedClients
+        )
     }
 
     static async get(req, res) {
@@ -180,5 +185,9 @@ export default class HttpController
             }
         }
         res.send("OK")
+    }
+
+    static async getConnectedClients(req, res) {
+        res.send(Object.keys(WsController.connections))
     }
 }

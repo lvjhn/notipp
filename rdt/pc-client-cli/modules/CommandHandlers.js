@@ -435,8 +435,7 @@ export default class CommandHandlers
     }
 
     static async handleClearData() {
-        console.log(App.storage)
-        await App.storage.clear()
+        await App.storage.setItem("HOST-CLIENT-STATE", "{}")
         await App.saveData()
         console.log("@ Cleared data.".bold.cyan)
         process.exit()

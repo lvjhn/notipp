@@ -14,6 +14,7 @@ import fs from "fs/promises"
 import colors from "@colors/colors"
 import ConnectionManager from "../../../common/utils/ConnectionManager.js";
 import { execSync } from "child_process";
+import { BASE_PATH } from "../../../index.js";
 
 export default class Receiver 
 {
@@ -123,7 +124,7 @@ export default class Receiver
         const address = `wss://${ip}:${port}/?id=${id}&secret=${secret}`; 
 
         const agent = new https.Agent({
-            ca: (await fs.readFile("./common/ca/hdt-ca.pem")).toString()
+            ca: (await fs.readFile(BASE_PATH + "/common/ca/hdt-ca.pem")).toString()
         }) 
 
         let createSocketInt;
@@ -155,7 +156,7 @@ export default class Receiver
                 server.status = "ONLINE"
                 App.saveData() 
 
-                console.log("@ Connected to: " + server.server.hostname.bold)
+                console.log("@ Connected to: " + address)
 
                 socket.refreshInt = setInterval(() => { 
                     socket.send("keep:alive")
@@ -197,6 +198,7 @@ export default class Receiver
     }
 
     static async handleSocketMessage(server, socket, message) {
+        console.log(message.toString())
         
         if(message == "keep:alive") {
             if(server.mustChangeName) {
@@ -228,8 +230,6 @@ export default class Receiver
 
         else if(typeof message == "object") {
             message = JSON.parse(message) 
-
-            console.log("hello")
 
             if(message.type == "notification") {
                 execSync(

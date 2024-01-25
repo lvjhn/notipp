@@ -30,5 +30,9 @@ fs.writeFileSync(
             /<<TARGET_MODULE>>/g, 
             BASE_PATH + "/rdt/receiver/index.js"
         )
+        .replace(
+            /<<USERNAME>>/g, 
+            execSync("echo $USER").toString().trim()
+        )
 )
 

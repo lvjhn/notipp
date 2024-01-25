@@ -5,12 +5,12 @@
  *  Centralized file for app. 
  */
 
-import FileStorage from "../../common/helpers/file-storage/FileStorage.js"
 import generateDeviceName from "../../common/helpers/general/generateDeviceName.js";
 import generateSecret from "../../common/helpers/general/generateSecret.js";
 import SimpleEventBus from "../../common/helpers/simple-event-bus/SimpleEventBus.js";
 import ConnectionManager from "../../common/utils/ConnectionManager.js";
 import Config from "../../hdt/core/modules/Config.js";
+import DataItems from "../../hdt/data/DataItems.js";
 import { BASE_PATH } from "../../index.js";
 import fs from "fs/promises"
 
@@ -47,7 +47,6 @@ export default class App
 
         // receive events 
         App.eb.subscribe((event) => {
-            console.log("@ App.init() <-- " + event[0])
 
             if(event[0] == "changed:name") {
                 App.state.servers 
@@ -70,22 +69,22 @@ export default class App
 
     static async saveData() {
         if(App.manualSave) {
-            await App.storage.setItem(
-                "state", JSON.stringify(App.state, null, 4)
+            await DataItems.setItem(
+                "HOST-CLIENT-STATE", JSON.stringify(App.state, null, 4)
             )
         }
     }
 
     static async loadData() {
         if(!App.storage) {
-            App.storage = await FileStorage.from("main")
+            App.storage = DataItems
         }
 
-        if(!await App.storage.hasItem("state")) {
+        if(!await DataItems.hasItem("HOST-CLIENT-STATE")) {
             await App.saveData()
         }
 
-        App.state = JSON.parse(await App.storage.getItem("state"))
+        App.state = JSON.parse(await App.storage.getItem("HOST-CLIENT-STATE"))
     }
 
     static async turnOn() {

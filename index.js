@@ -10,4 +10,8 @@ export const BASE_PATH =
 
 export const randomGen = 
     new Chance()
+
+export default {
+    randomGen
+}
     
