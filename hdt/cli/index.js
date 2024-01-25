@@ -7,7 +7,6 @@
  *  CLI utility tool for notipp-server.
  */
 import { Command, program } from "commander"
-import Core from "../core/Core.js";
 import CommandHandlers from "./modules/CommandHandlers.js";
 
 (async () => {
@@ -17,7 +16,7 @@ import CommandHandlers from "./modules/CommandHandlers.js";
     program
         .name("notipp-server")
         .description("CLI utility tool for notipp-server") 
-        .version(await Core.GeneralInfo.getNotippVersion()) 
+        .version(await GeneralInfo.getNotippVersion()) 
         
     /**
      * Create commands.

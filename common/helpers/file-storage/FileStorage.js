@@ -14,6 +14,12 @@ export default class FileStorage
         
     }
 
+    static async from(context) {
+        const storage = new FileStorage()
+        storage.setContext(context)
+        return storage
+    }
+
     async setContext(context) {
         const path = 
             BASE_PATH + "/common/helpers/file-storage/data/" +

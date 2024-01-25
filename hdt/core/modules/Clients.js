@@ -5,7 +5,7 @@
 import generateSecret from "../../../common/helpers/general/generateSecret.js";
 import DataItems from "../../data/DataItems.js";
 import Database from "../../data/Database.js";
-import Core from "../Core.js";
+import Config from "./Config.js";
 import GeneralInfo from "./GeneralInfo.js";
 import Queries from "./Queries.js";
 
@@ -16,7 +16,7 @@ export default class Clients
      */
     static async add(details, extras) {
         // handle auto-pairing 
-        const autoPair = (await Core.Config.getConfig()).server.autoPair
+        const autoPair = (await Config.getConfig()).server.autoPair
        
         if(autoPair) {
             details.isPaired = 1; 

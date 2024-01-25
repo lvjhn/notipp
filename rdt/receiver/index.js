@@ -1,15 +1,18 @@
-import http from "http"
+import SimpleEventBus from "../../common/helpers/simple-event-bus/SimpleEventBus.js";
+import Config from "../../hdt/core/modules/Config.js";
 
-const hostname = '0.0.0.0'; // listen on all ports
-const port = 3311;
+// create event bus
+const ebPort = (await Config.getConfig()).client.eventBusPort;
+const eb = new SimpleEventBus("127.0.0.1", ebPort, {
+    onListen: () => {
+        console.log("@ Server bus is listening on port no: " + ebPort)
+    }
+}) 
 
-http.createServer((req, res) => {
+eb.host()
 
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Hello World');
-
-}).listen(port, hostname, () => {
-
-  console.log(`Server running at http://${hostname}:${port}/`);
-
-});
+// listen for messages 
+eb.connect()
+eb.subscribe((message) => {
+    console.log(message)
+})

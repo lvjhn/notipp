@@ -494,10 +494,6 @@ export default class CommandHandlers
             query,
             cursor
         }, async (cursor) => {
-            // console.log(startDate) 
-            // console.log(modifier) 
-            // console.log(query) 
-            // console.log(cursor)
             return await Notifications.generalSearch({
                 jumpToDate: startDate, 
                 modifier: modifier, 
@@ -534,9 +530,8 @@ export default class CommandHandlers
         process.exit()
     }
         
-    static async handleConfig(options) {
-        const key = options.key 
-        console.log(JSON.stringify(await Config.getConfig(), null, 4))
+    static async handleConfig() {
+        console.log(JSON.stringify((await Config.getConfig()).server, null, 4))
         process.exit()
     }
 
@@ -559,7 +554,7 @@ export default class CommandHandlers
             base[pathTokens.at(-1)] = value
         }
 
-        await Config.setConfig((item) => set(item, key, value))
+        await Config.setConfig((config) => set(config["server"], key, value))
 
         console.log("@ Config set -> " + (key +  " = " + value).italic) 
     }
@@ -671,5 +666,6 @@ export default class CommandHandlers
 
     static async handleBasePath() {
         console.log(BASE_PATH)
+        process.exit()
     }
 }   

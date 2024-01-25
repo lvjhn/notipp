@@ -4,7 +4,6 @@
 
 import { exec } from "child_process"
 import { BASE_PATH } from "../../../index.js"
-import Core from "../Core.js"
 import crypto, { Certificate } from "crypto"
 import fs from "fs/promises"
 import GeneralInfo from "./GeneralInfo.js"
@@ -67,7 +66,7 @@ export default class Certificates
                 "/generators/generate-ca-certificate.sh"
 
             const username =
-                await Core.GeneralInfo.getUsername()
+                await GeneralInfo.getUsername()
 
             exec(`bash ${UTIL_PATH} ${username}`, (error, stdout, stderr) => {
                 if(error) {

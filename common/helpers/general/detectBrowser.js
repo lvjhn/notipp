@@ -10,7 +10,8 @@ export const BROWSER_CHAIN = [
     "opera",
     "safari", 
     "firefox",
-    "chrome"
+    "chrome",
+    "notipp-client.pc-cli"
 ]
 
 /* 
