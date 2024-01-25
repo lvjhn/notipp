@@ -25,7 +25,6 @@ import App from "../common/App.js"
      * Load App
      */
     await App.init()
-    await App.loadData()
         
     /**
      * Create commands.

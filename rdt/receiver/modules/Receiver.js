@@ -61,7 +61,7 @@ export default class Receiver
 
         if(event == "add:server") {
             App.state.servers.push(data[0])
-            await Receiver.createSocket(targetId)
+            await Receiver.createSocket(data[1])
         }
         else if (event == "update:server") {
             const targetId = data[0]
@@ -103,6 +103,7 @@ export default class Receiver
     }
 
     static async initSockets() {
+        console.log(App.state.servers)
         for(let server of App.state.servers) {
             this.createSocket(server.server.id)
         }
@@ -144,6 +145,7 @@ export default class Receiver
             })
 
             socket.on("open", async () => {
+                console.log("@ Connected to: " + address)
                 const keepAliveInterval = 
                     (await Config.getConfig()).client.keepAliveInterval * 1000
 
@@ -165,6 +167,7 @@ export default class Receiver
             })
 
             socket.on("close", async () => {
+                console.log("@ Disconnected from: " + address)
                 // console.log("@ Disconnected...")
                 clearInterval(createSocketInt)
                 clearInterval(socket.refreshInt)

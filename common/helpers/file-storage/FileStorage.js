@@ -71,6 +71,8 @@ export default class FileStorage
     }
 
     async clear() {
+        console.log("Clearing data...")
+        
         await this.lock.acquireAsync()
 
         await fs.writeFile(this.storagePath, "{}")
