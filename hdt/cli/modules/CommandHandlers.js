@@ -650,8 +650,7 @@ export default class CommandHandlers
     }
 
     static async handleRestart() {
-        execSync("sudo systemctl stop notipp-server") 
-        execSync("sudo systemctl start notipp-server") 
+        execSync("sudo systemctl restart notipp-server") 
         console.log("@ Restarted".bold.green)
         process.exit()
     }

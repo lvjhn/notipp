@@ -65,6 +65,10 @@ export default class Server
         // setup cors 
         Server.app.use(cors())
 
+        // setup view engine 
+        Server.app.set('view engine', 'ejs')
+        Server.app.set('views', BASE_PATH + "/hdt/server/views")
+
     }
 
     /** 

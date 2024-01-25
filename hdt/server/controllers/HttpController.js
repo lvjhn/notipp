@@ -22,6 +22,10 @@ export default class HttpController
      * Setup routes.
      */
     static async setupRoutes(app) {
+        app.get("/",
+            HttpController.get
+        )
+
         app.get("/info", 
             HttpController.getInfo
         )
@@ -61,6 +65,10 @@ export default class HttpController
             Auth.authorizeServer, 
             HttpController.postUnpair
         )
+    }
+
+    static async get(req, res) {
+        res.render("index")
     }
 
     static async getInfo(req, res) {
