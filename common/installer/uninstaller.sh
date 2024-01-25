@@ -14,6 +14,10 @@ display_header "### Uninstalling... ###\n"
 # remove node modules folder
 emphasize "> Removing node_modules folder...\n" 
 rm -rf node_modules/ 
+rm -rf hdt/gui/node_modules
+rm -rf rdt/pc-client-gui/node_modules 
+rm -rf rft/mobile-client-pwa/node_modules
+ 
 
 # clear dist/* folder
 emphasize "> Removing node_modules folder...\n" 

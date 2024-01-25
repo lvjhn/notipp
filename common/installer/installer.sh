@@ -68,6 +68,9 @@ function install {
     # generate pairing secret
     generate_pairing_secret
 
+    # install components' node modules folder 
+    install_node_modules_folders
+
     # finish installation 
     finish_installation
 
@@ -292,6 +295,27 @@ function create_empty_database {
 function generate_pairing_secret {
     display_header "| @ Generating pairing secret...\n" 
     node common/utils/generators/generate-pairing-secret.js
+    echo "|"
+}
+
+function install_node_modules_folders {
+    display_header "| @ Installing node_modules/ folder of components...\n" 
+   
+    echo -e "|\t> Installing for Server-GUI..." 
+    cd hdt/gui 
+    yarn 
+    cd ../../ 
+
+    echo -e "|\t> Installing for PC-Client-GUI..." 
+    cd rdt/pc-client-gui
+    yarn 
+    cd ../../  
+    
+    echo -e "|\t> Installing for Mobile-Client-PWA..." 
+    cd rdt/mobile-client-pwa
+    yarn 
+    cd ../../
+
     echo "|"
 }
 
