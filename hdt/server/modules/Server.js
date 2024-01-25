@@ -17,6 +17,7 @@ import colors from  "@colors/colors"
 import cors from "cors"
 import bodyParser from "body-parser";
 import GeneralInfo from "../../core/modules/GeneralInfo.js";
+import Config from "../../core/modules/Config.js";
 
 export default class Server 
 {
@@ -95,22 +96,42 @@ export default class Server
 
         await Server.setupPlugins()
         await Server.setupRoutes()
-    
-        // ----- create websocket server
-        console.log("\t> Creating websocket server...")
-        Server.wsServer = new WebSocketServer({ noServer: true })
-        Server.app.on("upgrade", (request, socket, head) => {
-            Server.app.handleUpgrade(request, socket, head, (websocket) => {
-                Server.wsServer.emit("connection", websocket, request)  
-            })
-        })
         
         // ----- create https server
         console.log("\t> Creating https server...")
         Server.httpsServer = 
             https.createServer(await Server.loadCertificates(), Server.app)
-
+    
+        // ----- create websocket server
+        console.log("\t> Creating websocket server...")
         
+        Server.wsServer = new WebSocketServer({ 
+            server: Server.httpsServer   
+        })
+
+        Server.wsServer.on('connection', async (socket) => {
+            console.log("\t> @ New WS connection...")
+            
+            socket.on('error', console.error);
+            
+            socket.on('message', async (message) => {
+                try {
+                    message = JSON.parse(message) 
+                } catch(e) {
+                    message = message.toString()
+                }
+
+                await WsController.receiveMessage(message)
+            });
+
+            const keepAliveInterval = 
+                (await Config.getConfig()).server.keepAliveInterval * 1000
+
+            setInterval(() => {
+                socket.send("keep:alive")
+            }, keepAliveInterval)
+        });
+    
         // ----- start listening on port
         console.log("\t> Starting listener...")
         const portNo  = (await Core.Config.getConfig()).server.portNo; 

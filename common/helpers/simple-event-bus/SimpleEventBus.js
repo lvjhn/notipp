@@ -30,7 +30,7 @@ export default class SimpleEventBus
         })  
 
         this.server.on("connection", (socket) => {
-            console.log("@ New connection.")
+            console.log("@ SimpleEventBus: New connection detected.")
 
             self.subscribers.push(socket)
 

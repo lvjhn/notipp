@@ -174,6 +174,7 @@ export default class Server
             if(event == "change" &&  prevMessage != currMessage) {
                 console.log("@ <-- Received " + currMessage + " message...")
                 prevMessage = currMessage
+                
                 if(await Server.shouldOn()) {
                     await ServerClass.start() 
                 }

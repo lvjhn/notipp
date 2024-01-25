@@ -114,8 +114,6 @@ export default class App
         const index = App.state.servers.indexOf(item)
         
         App.state.servers.splice(index, 1)  
-        
-        App.eb && App.eb.publish()
 
         await App.saveData() 
         

@@ -12,7 +12,7 @@ export default class WsController
     /** 
      * Receive messages. 
      */
-    static async receiveMessage() {
-        
+    static async receiveMessage(message) {
+       
     }
 }
