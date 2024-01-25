@@ -47,6 +47,8 @@ export default class App
 
         // receive events 
         App.eb.subscribe((event) => {
+            console.log("@ App.init() <-- " + event[0])
+
             if(event[0] == "changed:name") {
                 App.state.servers 
                    .find((item) => item.server.id == event[1].server.id)
@@ -57,7 +59,7 @@ export default class App
             else if(event[0] == "should:pair") {
                 App.state.servers 
                    .find((item) => item.server.id == event[1].server.id)
-                   .status = "UNPAIRED"
+                   .status = "UNPAIRED" 
                 App.saveData()
             }
         })

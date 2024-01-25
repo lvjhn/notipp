@@ -35,6 +35,11 @@ export default class WsController
         // check if client should pair
         const client = await Clients.get(id) 
 
+        if(client == null) {
+            socket.close()
+            return
+        }
+
         if(client.isPaired == 0) {
             socket.send("should:pair") 
             socket.close()

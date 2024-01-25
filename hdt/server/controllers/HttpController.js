@@ -14,6 +14,7 @@ import Auth from "../modules/Auth.js"
 import Queries from "../../core/modules/Queries.js"
 import Notifications from "../../core/modules/Notifications.js"
 import WsController from "./WsController.js"
+import Database from "../../data/Database.js"
 
 export default class HttpController 
 {   
@@ -42,6 +43,7 @@ export default class HttpController
         )
         
         app.post("/emit/notification", 
+            Auth.authorizeServer,
             HttpController.postEmitNotification
         )
         
@@ -146,6 +148,29 @@ export default class HttpController
             }
         }
     
+        res.send("OK")
+    }
+
+    static async postEmitNotification(req, res) {
+
+        // create notification 
+        const data = {
+            data: req.body.details, 
+            createdAt: (new Date()).toISOString()
+        }
+
+        await Database.connection("Notifications")
+            .insert(data)
+
+        // broadcast notification
+        for(let clientId in WsController.connections) {
+            for(let connection of WsController.connections[clientId]) {
+                connection.send(JSON.stringify({
+                    "type" : "notification",
+                    "details" : data
+                }))
+            }
+        }
         res.send("OK")
     }
 }

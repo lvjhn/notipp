@@ -13,6 +13,7 @@ import https from "https"
 import fs from "fs/promises"
 import colors from "@colors/colors"
 import ConnectionManager from "../../../common/utils/ConnectionManager.js";
+import { execSync } from "child_process";
 
 export default class Receiver 
 {
@@ -134,7 +135,9 @@ export default class Receiver
                 clearInterval(createSocketInt)
                 clearInterval(socket.refreshInt)
                 
-                server.status = "OFFLINE"
+                if(server.status != "UNPAIRED") {
+                    server.status = "OFFLINE"
+                }
                 App.saveData() 
 
                 reconnect()
@@ -166,7 +169,9 @@ export default class Receiver
                 clearInterval(createSocketInt)
                 clearInterval(socket.refreshInt)
 
-                server.status = "OFFLINE"
+                if(server.status != "UNPAIRED") {
+                    server.status = "OFFLINE"
+                }
                 App.saveData() 
 
                 reconnect()
@@ -189,7 +194,8 @@ export default class Receiver
     }
 
     static async handleSocketMessage(server, socket, message) {
-
+        console.log("@ (" + (new Date()).getTime() + ") Receiver <-- " + message)
+        
         if(message == "keep:alive") {
             if(server.mustChangeName) {
                 if(!(server.server.id in Receiver.isChangingName)) {
@@ -216,6 +222,19 @@ export default class Receiver
         else if(message == "should:pair") {
             server.status = "UNPAIRED"
             Receiver.eb.publish(["should:pair", server])
+        }
+
+        else if(typeof message == "object") {
+            message = JSON.parse(message) 
+
+            console.log("hello")
+
+            if(message.type == "notification") {
+                execSync(
+                    `notify-send ` + 
+                    `"${message.details.data.title}" ` +
+                    `"${message.details.data.options.body}"`)
+            }
         }
     }
 }

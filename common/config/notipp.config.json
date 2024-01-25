@@ -1,16 +1,11 @@
 {
     "server": {
         "portNo": 10443,
-        "autoPair": true,
+        "autoPair": false,
         "keepAliveInterval": 1
     },
     "client": {
         "keepAliveInterval": 1,
-        "eventBusPort" : 11443,
-        "notificationScript": {
-            "common": "common",
-            "pcGUI": "default.pc-gui",
-            "pcCLI": "default.pc-cli"
-        }
+        "eventBusPort" : 11443
     }
 }
