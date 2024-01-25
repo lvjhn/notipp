@@ -51,6 +51,14 @@ export default class App
                 App.state.servers 
                    .find((item) => item.server.id == event[1].server.id)
                    .mustChangeName = false
+                App.saveData()
+            }
+
+            else if(event[0] == "should:pair") {
+                App.state.servers 
+                   .find((item) => item.server.id == event[1].server.id)
+                   .status = "UNPAIRED"
+                App.saveData()
             }
         })
 

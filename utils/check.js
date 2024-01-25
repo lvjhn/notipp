@@ -69,35 +69,38 @@ async function checkQueries() {
 }
 
 async function checkClients() {
-    console.log("All             : " + (await Clients.getAll()).length)
-    console.log("Unpaired        : " + (await Clients.getUnpaired()).length)
-    console.log("Paired          : " + (await Clients.getPaired()).length)
-    // console.log("Disconnected   : " + (await Clients.getDisconnected()).length)
-    // console.log("Connected      : " + (await Clients.getConnected()).length)
+    // console.log("All             : " + (await Clients.getAll()).length)
+    // console.log("Unpaired        : " + (await Clients.getUnpaired()).length)
+    // console.log("Paired          : " + (await Clients.getPaired()).length)
+    // // console.log("Disconnected   : " + (await Clients.getDisconnected()).length)
+    // // console.log("Connected      : " + (await Clients.getConnected()).length)
 
-    console.log("Is Paired (T)   : " + (await Clients.isPaired("d2482477-78ec-5ed7-90c9-bfa325f67fb3")))
-    console.log("Is Paired (F)   : " + (await Clients.isPaired("1234")))
-    console.log("Is Paired (F)   : " + (await Clients.isPaired("9f5142d5-6003-5910-a8a3-52a910a41fff")))
+    // console.log("Is Paired (T)   : " + (await Clients.isPaired("d2482477-78ec-5ed7-90c9-bfa325f67fb3")))
+    // console.log("Is Paired (F)   : " + (await Clients.isPaired("1234")))
+    // console.log("Is Paired (F)   : " + (await Clients.isPaired("9f5142d5-6003-5910-a8a3-52a910a41fff")))
 
-    // await Clients.pair("9f5142d5-6003-5910-a8a3-52a910a41fff")
-    // await Clients.unpair("9f5142d5-6003-5910-a8a3-52a910a41fff")
-    // await Clients.pairAll()
-    // await Clients.unpairAll()
+    // // await Clients.pair("9f5142d5-6003-5910-a8a3-52a910a41fff")
+    // // await Clients.unpair("9f5142d5-6003-5910-a8a3-52a910a41fff")
+    // // await Clients.pairAll()
+    // // await Clients.unpairAll()
 
-    console.log(".countUnpaired()   : " + (await Clients.countUnpaired()))
-    console.log(".countPaired()     : " + (await Clients.countPaired()))
-    // console.log(".countDisconnected() : " + (await Clients.countConnected()))
-    // console.log(".countConnected()   : " + (await Clients.countConnected()))
-    console.log(".countAll()        : " + (await Clients.countAll()))
+    // console.log(".countUnpaired()   : " + (await Clients.countUnpaired()))
+    // console.log(".countPaired()     : " + (await Clients.countPaired()))
+    // // console.log(".countDisconnected() : " + (await Clients.countConnected()))
+    // // console.log(".countConnected()   : " + (await Clients.countConnected()))
+    // console.log(".countAll()        : " + (await Clients.countAll()))
 
-    console.log("Exists (T)         : " + (await Clients.exists("9f5142d5-6003-5910-a8a3-52a910a41fff")))
-    console.log("Exists (F)         : " + (await Clients.exists("1234")))
+    // console.log("Exists (T)         : " + (await Clients.exists("9f5142d5-6003-5910-a8a3-52a910a41fff")))
+    // console.log("Exists (F)         : " + (await Clients.exists("1234")))
 
-    // await Clients.remove("9f5142d5-6003-5910-a8a3-52a910a41fff")
-    // await Clients.removeAll() 
+    // // await Clients.remove("9f5142d5-6003-5910-a8a3-52a910a41fff")
+    // // await Clients.removeAll() 
+
+    await Clients.setConnectedStatus("75c35894-e74a-48d3-af37-f41cea9df9b3")
 }
 
 
 (async () => {  
-    await checkServer() 
+    await checkClients() 
+    process.exit()
 })()

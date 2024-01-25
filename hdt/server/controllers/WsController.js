@@ -5,6 +5,8 @@
  *  Defines handlers for incoming WebSocket events. 
  */
 
+import parseQuery from "../../../common/helpers/general/parseQS.js";
+import Clients from "../../core/modules/Clients.js";
 import Config from "../../core/modules/Config.js";
 
 export default class WsController 
@@ -14,7 +16,39 @@ export default class WsController
     /**
      * Handle incoming connections. 
      */
-    static async handleConnection(socket) {
+    static async handleConnection(socket, request) {
+        // get credentials
+        const query = parseQuery(request.url.substring(2)) 
+
+        const id = query.id 
+        const secret = query.secret 
+
+        try {
+            await Clients.authorize(id, secret) 
+        } catch(e) {
+            socket.close() 
+        }
+
+        // set connected status of client 
+        await Clients.setConnectedStatus(id)
+
+        // check if client should pair
+        const client = await Clients.get(id) 
+
+        if(client.isPaired == 0) {
+            socket.send("should:pair") 
+            socket.close()
+        }
+
+        console.log("\t> Client connected...")
+
+        // add to connections list 
+        if(!(id in WsController.connections)) {
+            WsController.connections[id] = [] 
+        }
+        
+        WsController.connections[id].push(socket)
+
         // handle errors
         socket.on('error', console.error); 
 
@@ -28,6 +62,17 @@ export default class WsController
 
             await WsController.receiveMessage(message)
         });
+
+        // on close 
+        socket.on("close", async (socket) => {
+            const index = WsController.connections[id].indexOf(socket)
+            WsController.connections[id].slice(index)
+
+            console.log("\t> Client disconnected...")
+
+            // set disconnected status of client 
+            await Clients.setDisconnectedStatus(id)
+        })
 
         // keep socket alive
         await WsController.keepAlive(socket)

@@ -25,8 +25,10 @@ import Server from "../../core/modules/Server.js";
 import Certificates from "../../core/modules/Certificates.js";
 import { cwd } from "process";
 import path from "path";
-import { stat } from "fs/promises";
+import { readFile, stat } from "fs/promises";
 import { existsSync } from "fs";
+import axios from "axios";
+import { Agent } from "https";
 
 export default class CommandHandlers 
 {
@@ -144,7 +146,7 @@ export default class CommandHandlers
 
         // check if there is a client to pair 
         if(await Clients.countUnpaired() == 0) {
-            console.log("@ Nothing to pair. All clients are paired.")
+            console.log("@ Nothing to pair. All clients are paired.".bold.grey)
             process.exit();
             return;
         }
@@ -254,7 +256,7 @@ export default class CommandHandlers
 
         // check if there is a client to pair 
         if(await Clients.countPaired() == 0) {
-            console.log("@ Nothing to unpair. All clients are unpaired.")
+            console.log("@ Nothing to unpair. All clients are unpaired.".bold.grey)
             process.exit();
             return;
         }
@@ -329,6 +331,22 @@ export default class CommandHandlers
         }
 
         await Clients.unpair(targetId) 
+        const portNo = (await Config.getConfig()).server.portNo 
+        await axios.post(
+            "https://127.0.0.1:" + portNo + "/unpair", 
+            {
+                id: targetId
+            },
+            {
+                httpsAgent: new Agent({
+                    ca: await GeneralInfo.getCACert()
+                }),
+                headers: {
+                    "server-secret" : await GeneralInfo.getServerSecret()
+                }
+            }
+        ) 
+
         const name = (await Clients.get(targetId)).name
 
         console.log(
@@ -344,7 +362,7 @@ export default class CommandHandlers
 
         // check if there is a client to pair 
         if(await Clients.countAll() == 0) {
-            console.log("@ Nothing to remove. No clients found.")
+            console.log("@ Nothing to remove. No clients found.".bold.grey)
             process.exit();
             return;
         }

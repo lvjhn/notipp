@@ -6,6 +6,7 @@
  */
 
 import Clients from "../../core/modules/Clients.js"
+import GeneralInfo from "../../core/modules/GeneralInfo.js"
 
 export default class Auth 
 {   
@@ -42,6 +43,19 @@ export default class Auth
      * Authorize server
      */
     static async authorizeServer(req, res, next) {
+        const serverSecret = req.headers["server-secret"]
 
+        if(!serverSecret) {
+            res.send("MISSING_CREDENTIALS")
+            return
+        }
+
+        // check if secret matches 
+        if(await GeneralInfo.getServerSecret() == serverSecret) {
+            next()
+        } else {
+            res.send("INVALID_SERVER_SECRET")
+            return
+        }
     }
 }

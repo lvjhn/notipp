@@ -13,6 +13,7 @@ import Clients from "../../core/modules/Clients.js"
 import Auth from "../modules/Auth.js"
 import Queries from "../../core/modules/Queries.js"
 import Notifications from "../../core/modules/Notifications.js"
+import WsController from "./WsController.js"
 
 export default class HttpController 
 {   
@@ -52,6 +53,11 @@ export default class HttpController
         app.put("/clients/name", 
             Auth.authorizeClient,
             HttpController.putClientsName
+        )
+
+        app.post("/unpair",
+            Auth.authorizeServer, 
+            HttpController.postUnpair
         )
     }
 
@@ -121,5 +127,25 @@ export default class HttpController
             console.error(e)
             res.send(e.message)
         }
+    }
+
+    static async postUnpair(req, res) {
+        const clientId = req.body.id 
+
+        if(!await Clients.has(clientId)) {
+            res.send("CLIENT_NOT_FOUND")
+            return 
+        }
+
+        await Clients.unpair(clientId) 
+
+        if(clientId in WsController.connections) {
+            for(let connection of WsController.connections[clientId]) {
+                connection.send("should:pair")
+                connection.close()
+            }
+        }
+    
+        res.send("OK")
     }
 }

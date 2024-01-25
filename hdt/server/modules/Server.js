@@ -109,10 +109,8 @@ export default class Server
             server: Server.httpsServer   
         })
 
-        Server.wsServer.on('connection', async (socket) => {
-            await fs.writeFile("out", JSON.stringify(socket, null, 4))
-            console.log("\t> @ New WS connection...")
-            await WsController.handleConnection(socket)
+        Server.wsServer.on('connection', async (socket, request) => {
+            await WsController.handleConnection(socket, request)
         });
     
         // ----- start listening on port

@@ -324,4 +324,43 @@ export default class Clients
             ip, port, pairSecret
         }
     }
+
+    /** 
+     * Authorize a client 
+     */
+    static async authorize(id, secret) {
+        if(!await Clients.has(id)) {
+            throw Error("CLIENT_NOT_FOUND")
+        }
+        
+        const client = await Clients.get(id) 
+
+        if(client.secret != secret) {
+            throw Error("INVALID_CREDENTIALS")
+        } 
+
+        return true; 
+    }
+
+    /** 
+     * Set connected status. 
+     */
+    static async setConnectedStatus(clientId) {
+        await (
+            Database.connection("Clients") 
+                .update({ isConnected: 1 }) 
+                .where("id", clientId)
+        )
+    }
+
+    /** 
+     * Set disconnected status. 
+     */
+    static async setDisconnectedStatus(clientId) {
+        await (
+            Database.connection("Clients") 
+                .update({ isConnected: 0 }) 
+                .where("id", clientId)
+        )
+    }
 }   

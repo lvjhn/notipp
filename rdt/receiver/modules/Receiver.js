@@ -114,8 +114,11 @@ export default class Receiver
 
         const ip = server.server.ip 
         const port = server.server.port 
+            
+        const id = App.state.client.id 
+        const secret = App.state.client.secret
 
-        const address = `wss://${ip}:${port}/?id=4321&secret=1234`; 
+        const address = `wss://${ip}:${port}/?id=${id}&secret=${secret}`; 
 
         const agent = new https.Agent({
             ca: (await fs.readFile("./common/ca/hdt-ca.pem")).toString()
@@ -186,6 +189,7 @@ export default class Receiver
     }
 
     static async handleSocketMessage(server, socket, message) {
+
         if(message == "keep:alive") {
             if(server.mustChangeName) {
                 if(!(server.server.id in Receiver.isChangingName)) {
@@ -207,6 +211,11 @@ export default class Receiver
                     Receiver.eb.publish(["changed:name", server])
                 }
             }
+        }
+
+        else if(message == "should:pair") {
+            server.status = "UNPAIRED"
+            Receiver.eb.publish(["should:pair", server])
         }
     }
 }
