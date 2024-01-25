@@ -14,7 +14,8 @@ export default defineConfig({
     resolve: {
       alias: {
         '@': resolve('src/renderer/src'), 
-        '#': resolve(BASE_PATH)
+        '^': resolve(BASE_PATH), 
+        "#": resolve(BASE_PATH + '/common/ui/gui')
       }
     },
     plugins: [vue()]

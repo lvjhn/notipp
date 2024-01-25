@@ -195,6 +195,11 @@ import GeneralInfo from "../core/modules/GeneralInfo.js";
         .action(CommandHandlers.handleIsUp)
 
     program 
+        .command("restart") 
+        .description("restarts the server") 
+        .action(CommandHandlers.handleRestart)
+
+    program 
         .command("start") 
         .description("starts notipp-server") 
         .action(CommandHandlers.handleStart)

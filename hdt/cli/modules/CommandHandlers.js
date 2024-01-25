@@ -622,7 +622,7 @@ export default class CommandHandlers
 
     static async handleIsEnabled() {
         const result = execSync("sudo systemctl is-enabled notipp-server")
-        console.log(result.trim().toString())
+        console.log(result.toString().trim())
         process.exit()
     }
 
@@ -646,6 +646,13 @@ export default class CommandHandlers
         else { 
             console.log("NO".bold.green)
         }
+        process.exit()
+    }
+
+    static async handleRestart() {
+        execSync("sudo systemctl stop notipp-server") 
+        execSync("sudo systemctl start notipp-server") 
+        console.log("@ Restarted".bold.green)
         process.exit()
     }
 
