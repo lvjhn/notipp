@@ -194,7 +194,6 @@ export default class Receiver
     }
 
     static async handleSocketMessage(server, socket, message) {
-        console.log("@ (" + (new Date()).getTime() + ") Receiver <-- " + message)
         
         if(message == "keep:alive") {
             if(server.mustChangeName) {
@@ -233,7 +232,8 @@ export default class Receiver
                 execSync(
                     `notify-send ` + 
                     `"${message.details.data.title}" ` +
-                    `"${message.details.data.options.body}"`)
+                    `"${message.details.data.options.body}"`
+                )
             }
         }
     }

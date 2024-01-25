@@ -32,9 +32,9 @@ import GeneralInfo from "../core/modules/GeneralInfo.js";
     program 
         .command("emit:notif") 
         .description("emits notification to clients") 
-        .argument("<body>", "message body") 
-        .option("-d, --other-details", "other details for the message") 
-        .action(CommandHandlers.handleInfo)
+        .argument("[body]", "message body") 
+        .option("-d, --other-details <otherDetails>", "other details for the message") 
+        .action(CommandHandlers.handleEmitNotif)
 
     program 
         .command("pair")

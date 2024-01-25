@@ -30,6 +30,17 @@ import { existsSync } from "fs";
 import axios from "axios";
 import { Agent } from "https";
 
+async function makeClientOptions() {
+    return {
+        httpsAgent: new Agent({
+            ca: await GeneralInfo.getCACert()
+        }),
+        headers: {
+            "server-secret" : await GeneralInfo.getServerSecret()
+        }
+    }
+}
+
 export default class CommandHandlers 
 {
     static async handleInfo(options) {
@@ -331,20 +342,14 @@ export default class CommandHandlers
         }
 
         await Clients.unpair(targetId) 
+        
         const portNo = (await Config.getConfig()).server.portNo 
         await axios.post(
             "https://127.0.0.1:" + portNo + "/unpair", 
             {
                 id: targetId
             },
-            {
-                httpsAgent: new Agent({
-                    ca: await GeneralInfo.getCACert()
-                }),
-                headers: {
-                    "server-secret" : await GeneralInfo.getServerSecret()
-                }
-            }
+            await makeClientOptions()
         ) 
 
         const name = (await Clients.get(targetId)).name
@@ -678,12 +683,46 @@ export default class CommandHandlers
         console.log("@ Imported CA files.".bold)
     }
 
-    static async handleEmitNotif() {
+    static async handleEmitNotif(body, options) {
+        let otherDetails = options.otherDetails ?? null
         
+        if(body == null && otherDetails == null) {
+            console.log(
+                "@ You must supply details about the notification."
+                    .bold.red
+            )
+            process.exit()
+        }
+
+        otherDetails = JSON.parse(otherDetails)
+
+        const data = { 
+            title: await GeneralInfo.getHostName(),
+            options : {},
+            ...otherDetails 
+        }
+
+        if(body) {
+            data.options.body = body
+        }
+        else {
+          
+        }
+        
+        const portNo = (await Config.getConfig()).server.portNo 
+        await axios.post(
+            "https://localhost:" + portNo + "/emit/notification", 
+            {
+                details: data
+            },
+            await makeClientOptions()            
+        ) 
     }
 
     static async handleBasePath() {
         console.log(BASE_PATH)
         process.exit()
     }
+
+
 }   
