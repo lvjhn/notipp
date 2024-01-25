@@ -17,7 +17,12 @@ rm -rf node_modules/
 rm -rf hdt/gui/node_modules
 rm -rf rdt/pc-client-gui/node_modules 
 rm -rf rft/mobile-client-pwa/node_modules
- 
+
+# back up dists/ folder 
+emphasize "> Backing up dists folder..." 
+BACKUP_FOLDER="backup/$(date '+%Y-%m-%d %H:%M:%S')"
+mkdir "$BACKUP_FOLDER"
+cp -r "./dist/" "$BACKUP_FOLDER"
 
 # clear dist/* folder
 emphasize "> Removing node_modules folder...\n" 
