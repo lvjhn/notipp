@@ -1,5 +1,10 @@
 <script setup> 
     const props = defineProps([ "title", "buttons" ])
+    const emit = defineEmits([ "onButtonTap" ])
+
+    function onButtonTap(buttonLabel) {
+        emit("onButtonTap", buttonLabel)
+    }
 </script>
 
 <template>
@@ -12,7 +17,14 @@
             </div>
             <div class="buttons"> 
                 <slot name="buttons">
-                    {{ props.button }}
+                    <div v-for="buttonLabel in buttons">
+                        <img 
+                            :src="'/icons/' + buttonLabel + '.png'" 
+                            height="25"
+                            class="button"
+                            @click="() => onButtonTap(buttonLabel)"
+                        />
+                    </div>
                 </slot>
             </div>
         </div>
@@ -36,12 +48,26 @@
         border-bottom-right-radius: 5px;
 
         .header {
-            padding: 5px 5px;
+            padding: 5px 10px;
             background-color: rgb(8, 69, 77);
             font-weight: bold;
             color: white;
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
+            display: flex; 
+
+            > .title {
+                flex: 1;
+                display: flex; 
+                align-items: center;
+                justify-content: start;
+            }
+
+            > .buttons {
+                img:active {
+                    opacity: 0.4;
+                }
+            }
         }
 
         .content {
