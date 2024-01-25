@@ -45,7 +45,9 @@ touch common/ca/.gitignore
 # remove server-ssl certificates
 emphasize "> Removing CA certificate related files...\n" 
 rm -rf hdt/data/certificate/*
+rm -rf rdt/mobile-client-pwa/certificate/*
 touch hdt/data/certificate/.gitignore
+touch rdt/mobile-client-pwa/certificate/.gitignore
 
 # remove system services
 emphasize "> Removing system services...\n" 

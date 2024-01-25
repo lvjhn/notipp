@@ -1,30 +1,87 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+    import { useRouter } from 'vue-router';
+    import isMobile from '../../../common/helpers/general/isMobile.js';
+    import NavigationRow from './components/NavigationRow.vue';
+    import {  navigationRowIndex } from './composables/useUI.js';
+    import Modal from "./components/Modal/Modal.vue"
+    import { modalWindow, setModal, showModal } from "./composables/useModal.js"
+    import AddServerModal from './modals/AddServerModal.vue';
+
+
+    setModal(AddServerModal, {})
+    showModal()
+
+    const router = useRouter();
+
+    const routeItems = [
+        {
+            title: 'Servers',
+            image: '/icons/home.png',
+            route: "/"
+        }, 
+        {
+            title: 'Logs', 
+            image: '/icons/parchment.png', 
+            route: "/logs"
+        },
+        {
+            title: 'Settings',
+            image: '/icons/settings.png',
+            route: "/settings"
+        }
+    ]
+
+    function isBrowserMobile() {
+        return isMobile(navigator.userAgent)
+    }
+
+    function onChangeTab(index) {
+        navigationRowIndex.value = index
+        router.push(routeItems[index].route)
+    }
+
+
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+    <div class="root"> 
+        <div class="is-mobile" v-if="isBrowserMobile()">    
+            <div class="page">
+                <router-view></router-view>
+            </div> 
+            <NavigationRow 
+                :items="routeItems"
+                :active="navigationRowIndex"
+                @onChangeTab="onChangeTab"
+            />
+            <Modal :isShown="modalWindow.isShown">
+                <component 
+                    :is="modalWindow.component.value" 
+                    v-bind="modalWindow.props.value" 
+                />
+            </Modal>
+        </div>
+        <div class="is-web" v-else>
+            Instructions for computer access... [TODO]
+        </div>
+    </div> 
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+<style lang="scss" scoped>
+    .is-web {
+        width: 1024px;
+        margin: 0 auto;
+    }
+
+    .is-mobile {
+        display: flex; 
+        flex-direction: column;
+
+        .navigation-row {
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            width: 100%;
+        }
+    }
 </style>

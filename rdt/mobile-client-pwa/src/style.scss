@@ -1,0 +1,14 @@
+body {
+    margin: 0px; 
+    padding: 0px;
+    height: 100vh;
+}
+
+@font-face {
+    font-family: Roboto;
+    src: url("/fonts/Roboto/Roboto-Regular.ttf");
+}
+
+* {
+    font-family: Roboto; 
+}

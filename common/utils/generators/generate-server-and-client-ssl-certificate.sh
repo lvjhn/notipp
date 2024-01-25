@@ -73,3 +73,66 @@ openssl x509 -req -days 3650 \
     -set_serial 01 \
     -out $SERVER_CERT_PEM_FILE \
     -extfile <(printf "subjectAltName=$SANS")
+
+
+
+# CLIENT CERTIFICATE GENERATION
+CLIENT_CERT_KEY_FILE="./rdt/mobile-client-pwa/certificate/client-ssl.key"
+CLIENT_CERT_PEM_FILE="./rdt/mobile-client-pwa/certificate/client-ssl.pem"
+CLIENT_CERT_CSR_FILE="./rdt/mobile-client-pwa/certificate/client-ssl.csr"
+CLIENT_CERT_PASSWORD_FILE="./rdt/mobile-client-pwa/certificate/client-ssl.pw"
+CLIENT_CERT_CONF_FILE="./common/utils/templates/server-ssl.openssl.conf"
+
+echo -e "|\t:: GENERATING FOR CLIENT..." 
+
+echo -e "|\t> Removing previous files, if any..." 
+if [ -f $CLIENT_CERT_KEY_FILE ] ; then 
+    rm -rf $CLIENT_CERT_KEY_FILE
+fi 
+
+if [ -f $CLIENT_CERT_PEM_FILE ] ; then 
+    rm -rf $CLIENT_CERT_PEM_FILE
+fi 
+
+if [ -f $CLIENT_CERT_CSR_FILE ] ; then 
+    rm -rf $CLIENT_CERT_CSR_FILE
+fi 
+
+if [ -f $CLIENT_CERT_PASSWORD_FILE ] ; then 
+    rm -rf $CLIENT_CERT_PASSWORD_FILE
+fi 
+
+echo -e "|\t> Generating client certificate's password..." 
+CLIENT_CERT_PASSWORD="$(node ./common/utils/generators/strong-password.js)"
+echo $CLIENT_CERT_PASSWORD > $CLIENT_CERT_PASSWORD_FILE
+
+echo -e "|\t> Generate SSL certificate's private .key file..." 
+openssl genrsa -out $CLIENT_CERT_KEY_FILE 4096
+
+echo -e "|\t> Generate SSL certificate's .csr file..." 
+{ 
+    echo "PH";
+    echo "Camarines Sur";
+    echo "Naga"; 
+    echo "Notipp-Client";
+    echo "Notipp-Client:";
+    echo "Notipp";
+    echo "notipp@gmail.com";
+    echo "$CLIENT_CERT_PASSWORD";
+    echo "Notipp";
+} | openssl req -new -nodes \
+    -key $CLIENT_CERT_KEY_FILE \
+    -out $CLIENT_CERT_CSR_FILE 
+   
+echo -e "|\t> Generate child certificate and sign with RootCA..." 
+SANS=$(node ./common/utils/generators/sans.js)
+
+
+openssl x509 -req -days 3650 \
+    -in $CLIENT_CERT_CSR_FILE \
+    -CA $CA_CERT_FILE \
+    -CAkey $CA_KEY_FILE \
+    -set_serial 01 \
+    -out $CLIENT_CERT_PEM_FILE \
+    -extfile <(printf "subjectAltName=$SANS")
+

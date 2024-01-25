@@ -31,7 +31,8 @@ echo -e "|\t> Generating root certificate..."
     echo "Camarines Sur"; 
     echo "Naga";
     echo "Notipp-CA";
-    echo "$USERNAME";
+    echo "$USERNAME.notipp";
+    echo "$USERNAME.notipp";
     echo "$USERNAME.notipp";
     echo "notipp@gmail.com";
 } | openssl req -new -x509 \
@@ -39,7 +40,6 @@ echo -e "|\t> Generating root certificate..."
     -out $CA_CERT_FILE \
     -days 3650 \
     -set_serial 0 \
-    -config $CA_CONF_FILE
 
 echo "" 
 

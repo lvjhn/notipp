@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "rdt/mobile-client-pwa"
 		}
 	],
 	"settings": {}

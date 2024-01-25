@@ -54,7 +54,7 @@ function install {
     create_ca_certificate
 
     # create server-ssl certificate
-    create_server_ssl_certificate
+    create_server_and_client_ssl_certificate
 
     # create system service for client 
     create_client_system_service
@@ -236,11 +236,11 @@ function create_ca_certificate {
     echo "|"
 }
 
-function create_server_ssl_certificate {
-    display_header "| @ Creating server's SSL certificate...\n" 
+function create_server_and_client_ssl_certificate {
+    display_header "| @ Creating server and client SSL certificate...\n" 
 
     bash \
-        $(pwd)/common/utils/generators/generate-server-ssl-certificate.sh \
+        $(pwd)/common/utils/generators/generate-server-and-client-ssl-certificate.sh \
         $USERNAME
     
     echo -e -n "\n"
