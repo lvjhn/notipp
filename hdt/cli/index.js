@@ -174,6 +174,10 @@ import GeneralInfo from "../core/modules/GeneralInfo.js";
         )
         .action(CommandHandlers.handleConfigUnset)
 
+    program 
+        .command("is:enabled")
+        .description("checks if the server is enabled") 
+        .action(CommandHandlers.handleIsEnabled)
 
     program 
         .command("enable")
@@ -184,6 +188,11 @@ import GeneralInfo from "../core/modules/GeneralInfo.js";
         .command("disable")
         .description("disables notipp-server on system startup")
         .action(CommandHandlers.handleDisable)
+
+    program 
+        .command("is:up") 
+        .description("checks if the server is running") 
+        .action(CommandHandlers.handleIsUp)
 
     program 
         .command("start") 

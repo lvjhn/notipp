@@ -1,6 +1,7 @@
 import { resolve } from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import vue from '@vitejs/plugin-vue'
+import { BASE_PATH } from '../../index.js'
 
 export default defineConfig({
   main: {
@@ -13,7 +14,7 @@ export default defineConfig({
     resolve: {
       alias: {
         '@': resolve('src/renderer/src'), 
-        '#': resolve('')
+        '#': resolve(BASE_PATH)
       }
     },
     plugins: [vue()]

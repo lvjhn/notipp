@@ -147,6 +147,7 @@ export default class CommandHandlers
         console.log(table(serverInfo.data, serverInfo.config))
         console.log(table(caCertInfo.data, caCertInfo.config))
 
+        process.exit()
     }
 
     static async handlePair(identifier, options) {
@@ -524,6 +525,8 @@ export default class CommandHandlers
                 cursor: cursor
             })
         })  
+
+        process.exit()
     }
 
     static async handlePruneNotifs(options) {
@@ -580,6 +583,8 @@ export default class CommandHandlers
         await Config.setConfig((config) => set(config["server"], key, value))
 
         console.log("@ Config set -> " + (key +  " = " + value).italic) 
+
+        process.exit()
     }
 
 
@@ -611,26 +616,49 @@ export default class CommandHandlers
         await Config.setConfig((item) => unset(item, key))
 
         console.log("@ Config unset -> " + (key).italic) 
+
+        process.exit()
+    }
+
+    static async handleIsEnabled() {
+        const result = execSync("sudo systemctl is-enabled notipp-server")
+        console.log(result.trim().toString())
+        process.exit()
     }
 
     static async handleEnable() {
         await Server.enable()
-        console.log("@ Enabled on startup.")
+        console.log("@ Enabled on startup.".bold.green)
+        process.exit()
     }
 
     static async handleDisable() {
         await Server.disable()
-        console.log("@ Disabled on startup.")
+        console.log("@ Disabled on startup.".bold.green)
+        process.exit()
+    }
+
+    static async handleIsUp() {
+        const isUp = await Server.isUp() 
+        if(isUp) {
+            console.log("YES".bold.green)
+        }
+        else { 
+            console.log("NO".bold.green)
+        }
+        process.exit()
     }
 
     static async handleStart() {
         await Server.turnOn()
-        console.log("@ Server started.")
+        console.log("@ Server started.".bold.green)
+        process.exit()
     }
 
     static async handleStop() {
         await Server.turnOff()
-        console.log("@ Server stopped.")
+        console.log("@ Server stopped.".bold.green)
+        process.exit()
     }
 
     static async handleUpdateCertificates() {
@@ -639,6 +667,7 @@ export default class CommandHandlers
         console.log("@ Updating SSL certificate...")
         await Certificates.generateServerSSLCertificate()
         console.log("@ Certificates regenerated.".bold)
+        process.exit()
     }
 
     static async handleAutoPair(options) {
@@ -649,6 +678,7 @@ export default class CommandHandlers
 
         await Config.setConfig((config) => config.server.autoPair = true) 
         console.log("@ Auto-pair is now ON.".bold)
+        process.exit()
     }
 
 
@@ -681,6 +711,8 @@ export default class CommandHandlers
 
         await Certificates.importCA(certFile, keyFile)
         console.log("@ Imported CA files.".bold)
+        
+        process.exit()
     }
 
     static async handleEmitNotif(body, options) {
@@ -716,13 +748,13 @@ export default class CommandHandlers
                 details: data
             },
             await makeClientOptions()            
-        ) 
+        )
+        
+        process.exit()
     }
 
     static async handleBasePath() {
         console.log(BASE_PATH)
         process.exit()
     }
-
-
-}   
+}  
