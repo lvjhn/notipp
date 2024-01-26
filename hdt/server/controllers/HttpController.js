@@ -15,6 +15,8 @@ import Queries from "../../core/modules/Queries.js"
 import Notifications from "../../core/modules/Notifications.js"
 import WsController from "./WsController.js"
 import Database from "../../data/Database.js"
+import GeneralInfo from "../../core/modules/GeneralInfo.js"
+import { WebSocket } from "ws"
 
 export default class HttpController 
 {   
@@ -45,6 +47,16 @@ export default class HttpController
         app.post("/clients", 
             HttpController.postClients
         )
+
+        app.get("/is-registered",
+            Auth.authorizeClient,
+            HttpController.getIsRegistered
+        )
+
+        app.get("/is-paired",
+            Auth.authorizeClient,
+            HttpController.getIsPaired
+        )
         
         app.post("/emit/notification", 
             Auth.authorizeServer,
@@ -59,6 +71,16 @@ export default class HttpController
         app.put("/clients/name", 
             Auth.authorizeClient,
             HttpController.putClientsName
+        )
+
+        app.post("/client/pair",
+            Auth.authorizeClient, 
+            HttpController.postClientPair
+        )
+
+        app.post("/pair",
+            Auth.authorizeServer, 
+            HttpController.postPair
         )
 
         app.post("/unpair",
@@ -165,8 +187,13 @@ export default class HttpController
 
         await Clients.unpair(clientId) 
 
-        if(clientId in WsController.connections) {
-            for(let connection of WsController.connections[clientId]) {
+        if(!(clientId in WsController.connections)) {
+            res.send("NOT_CONNECTED");
+            return;
+        }
+
+        for(let connection of WsController.connections[clientId]) {
+            if(connection.readyState != WebSocket.CLOSED) {
                 connection.send("should:pair")
                 connection.close()
             }
@@ -227,5 +254,58 @@ export default class HttpController
         const lastRead = req.body.lastRead 
         await Clients.update(clientId, { lastRead })
         res.send("OK")
+    }
+
+    static async getIsRegistered(req, res) {
+        res.send("OK")
+    }
+
+    static async getIsPaired(req, res) {
+        if(await Clients.isPaired(req.headers["client-id"])) {
+            res.send("OK" )
+        } else {
+            res.send("UNPAIRED")
+        }
+    }
+
+    static async postPair(req, res) {
+        const clientId = req.body.id
+        await Clients.pair(clientId)
+
+        // if(!(clientId in WsController.connections)) {
+        //     res.send("NOT_CONNECTED");
+        //     return;
+        // }
+
+        // for(let connection of WsController.connections[clientId]) {
+        //     if(connection.readyState != WebSocket.CLOSED) {
+        //         connection.send("has:paired")
+        //     }
+        // }
+
+        res.send("OK")
+    }
+
+    static async postClientPair(req, res) {
+        const pairingSecret = await GeneralInfo.pairingSecret; 
+        
+        if(pairingSecret == req.body.pairingSecret) {
+            await Clients.pair(req.headers["client-id"])
+
+            if(!(clientId in WsController.connections)) {
+                res.send("NOT_CONNECTED");
+                return;
+            }
+
+            for(let connection of WsController.connections[clientId]) {
+                if(connection.readyState != WebSocket.CLOSED) {
+                    connection.send("has:paired")
+                }
+            }
+        
+            res.send("OK")   
+        } else {
+            res.send("UNAUTHORIZED")
+        }
     }
 }

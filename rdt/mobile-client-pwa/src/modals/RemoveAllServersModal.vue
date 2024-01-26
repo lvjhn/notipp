@@ -17,8 +17,8 @@ function cancel() {
     hideModal()
 }
 
-function removeAll() {
-    store.servers = []
+async function removeAll() {
+    await store.clearServers()
     hideModal()
 }
 

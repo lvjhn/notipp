@@ -436,7 +436,6 @@ export default class CommandHandlers
     }
 
     static async handleClearData() {
-        await DataItems.removeItem("HOST-CLIENT-STATE")
         App.eb.publish(["clear:state"])
         console.log("@ Cleared data.".bold.cyan)
         process.exit()

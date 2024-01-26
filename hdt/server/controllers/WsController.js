@@ -40,9 +40,20 @@ export default class WsController
             return
         }
 
+        let count = 0;
+
+        for(let id in WsController.connections) {
+            count += WsController.connections[id].length
+        }
+
+        console.log("\t> Handling incoming connection (" + count + ")")
+
+
         if(client.isPaired == 0) {
             socket.send("should:pair") 
             socket.close()
+            console.log("\t> Unpaired client discarded...")
+            return
         }
 
         console.log("\t> Client connected...")

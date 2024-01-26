@@ -49,7 +49,7 @@ export default class Server
                     rejectUnauthorized: false
                 })
             })
-            const ping = await client.get("/~ping") 
+            const ping = await client.get("/ping") 
             return ping.data == "PONG" 
         } catch(e) {
             return false

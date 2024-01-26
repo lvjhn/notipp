@@ -6,6 +6,9 @@ import {  navigationRowIndex } from './composables/useUI.js';
 import Modal from "@/components/modal/Modal.vue"
 import { modalWindow, setModal, showModal } from "./composables/useModal.js"
 import ResetDataModal from './modals/ResetDataModal.vue';
+import { onMounted } from 'vue';
+import ConnectionManager from '@/utils/ConnectionManager.js'; 
+import MessageReceiver from '@/utils/MessageReceiver.js'; 
 
 const router = useRouter();
 
@@ -36,6 +39,10 @@ function onChangeTab(index) {
     router.push(routeItems[index].route)
 }
 
+onMounted(() => {
+    ConnectionManager.initialize()
+    MessageReceiver.start()
+})
 
 </script>
 

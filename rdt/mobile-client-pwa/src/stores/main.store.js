@@ -2,6 +2,7 @@ import localforage from "localforage";
 import { defineStore } from "pinia";
 import generateDeviceName from "../../../../common/helpers/general/generateDeviceName.js";
 import generateSecret from "../../../../common/helpers/general/generateSecret.js";
+import ConnectionManager from "../utils/ConnectionManager.js";
 
 export const useMainStore = defineStore("mainStore", {
     state: () => ({
@@ -14,7 +15,9 @@ export const useMainStore = defineStore("mainStore", {
         },
         meta: {
             isEnabled: true,
-            connectionTimeout: 3000
+            connectionTimeout: 3000,
+            reconnectInterval: 3000,
+            keepAliveInterval: 3000
         },
         servers: [
             {
@@ -141,10 +144,22 @@ export const useMainStore = defineStore("mainStore", {
                 ...server, 
                 ...details
             }
+            
+            (async () => {
+                await ConnectionManager.reconnect(serverId)
+            })();
         },
 
         async addServer(details) {
-            this.servers.push(details)
+            this.servers.push(details);
+
+            (async () => {
+                await ConnectionManager.connect(details.server.id)
+            })();
+        },
+
+        async clearServers() {
+            this.servers = []
         }
     },
 

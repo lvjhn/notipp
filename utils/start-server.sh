@@ -1,1 +1,1 @@
-nodemon hdt/server/index.js
+nodemon hdt/server/index.js --ignore hdt/data/database/notipp.db

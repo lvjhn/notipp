@@ -22,19 +22,25 @@ export default class App
     static eb = false; 
     static manualSave = true;
 
-    static state = {
-        client: {
-            id: crypto.randomUUID(), 
-            name: generateDeviceName(), 
-            secret: generateSecret(), 
-            userAgent: "notipp-cli"
-        }, 
-        servers : [] 
-    }
+    static state = null;
 
     static storage;
 
+    static async initState() {
+        App.state = {
+            client: {
+                id: crypto.randomUUID(), 
+                name: generateDeviceName(), 
+                secret: generateSecret(), 
+                userAgent: "notipp-cli"
+            }, 
+            servers : [] 
+        }
+    }
+
     static async init() {
+        await App.initState() 
+        
         const portNo = (await Config.getConfig()).client.eventBusPort
 
         App.eb = new SimpleEventBus("127.0.0.1", portNo)

@@ -72,7 +72,7 @@ export default async function addServer({
             console.log(
                 "@ Server does not exist...")
             
-            store.addServer(info)
+            await store.addServer(info)
 
             setModal(ServerAddedModal, {
                 server: info
@@ -89,7 +89,7 @@ export default async function addServer({
             console.log("@ Client is already registered...")
 
             if(pairSecret) {
-                await client.post("/pair", {
+                await client.post("/client/pair", {
                     pairSecret
                 })
                 console.log("@ Attempted to pair client...")

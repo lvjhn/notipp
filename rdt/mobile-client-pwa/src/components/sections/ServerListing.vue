@@ -6,6 +6,7 @@ import AddServerModal from '../../modals/AddServerModal.vue';
 import RemoveAllServersModal from "@/modals/RemoveAllServersModal.vue"
 import UpdateServerModal from '../../modals/UpdateServerModal.vue';
 import QRInstructions from '../../modals/QRInstructions.vue';
+import ConnectionManager from '../../utils/ConnectionManager';
 
 const store = useMainStore()
 
@@ -98,10 +99,12 @@ async function remove(index) {
 
 async function disable(index) {
     store.servers[index]['client-state'].status = "DISABLED"
+    await ConnectionManager.disconnect(state.servers[index].server.id)
 }
 
 async function enable(index) {
     store.servers[index]['client-state'].status = "OFFLINE"
+    await ConnectionManager.connect(state.servers[index].server.id)
 }
 
 </script>
@@ -137,11 +140,11 @@ async function enable(index) {
         <div class="filters">
             <select v-model="filter" class="form-select">
                 <option value="ALL">All</option>
-                <option value="ONLINE">ONLINE</option>
-                <option value="OFFLINE">OFFLINE</option>
-                <option value="UNPAIRED">UNPAIRED</option>
-                <option value="DISABLED">DISABLED</option>
-                <option value="ENABLED">ENABLED</option>
+                <option value="ONLINE">Online</option>
+                <option value="OFFLINE">Offline</option>
+                <option value="UNPAIRED">Unpaired</option>
+                <option value="DISABLED">Disabled</option>
+                <option value="ENABLED">Enabled</option>
             </select>
         </div>
         <div class="servers" v-if="store.servers.length > 0">
@@ -266,6 +269,21 @@ async function enable(index) {
 
                     .is-DISABLED {
                         background-color: rgb(131, 131, 131);
+                        border: none;
+                    }
+
+                    .is-CONNECTING {
+                        background-color: rgb(3, 90, 172);
+                        border: none;
+                    }
+
+                    .is-IDENTIFIED {
+                        background-color: rgb(151, 10, 194);
+                        border: none;
+                    }
+
+                    .is-OPENED {
+                        background-color: rgb(14, 191, 214);
                         border: none;
                     }
                 }

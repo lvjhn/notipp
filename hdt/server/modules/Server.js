@@ -53,11 +53,6 @@ export default class Server
      * Set up plugins.
      */
     static async setupPlugins() {
-        // create ping page   
-        Server.app.get("/~ping", (req, res) => {
-            res.send("PONG")
-        })
-
         // set up body parser 
         Server.app.use(bodyParser.json())
         Server.app.use(bodyParser.urlencoded({ extended: false }))
@@ -69,6 +64,10 @@ export default class Server
         Server.app.set('view engine', 'ejs')
         Server.app.set('views', BASE_PATH + "/hdt/server/views")
 
+        // create ping page   
+        Server.app.get("/ping", (req, res) => {
+            res.send("PONG")
+        })
     }
 
     /** 

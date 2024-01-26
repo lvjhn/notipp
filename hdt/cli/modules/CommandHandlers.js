@@ -154,15 +154,8 @@ export default class CommandHandlers
         const hasByIdFlag = options.byId 
         const hasQRFlag = options.qr 
         const hasRegenerateFlag = options.regenerate 
-        const hasAllFlag = options.all
-
-        // check if there is a client to pair 
-        if(await Clients.countUnpaired() == 0) {
-            console.log("@ Nothing to pair. All clients are paired.".bold.grey)
-            process.exit();
-            return;
-        }
-
+        const hasAllFlag = options.all 
+        
         // handle regenerate flag
         if(hasRegenerateFlag) {
             await Clients.generatePairingSecret()
@@ -175,14 +168,23 @@ export default class CommandHandlers
         if(hasQRFlag) {
             const qrData = 
                 await Clients.generateQRData()
+
             execSync(
-                `qrcode ${JSON.stringify(qrData)} -o ` + 
-                `${BASE_PATH}/outputs/pair-qr.png`
+                `qrcode '${JSON.stringify(qrData)}' -o ` + 
+                `${BASE_PATH}/outputs/pair-qr.png -d 100 -w 300`
             )
             execSync(`display ${BASE_PATH}/outputs/pair-qr.png`)
             process.exit()
         }
 
+        // check if there is a client to pair 
+        if(await Clients.countUnpaired() == 0) {
+            console.log("@ Nothing to pair. All clients are paired.".bold.grey)
+            process.exit();
+            return;
+        }
+
+ 
         // normalize input (find client id/s)
         let targetId; 
         
@@ -252,7 +254,10 @@ export default class CommandHandlers
             }
         }
 
-        await Clients.pair(targetId) 
+        const portNo = (await Config.getConfig()).server.portNo 
+
+        await Clients.pair(targetId)
+
         const name = (await Clients.get(targetId)).name
 
         console.log(
@@ -342,9 +347,8 @@ export default class CommandHandlers
             }
         }
 
-        await Clients.unpair(targetId) 
-        
         const portNo = (await Config.getConfig()).server.portNo 
+
         await axios.post(
             "https://127.0.0.1:" + portNo + "/unpair", 
             {

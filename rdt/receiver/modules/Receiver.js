@@ -100,6 +100,7 @@ export default class Receiver
         }
         else if(event == "clear:state") {
             await DataItems.removeItem("HOST-CLIENT-STATE")
+            await App.initState()
             await App.init() 
         }
     }
@@ -188,7 +189,7 @@ export default class Receiver
         }   
 
         async function reconnect() {
-            createSocketInt = setInterval(async () => {
+            createSocketInt = setTimeout(async () => {
                 // console.log("@ Reconnecting...")
                 await createSocket()
             }, 3000)

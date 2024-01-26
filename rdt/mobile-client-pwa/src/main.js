@@ -7,6 +7,8 @@ import App from "./App.vue"
 import { setupRouter } from './plugins/router.js'
 import { setupPinia } from './plugins/pinia.js'
 import { useMainStore } from './stores/main.store'
+import requestNotificationPermission from './utils/requestNotificationPermission'
+import ConnectionManager from './utils/ConnectionManager'
 
 
 // create app 
@@ -23,3 +25,7 @@ useMainStore().init()
 
 // mount app
 app.mount("#app")
+
+// request permission for notifications 
+requestNotificationPermission()
+
