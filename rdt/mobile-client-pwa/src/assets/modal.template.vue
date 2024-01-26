@@ -15,7 +15,7 @@ function handleButtonTap(buttonLabel) {
     <ModalWindow
         title="[TITLE]"
         :buttons="[ 'close' ]"
-        :onButtonTap="handleButtonTap()"
+        @onButtonTap="handleButtonTap"
     >
         Do you confirm to reset the data?
     </ModalWindow>    

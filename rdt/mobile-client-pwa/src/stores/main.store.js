@@ -133,7 +133,10 @@ export const useMainStore = defineStore("mainStore", {
             const server = 
                 await this.servers.find(item => item.server.id == serverId)
             const index = 
-                this.servers.indexOf(server) 
+                this.servers.indexOf(server)
+            if(index == -1) {
+                throw Error("Server not found")
+            }
             this.servers[index] = {
                 ...server, 
                 ...details

@@ -7,7 +7,7 @@ import ServerAddedModal from "@/modals/ServerAddedModal.vue"
 import ServerUpdatedModal from "@/modals/ServerUpdatedModal.vue"
 
 export default async function addServer({
-    ip, port, store, submissionState, mustMatchId
+    ip, port, store, submissionState, mustMatchId, pairSecret
 }) {
     
     const baseURL = `https://${ip}:${port}/`
@@ -41,8 +41,10 @@ export default async function addServer({
         // get key info 
         const serverId = info.server.id 
 
-        if(serverId != mustMatchId) {
-            throw new Error("IDs do not match.")
+        if(mustMatchId) {
+            if(serverId != mustMatchId) {
+                throw new Error("IDs do not match.")
+            }
         }
         
         // patch info with additional details 
@@ -51,43 +53,9 @@ export default async function addServer({
         }
 
         /**
-         * Registering 
-         */
-        const isRegRes = await client.get("/is-registered") 
-        submissionState.value = "Registering"
-
-        if(isRegRes.data == "OK") {
-            console.log("@ Client is already registered, just need" + 
-                        "to add information details.")
-                        
-            store.addServer(info)
-        } else {
-            console.log(
-                "@ Client is not yet registered, " + 
-                "registering first..."
-            )
-
-
-            const regRes =
-                await client.post("/clients", {
-                    details : store.client, 
-                    extras  : {} 
-                })
-
-            if(regRes.data != "OK") {
-                throw Error("Cannot register client.")
-            }
-        }
-
-        // patch info with additional details 
-        info["client-state"] = {
-            "status" : "REGISTERED"
-        }
-
-        /**
          * Adding
          */
-        submissionState.value = "Adding..."
+        submissionState.value = "Adding"
 
         const server =
             await store.servers.find((item) => item.server.id == serverId)
@@ -102,8 +70,7 @@ export default async function addServer({
 
         } else {
             console.log(
-                "@ Server does not exist, checking if"  + 
-                "client is already registered...")
+                "@ Server does not exist...")
             
             store.addServer(info)
 
@@ -111,4 +78,52 @@ export default async function addServer({
                 server: info
             })
         }
+
+        /**
+         * Registering 
+         */
+        const isRegRes = await client.get("/is-registered") 
+        submissionState.value = "Registering"
+
+        if(isRegRes.data == "OK") {
+            console.log("@ Client is already registered...")
+
+            if(pairSecret) {
+                await client.post("/pair", {
+                    pairSecret
+                })
+                console.log("@ Attempted to pair client...")
+            }
+
+        } else {
+            console.log(
+                "@ Client is not yet registered, " + 
+                "registering first..."
+            )
+
+            const inputs = {
+                details : store.client,  
+                extras: {}
+            }
+
+            if(pairSecret) {
+                inputs.extras = {
+                    pairSecret
+                }
+            }
+
+            const regRes =
+                await client.post("/clients", inputs)
+
+            if(regRes.data != "OK") {
+                throw Error("Cannot register client.")
+            }
+        }
+
+        // patch info with additional details 
+        info["client-state"] = {
+            "status" : "REGISTERED"
+        }
+
+       
 }

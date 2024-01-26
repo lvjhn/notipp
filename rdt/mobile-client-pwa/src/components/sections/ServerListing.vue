@@ -5,8 +5,11 @@ import { setModal, showModal } from '../../composables/useModal';
 import AddServerModal from '../../modals/AddServerModal.vue';
 import RemoveAllServersModal from "@/modals/RemoveAllServersModal.vue"
 import UpdateServerModal from '../../modals/UpdateServerModal.vue';
+import QRInstructions from '../../modals/QRInstructions.vue';
 
 const store = useMainStore()
+
+
 
 function sortedServers() {
     return filteredServers.value.sort(
@@ -73,7 +76,8 @@ async function add() {
 }
 
 async function pairQR() {
-    alert("Pairing QR")
+    setModal(QRInstructions, {}) 
+    showModal()
 }
 
 async function removeAll() {
