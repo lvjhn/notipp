@@ -80,6 +80,11 @@ export default class HttpController
             Auth.authorizeClient, 
             HttpController.getLastRead
         )
+
+        app.put("/sync-last-read",
+            Auth.authorizeClient,
+            HttpController.putSyncLastRead
+        )
     }
 
     static async get(req, res) {
@@ -202,18 +207,25 @@ export default class HttpController
         const client = await Clients.get(clientId) 
         const lastRead = client.lastRead
 
-        let query = Database.connection("Clients") 
+        let query = Database.connection("Notifications") 
         query = query.where("id", ">", lastRead)
         query = query.count("id as count")
         const results = await query; 
+
         res.send(results[0].count.toString())
-    
     }
 
     static async getLastRead(req, res) {
         const clientId = req.headers["client-id"] 
         const client = await Clients.get(clientId) 
         const lastRead = client.lastRead  
-        return res.send(lastRead ?? "null")
+        return res.send(lastRead.toString())
     } 
+
+    static async putSyncLastRead(req, res) {
+        const clientId = req.headers["client-id"] 
+        const lastRead = req.body.lastRead 
+        await Clients.update(clientId, { lastRead })
+        res.send("OK")
+    }
 }
