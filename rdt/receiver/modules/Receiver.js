@@ -15,6 +15,7 @@ import colors from "@colors/colors"
 import ConnectionManager from "../../../common/utils/ConnectionManager.js";
 import { execSync } from "child_process";
 import { BASE_PATH } from "../../../index.js";
+import DataItems from "../../../hdt/data/DataItems.js";
 
 export default class Receiver 
 {
@@ -95,7 +96,11 @@ export default class Receiver
                    .find((item) => item.server.id == serverId)
                    .mustChangeName = true
             }
-            App.saveData()
+            await App.saveData()
+        }
+        else if(event == "clear:state") {
+            await DataItems.removeItem("HOST-CLIENT-STATE")
+            await App.init() 
         }
     }
 
@@ -132,7 +137,7 @@ export default class Receiver
         async function createSocket() {
             const socket = new WebSocket(address, { agent })
 
-            socket.on("error", (error) => {
+            socket.on("error", async (error) => {
                 console.error(error)
                 clearInterval(createSocketInt)
                 clearInterval(socket.refreshInt)
@@ -140,7 +145,7 @@ export default class Receiver
                 if(server.status != "UNPAIRED") {
                     server.status = "OFFLINE"
                 }
-                App.saveData() 
+                await App.saveData() 
 
                 reconnect()
             })
@@ -154,7 +159,7 @@ export default class Receiver
                 Receiver.sockets[serverId] = socket
                 
                 server.status = "ONLINE"
-                App.saveData() 
+                await App.saveData() 
 
                 console.log("@ Connected to: " + address)
 
@@ -176,7 +181,7 @@ export default class Receiver
                 if(server.status != "UNPAIRED") {
                     server.status = "OFFLINE"
                 }
-                App.saveData() 
+                await App.saveData() 
 
                 reconnect()
             })

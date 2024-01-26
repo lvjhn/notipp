@@ -14,6 +14,7 @@ import NotificationsViewer from "../../../common/ui/cli/presenters/Notifications
 import Clients from "../../../hdt/core/modules/Clients.js";
 import { exec, execSync } from "child_process"
 import App from "../../common/App.js"
+import DataItems from "../../../hdt/data/DataItems.js";
 
 
 
@@ -435,8 +436,8 @@ export default class CommandHandlers
     }
 
     static async handleClearData() {
-        await App.storage.setItem("HOST-CLIENT-STATE", "{}")
-        await App.saveData()
+        await DataItems.removeItem("HOST-CLIENT-STATE")
+        App.eb.publish(["clear:state"])
         console.log("@ Cleared data.".bold.cyan)
         process.exit()
     }

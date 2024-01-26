@@ -8,9 +8,9 @@ export const BROWSER_CHAIN = [
     "vivaldi",
     "edge",
     "opera",
-    "safari", 
     "firefox",
     "chrome",
+    "safari", 
     "notipp-client.pc-cli"
 ]
 

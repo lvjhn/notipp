@@ -25,6 +25,7 @@ export default class Clients
         }
 
         details.isConnected = 0
+        details.lastRead = 0
 
         // check if pairing secret is valid 
         if(!autoPair && extras.pairSecret) {

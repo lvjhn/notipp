@@ -42,6 +42,7 @@ export default class DatabaseSeeder
                 name: generateDeviceName(), 
                 secret: generateSecret(), 
                 userAgent: randomUserAgent.getRandom(), 
+                lastRead: 0,
                 isPaired: randomGen.pickone([true, false]),
                 isConnected: randomGen.pickone([true, false])
             })

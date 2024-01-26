@@ -3,13 +3,8 @@
     import isMobile from '../../../common/helpers/general/isMobile.js';
     import NavigationRow from './components/NavigationRow.vue';
     import {  navigationRowIndex } from './composables/useUI.js';
-    import Modal from "./components/Modal/Modal.vue"
+    import Modal from "@/components/modal/Modal.vue"
     import { modalWindow, setModal, showModal } from "./composables/useModal.js"
-    import AddServerModal from './modals/AddServerModal.vue';
-
-
-    setModal(AddServerModal, {})
-    showModal()
 
     const router = useRouter();
 
@@ -83,5 +78,13 @@
             left: 0px;
             width: 100%;
         }
+    }
+
+    .page {
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        top: 0px;
+        left: 0px;
     }
 </style>

@@ -2,7 +2,7 @@
  * generateSecret.js
  */
 
-import { randomGen } from "../../../index.js"
+import { Chance } from "chance"
 
 /** 
  * Generate a random secret given a specified length. 
@@ -24,7 +24,7 @@ export default function generateSecret(
     length = 64, 
     {
         chars  = ALPHANUMERIC_CHARS, 
-        chance = randomGen
+        chance = new Chance()
     } = {}
 ) {
     let secret = "" 

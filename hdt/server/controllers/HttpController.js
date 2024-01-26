@@ -70,6 +70,16 @@ export default class HttpController
             Auth.authorizeServer, 
             HttpController.getConnectedClients
         )
+
+        app.get("/count-unread",
+            Auth.authorizeClient, 
+            HttpController.getCountUnread
+        )
+
+        app.get("/last-read",
+            Auth.authorizeClient, 
+            HttpController.getLastRead
+        )
     }
 
     static async get(req, res) {
@@ -105,10 +115,6 @@ export default class HttpController
             res.send(e.message)
         }
     } 
-
-    static async postEmitNotification(req, res) {
-
-    }
 
     static async getNotifications(req, res) {
         const options = req.query
@@ -190,4 +196,24 @@ export default class HttpController
     static async getConnectedClients(req, res) {
         res.send(Object.keys(WsController.connections))
     }
+
+    static async getCountUnread(req, res) {
+        const clientId = req.headers["client-id"] 
+        const client = await Clients.get(clientId) 
+        const lastRead = client.lastRead
+
+        let query = Database.connection("Clients") 
+        query = query.where("id", ">", lastRead)
+        query = query.count("id as count")
+        const results = await query; 
+        res.send(results[0].count.toString())
+    
+    }
+
+    static async getLastRead(req, res) {
+        const clientId = req.headers["client-id"] 
+        const client = await Clients.get(clientId) 
+        const lastRead = client.lastRead  
+        return res.send(lastRead ?? "null")
+    } 
 }

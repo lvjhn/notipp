@@ -30,6 +30,9 @@ export default class DataItems
     static async getItem(key) {
         const Table = Database.connection("DataItems") 
         const result = await Table.where("key", "=", key).limit(1)
+        if(result.length == 0) {
+            return null;
+        }
         return result[0].value
     }
 

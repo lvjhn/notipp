@@ -3,14 +3,13 @@
  */
 import Chance from "chance"
 import capitalize from "./capitalize.js";
-import { randomGen } from "../../../index.js";
 
 /*
  * Description: 
  *  Generate a random device name follow the format <word>-<number>    
  */
 export default function generateDeviceName(
-    chance = randomGen
+    chance = new Chance()
 ) {
     const word = 
         capitalize(chance.word()); 

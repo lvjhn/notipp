@@ -64,6 +64,8 @@
             }
 
             > .buttons {
+                display: flex; 
+                
                 img:active {
                     opacity: 0.4;
                 }

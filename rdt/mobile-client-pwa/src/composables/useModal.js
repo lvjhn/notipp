@@ -4,7 +4,7 @@ import { ref, shallowRef } from "vue"
 export const modalWindow = {
     component : shallowRef(null), 
     props     : ref({}),
-    isShown   : ref(true)
+    isShown   : ref(false)
 }
 
 export const setModal = (component, props) => {
