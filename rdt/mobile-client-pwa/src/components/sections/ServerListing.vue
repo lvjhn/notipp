@@ -99,12 +99,12 @@ async function remove(index) {
 
 async function disable(index) {
     store.servers[index]['client-state'].status = "DISABLED"
-    await ConnectionManager.disconnect(state.servers[index].server.id)
+    await ConnectionManager.disconnect(store.servers[index].server.id)
 }
 
 async function enable(index) {
-    store.servers[index]['client-state'].status = "OFFLINE"
-    await ConnectionManager.connect(state.servers[index].server.id)
+    store.servers[index]['client-state'].status = "IDENTIFIED"
+    await ConnectionManager.connect(store.servers[index].server.id)
 }
 
 </script>

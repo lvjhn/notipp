@@ -29,19 +29,21 @@ export default class ConnectionManager
                 item.server.id == serverId  
             ));
 
-        if(ConnectionManager.connections[serverId]) {
-            throw new Error("Already connected, disconnect first.")
+        if(server["client-state"].status == "DISABLED") {
+            return
         }
 
         const ip = server.server.ip 
         const port = server.server.port
         const id = server.server.id 
+
+        
         const qs = "?" + 
             `id=${ConnectionManager.store.client.id}&` + 
             `secret=${ConnectionManager.store.client.secret}`
 
         const address = `wss://${ip}:${port}/${qs}`
-
+        
         console.log(`@ Attempting to connect to ${address} -> ${id}`)
 
         let socket;
@@ -59,6 +61,8 @@ export default class ConnectionManager
                 console.log(`@ ${address} : Opened.`)
 
                 console.log(server["client-state"].status)
+
+                ConnectionManager.connections[serverId] = socket;
 
                 const client = axios.create({
                     baseURL: `https://${ip}:${port}/`,
@@ -102,12 +106,16 @@ export default class ConnectionManager
                     `@ ${address} : Received message -> ` + 
                     message.data.toString()
                 ) 
+
+                if(server["client-state"].status == "DISABLED") {
+                    socket && socket.close()
+                }
                     
                 if(message.data == "should:pair") {
                     server["client-state"].status = "UNPAIRED"
                 } 
 
-                if(message.data == "keep:alive") {
+                if(message.data == "keep:alive" ) {
                     server["client-state"].status = "ONLINE"
                 } 
 
@@ -115,20 +123,28 @@ export default class ConnectionManager
                     const listenerFn = ConnectionManager.listeners[listener] 
                     listenerFn("message", message, serverId, socket)
                 }
+
             }
 
             socket.onclose = () => {
                 hasOpened = false
                 console.log(`@ ${address} : Closed.`)
+                
+
                 clearInterval(keepAliveInt)
                 
-                if(server["client-state"].status != "UNPAIRED") {
+                if(server["client-state"].status != "UNPAIRED" && 
+                   server["client-state"].status != "DISABLED") {
                     server["client-state"].status = "OFFLINE"
                 }
 
-                keepAliveInt && clearTimeout(keepAliveInt)
+                keepAliveInt && clearInterval(keepAliveInt)
 
                 socketTimeout = setTimeout(async () => {
+                    if(server["client-state"].status == "DISABLED") {
+                        clearTimeout(socketTimeout)
+                        return;
+                    }
                     socketTimeout && clearTimeout(socketTimeout)
                     socket && !hasOpened && socket.close()
                     socket = await createSocket()
@@ -143,8 +159,10 @@ export default class ConnectionManager
             socket.onerror = (error) => {
                 keepAliveInt && clearInterval(keepAliveInt)
                 console.error(error)
-                 
-                server["client-state"].status = "OFFLINE"
+
+                if(server["client-state"].status != "DISABLED") {
+                    server["client-state"].status = "OFFLINE"
+                }
 
                 for(let listener in ConnectionManager.listeners) {
                     const listenerFn = ConnectionManager.listeners[listener] 
@@ -152,18 +170,16 @@ export default class ConnectionManager
                 }
             }
 
-           
+            return socket
         }
 
-        socket = await createSocket()
+        socket = await createSocket()   
 
-    
-        ConnectionManager.connections[serverId] = socket; 
     }
 
     static async disconnect(serverId) {
         console.log("@ Disconnecting from server [" + serverId + "]")
-        connections[server].close()
+        ConnectionManager.connections[serverId].close()
     }
 
     static async reconnect(serverId) {
@@ -179,3 +195,5 @@ export default class ConnectionManager
         delete ConnectionManager.listeners[listener]
     }
 }
+
+window.ConnectionManager = ConnectionManager
