@@ -39,14 +39,13 @@ function getBrowser() {
 
 <template>
     <div class="client-info-component">
-     
         <div class="image">
             <img class="device-image" :src="getDeviceImage()" />
             <img class="sub-image" :src="getBrowserImage()" />
         </div>
         <div class="device-name"> 
             <div class="name-label"> 
-                LinuxMint-1234
+                {{ store.client.name }}
             </div>
         </div>
         <div class="show-details-button">

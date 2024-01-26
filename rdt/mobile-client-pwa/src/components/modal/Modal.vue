@@ -3,14 +3,14 @@
 </script>
 
 <template>
-    <div class="modal" v-if="isShown.value">
+    <div class="app-modal" v-if="isShown.value">
         <div class="dimmer"></div>
         <slot></slot>
     </div>
 </template>
 
 <style lang="scss" >
-    .modal {
+    .app-modal {
         position: fixed;
         top: 0px; 
         left: 0px; 
@@ -19,6 +19,7 @@
         justify-content: center;
         width: 100%;
         height: 100%;
+        z-index: 100;
 
         .dimmer {
             position: fixed;

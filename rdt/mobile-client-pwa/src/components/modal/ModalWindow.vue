@@ -20,7 +20,7 @@
                     <div v-for="buttonLabel in buttons">
                         <img 
                             :src="'/icons/' + buttonLabel + '.png'" 
-                            height="25"
+                            height="30"
                             class="button"
                             @click="() => onButtonTap(buttonLabel)"
                         />
@@ -46,9 +46,12 @@
         border-top-right-radius: 10px;
         border-bottom-left-radius: 5px;
         border-bottom-right-radius: 5px;
+        max-width: 80%;
+        height: auto;
+        margin: 0 auto;
 
         .header {
-            padding: 5px 10px;
+            padding: 0px 10px;
             background-color: rgb(8, 69, 77);
             font-weight: bold;
             color: white;
@@ -65,6 +68,12 @@
 
             > .buttons {
                 display: flex; 
+                align-items:  center;
+                justify-content: center;
+
+                img {
+                    margin-top: 5px;
+                }
                 
                 img:active {
                     opacity: 0.4;
@@ -72,7 +81,7 @@
             }
         }
 
-        .content {
+        > .content {
             border-bottom-left-radius: 10px;
             border-bottom-right-radius: 10px;
             padding: 10px;

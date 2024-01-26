@@ -12,3 +12,11 @@ body {
 * {
     font-family: Roboto; 
 }
+
+.error-box {
+    padding: 10px; 
+    width: 100%; 
+    border: 2px solid rgb(214, 126, 126); 
+    color: rgb(245, 121, 121);
+    border-radius: 5px;
+}

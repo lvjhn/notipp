@@ -1,6 +1,9 @@
 <script setup> 
 import ClientInfo from "@/components/sections/ClientInfo.vue"
 import ServerListing from "../components/sections/ServerListing.vue";
+import { currentPage } from "../composables/useUI";
+
+currentPage.value = "Servers"
 
 </script>
 

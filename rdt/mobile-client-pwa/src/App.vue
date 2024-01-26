@@ -1,39 +1,40 @@
 <script setup>
-    import { useRouter } from 'vue-router';
-    import isMobile from '../../../common/helpers/general/isMobile.js';
-    import NavigationRow from './components/NavigationRow.vue';
-    import {  navigationRowIndex } from './composables/useUI.js';
-    import Modal from "@/components/modal/Modal.vue"
-    import { modalWindow, setModal, showModal } from "./composables/useModal.js"
+import { useRouter } from 'vue-router';
+import isMobile from '../../../common/helpers/general/isMobile.js';
+import NavigationRow from './components/NavigationRow.vue';
+import {  navigationRowIndex } from './composables/useUI.js';
+import Modal from "@/components/modal/Modal.vue"
+import { modalWindow, setModal, showModal } from "./composables/useModal.js"
+import ResetDataModal from './modals/ResetDataModal.vue';
 
-    const router = useRouter();
+const router = useRouter();
 
-    const routeItems = [
-        {
-            title: 'Servers',
-            image: '/icons/home.png',
-            route: "/"
-        }, 
-        {
-            title: 'Logs', 
-            image: '/icons/parchment.png', 
-            route: "/logs"
-        },
-        {
-            title: 'Settings',
-            image: '/icons/settings.png',
-            route: "/settings"
-        }
-    ]
-
-    function isBrowserMobile() {
-        return isMobile(navigator.userAgent)
+const routeItems = [
+    {
+        title: 'Servers',
+        image: '/icons/home.png',
+        route: "/"
+    }, 
+    {
+        title: 'Logs', 
+        image: '/icons/parchment.png', 
+        route: "/logs"
+    },
+    {
+        title: 'Settings',
+        image: '/icons/settings.png',
+        route: "/settings"
     }
+]
 
-    function onChangeTab(index) {
-        navigationRowIndex.value = index
-        router.push(routeItems[index].route)
-    }
+function isBrowserMobile() {
+    return isMobile(navigator.userAgent)
+}
+
+function onChangeTab(index) {
+    navigationRowIndex.value = index
+    router.push(routeItems[index].route)
+}
 
 
 </script>
@@ -49,16 +50,17 @@
                 :active="navigationRowIndex"
                 @onChangeTab="onChangeTab"
             />
-            <Modal :isShown="modalWindow.isShown">
-                <component 
-                    :is="modalWindow.component.value" 
-                    v-bind="modalWindow.props.value" 
-                />
-            </Modal>
         </div>
         <div class="is-web" v-else>
             Instructions for computer access... [TODO]
         </div>
+
+        <Modal :isShown="modalWindow.isShown">
+            <component 
+                :is="modalWindow.component.value" 
+                v-bind="modalWindow.props.value" 
+            />
+        </Modal>
     </div> 
 </template>
 
@@ -81,10 +83,12 @@
     }
 
     .page {
-        height: 100%;
+        height: calc(100% - 60px);
         width: 100%;
         position: fixed;
         top: 0px;
         left: 0px;
+        overflow-y: scroll;
+        padding-bottom: 50px;
     }
 </style>
