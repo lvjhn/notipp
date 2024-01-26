@@ -76,7 +76,7 @@ export default class WsController
                 message = message.toString()
             }
 
-            await WsController.receiveMessage(message)
+            await WsController.receiveMessage(socket, message)
         });
 
         // on close 
@@ -116,7 +116,8 @@ export default class WsController
     /** 
      * Receive messages. 
      */
-    static async receiveMessage(message) {
+    static async receiveMessage(socket, message) {
+        console.log("Received message: " + message)
        
     }
 }

@@ -9,6 +9,7 @@ import { setupPinia } from './plugins/pinia.js'
 import { useMainStore } from './stores/main.store'
 import requestNotificationPermission from './utils/requestNotificationPermission'
 import ConnectionManager from './utils/ConnectionManager'
+import ReadStateManager from './utils/ReadStateManager'
 
 
 // create app 
@@ -29,3 +30,5 @@ app.mount("#app")
 // request permission for notifications 
 requestNotificationPermission()
 
+// initialize message counts
+ReadStateManager.initialize()

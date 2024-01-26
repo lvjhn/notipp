@@ -107,6 +107,11 @@ export default class HttpController
             Auth.authorizeClient,
             HttpController.putSyncLastRead
         )
+
+        app.get("/latest-id",
+            Auth.authorizeClient,
+            HttpController.getLatestId
+        )
     }
 
     static async get(req, res) {
@@ -307,5 +312,12 @@ export default class HttpController
         } else {
             res.send("UNAUTHORIZED")
         }
+    }
+
+    static async getLatestId(req, res) {
+        let results = Database.connection("Notifications")
+        results = results.max("id", { as: "id" }) 
+        results = await results 
+        res.send(results[0].id.toString())
     }
 }

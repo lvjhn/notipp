@@ -6,6 +6,7 @@ export default class ConnectionManager
     static connections = {}
     static store = null;
     static listeners = {}
+    static unread = {}
 
     static async initialize() {
         ConnectionManager.store = useMainStore() 
@@ -18,7 +19,8 @@ export default class ConnectionManager
                 continue;
             } 
             console.log("@ Connecting to " + server.server.id)
-            ConnectionManager.connect(server.server.id)    
+
+            ConnectionManager.connect(server.server.id);
         }
     }
 

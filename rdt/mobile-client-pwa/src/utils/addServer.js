@@ -49,7 +49,8 @@ export default async function addServer({
         
         // patch info with additional details 
         info["client-state"] = {
-            "status" : "IDENTIFIED"
+            "status" : "IDENTIFIED", 
+            "lastRead" : 0
         }
 
         /**

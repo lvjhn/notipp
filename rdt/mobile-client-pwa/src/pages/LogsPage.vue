@@ -3,7 +3,6 @@ import { currentPage } from "../composables/useUI";
 
 currentPage.value = "Logs"
 
-    
 </script>
 
 <template>

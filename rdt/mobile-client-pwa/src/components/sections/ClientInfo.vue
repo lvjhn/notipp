@@ -1,10 +1,11 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useMainStore } from '../../stores/main.store.js';
 import InfoField from '../widgets/InfoField.vue';
 import isMobile from '../../../../../common/helpers/general/isMobile';
 import detectBrowser from '../../../../../common/helpers/general/detectBrowser';
 import capitalize from '../../../../../common/helpers/general/capitalize';
+import ReadStateManager from '../../utils/ReadStateManager.js';
 
 const store = useMainStore();
 
@@ -35,6 +36,17 @@ function getBrowser() {
     return capitalize(detectBrowser(navigator.userAgent))
 }
 
+const total = computed(() => {
+    if(ReadStateManager.unread.value.length == 0) {
+        return 0
+    }
+    else {
+        return Object.values(ReadStateManager.unread.value)
+                     .reduce((a, b) => a + b, 0)
+    }
+})
+
+
 </script>
 
 <template>
@@ -42,17 +54,26 @@ function getBrowser() {
         <div class="image">
             <img class="device-image" :src="getDeviceImage()" />
             <img class="sub-image" :src="getBrowserImage()" />
+            
+
         </div>
         <div class="device-name"> 
             <div class="name-label"> 
                 {{ store.client.name }}
             </div>
         </div>
+
+        <div class="unread-messages" v-if="total > 0">
+                {{ total }} new events!
+        </div> 
+
+      
         <div class="show-details-button">
             <button class="btn" @click="toggleClientDetails">
                 {{ isClientDetailsShown ? 'Hide' : 'Show More' }} Details
             </button>
         </div>
+
         <div class="client-details" v-if="isClientDetailsShown">
             <InfoField 
                 label="Client ID"
@@ -116,6 +137,16 @@ function getBrowser() {
                 width: 85%;
                 margin: 0 auto;
             }          
+        }
+
+        .unread-messages {
+            margin-top: 0px;
+            margin-bottom: 20px;
+            box-shadow: 0px 0px 2px grey;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: rgb(7, 88, 7)
         }
 
        

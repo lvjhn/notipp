@@ -7,6 +7,7 @@ import RemoveAllServersModal from "@/modals/RemoveAllServersModal.vue"
 import UpdateServerModal from '../../modals/UpdateServerModal.vue';
 import QRInstructions from '../../modals/QRInstructions.vue';
 import ConnectionManager from '../../utils/ConnectionManager';
+import ReadStateManager from '../../utils/ReadStateManager.js';
 
 const store = useMainStore()
 
@@ -107,6 +108,7 @@ async function enable(index) {
     await ConnectionManager.connect(store.servers[index].server.id)
 }
 
+
 </script>
 
 <template>
@@ -160,7 +162,10 @@ async function enable(index) {
                 </div>
                 <div class="identifier">
                     <div class="name">
-                        {{ server.server.hostname }}
+                        {{ server.server.hostname }} 
+                        <span v-if="ReadStateManager.unread.value[server.server.id] > 0"> 
+                            ({{ ReadStateManager.unread.value[server.server.id]  }})
+                        </span>
                     </div>
                     <div class="address">
                         {{ server.server.ip + ":" + server.server.port }}
@@ -222,6 +227,11 @@ async function enable(index) {
         display: flex; 
         flex-direction: column;
         gap: 10px;
+        background-color: rgb(234, 234, 234);
+        padding-top: 30px;
+        padding-bottom: 50px;
+        height: auto;
+        margin-top: 50px;;
 
         .servers {
             display: flex;
@@ -237,6 +247,7 @@ async function enable(index) {
                 flex-direction: row;
                 border-radius: 5px;
                 gap: 0px;
+                background-color: white;
                 
                 .status-indicator {
                     width: 30px;

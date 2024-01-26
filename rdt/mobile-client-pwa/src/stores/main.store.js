@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import generateDeviceName from "../../../../common/helpers/general/generateDeviceName.js";
 import generateSecret from "../../../../common/helpers/general/generateSecret.js";
 import ConnectionManager from "../utils/ConnectionManager.js";
+import ReadStateManager from "../utils/ReadStateManager.js";
 
 export const useMainStore = defineStore("mainStore", {
     state: () => ({
@@ -120,7 +121,9 @@ export const useMainStore = defineStore("mainStore", {
     }), 
 
     getters: {
-
+        async countUnread() {
+            return 5;
+        }
     }, 
 
     actions: {
@@ -140,10 +143,11 @@ export const useMainStore = defineStore("mainStore", {
             if(index == -1) {
                 throw Error("Server not found")
             }
+            
             this.servers[index] = {
                 ...server, 
                 ...details
-            }
+            };
             
             (async () => {
                 await ConnectionManager.reconnect(serverId)
@@ -160,7 +164,8 @@ export const useMainStore = defineStore("mainStore", {
 
         async clearServers() {
             this.servers = []
-        }
+        },
+
     },
 
     persist: {

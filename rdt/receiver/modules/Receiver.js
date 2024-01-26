@@ -188,62 +188,62 @@ export default class Receiver
             })
         }   
 
-        async function reconnect() {
-            createSocketInt = setTimeout(async () => {
-                // console.log("@ Reconnecting...")
-                await createSocket()
-            }, 3000)
-        }
-
-        await reconnect()
+    async function reconnect() {
+        createSocketInt = setTimeout(async () => {
+            // console.log("@ Reconnecting...")
+            await createSocket()
+        }, 3000)
     }
 
-    static async closeServerSocket(serverId) {
-        const socket = Receiver.sockets[serverId]
-        socket.close()
-    }
+    await reconnect()
+}
 
-    static async handleSocketMessage(server, socket, message) {
-        console.log(message.toString())
-        
-        if(message == "keep:alive") {
-            if(server.mustChangeName) {
-                if(!(server.server.id in Receiver.isChangingName)) {
-                    Receiver.isChangingName[server.server.id] = true 
-                    const client = 
-                        await ConnectionManager.useHttpClient({
-                            ip: server.server.ip, 
-                            port: server.server.port,
-                            clientId: App.state.client.id,
-                            clientSecret: App.state.client.secret
-                        })
+static async closeServerSocket(serverId) {
+    const socket = Receiver.sockets[serverId]
+    socket.close()
+}
 
-                    await client.put("/clients/name", {
-                        name: App.state.client.name
-                    }) 
+static async handleSocketMessage(server, socket, message) {
+    console.log(message.toString())
+    
+    if(message == "keep:alive") {
+        if(server.mustChangeName) {
+            if(!(server.server.id in Receiver.isChangingName)) {
+                Receiver.isChangingName[server.server.id] = true 
+                const client = 
+                    await ConnectionManager.useHttpClient({
+                        ip: server.server.ip, 
+                        port: server.server.port,
+                        clientId: App.state.client.id,
+                        clientSecret: App.state.client.secret
+                    })
 
-                    delete Receiver.isChangingName[server.server.id]
-                    server.mustChangeName = false
-                    Receiver.eb.publish(["changed:name", server])
-                }
-            }
-        }
+                await client.put("/clients/name", {
+                    name: App.state.client.name
+                }) 
 
-        else if(message == "should:pair") {
-            server.status = "UNPAIRED"
-            Receiver.eb.publish(["should:pair", server])
-        }
-
-        else if(typeof message == "object") {
-            message = JSON.parse(message) 
-
-            if(message.type == "notification") {
-                execSync(
-                    `notify-send ` + 
-                    `"${message.details.data.title}" ` +
-                    `"${message.details.data.options.body}"`
-                )
+                delete Receiver.isChangingName[server.server.id]
+                server.mustChangeName = false
+                Receiver.eb.publish(["changed:name", server])
             }
         }
     }
+
+    else if(message == "should:pair") {
+        server.status = "UNPAIRED"
+        Receiver.eb.publish(["should:pair", server])
+    }
+
+    else if(typeof message == "object") {
+        message = JSON.parse(message) 
+
+        if(message.type == "notification") {
+            execSync(
+                `notify-send ` + 
+                `"${message.details.data.title}" ` +
+                `"${message.details.data.options.body}"`
+            )
+        }
+    }
+}
 }
