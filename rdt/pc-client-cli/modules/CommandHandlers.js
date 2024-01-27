@@ -106,16 +106,22 @@ export default class CommandHandlers
 
         function formatStatusText(status) {
             if(status == "ADDED") {
-                return status.bold.grey
+                return status.bold.cyan
             }
             else if(status == "ONLINE") {
-                return status.bold.cyan
+                return status.bold.green
             }
             else if(status == "OFFLINE") {
                 return status.bold.red
             }
             else if(status == "UNPAIRED") {
                 return status.bold.yellow
+            }
+            else if(status == "DISABLED") {
+                return status.bold.gray
+            }
+            else if(status == "ENABLED") {
+                return status.bold.white
             }
             else {
                 return status 
@@ -195,7 +201,9 @@ export default class CommandHandlers
     static async handleUpdateServer(identifier, options) {
         let ip = options.ip 
         let port = options.port
-        const hasByIdFlag = options.hasByIdFlag
+        const hasByIdFlag = options.byId
+        const hasDisableFlag = options.disable
+        const hasEnableFlag = options.enable
 
         if(App.state.servers.length == 0) {
             console.log("@ Server list is empty.".bold.grey)
@@ -270,9 +278,19 @@ export default class CommandHandlers
             process.exit() 
         }
 
-        await App.onUpdateServer(targetId, fetchedInfo)
+        if(hasDisableFlag) {
+            await App.onDisableServer(targetId)
+            console.log("@ Disabled server.".bold.cyan)
+        } 
+        else if(hasEnableFlag) {
+            await App.onEnableServer(targetId)
+            console.log("@ Enabled server.".bold.cyan) 
+        }
+        else { 
+            await App.onUpdateServer(targetId, fetchedInfo)
+            console.log("@ Updated server.".bold.cyan)
+        }
 
-        console.log("@ Updated server.".bold.cyan)
         process.exit()
     }
 

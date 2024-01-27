@@ -103,6 +103,23 @@ export default class Receiver
             await App.initState()
             await App.init() 
         }
+        else if(event == "disable:server") {
+            App.state.servers[data[0]].disabled = true 
+            await App.saveData() 
+            if(!(data[0] in App.sockets)) {
+                return;
+            }
+            App.sockets[data[0]].close()   
+            delete App.sockets[data[0]]
+        }
+        else if(event == "enable:server") {
+            App.state.servers[data[0]].disabled = false 
+            await App.saveData() 
+            if(!(data[0] in App.sockets)) {
+                return;
+            }
+            Receiver.createSocket(data[0]) 
+        }
     }
 
     static async initApp() {
@@ -120,6 +137,10 @@ export default class Receiver
         const server = App.state.servers.find(
             (item) => item.server.id == serverId
         )
+
+        if(server.status == "DISABLED") {
+            return;
+        }
 
         const ip = server.server.ip 
         const port = server.server.port 

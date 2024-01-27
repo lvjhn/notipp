@@ -119,7 +119,7 @@ export default class App
     
     static async onUpdateServer(targetId, newDetails) { 
         const currentServerDetails = 
-            App.state.serentvers.find((item) => item.server.id == targetId)
+            App.state.servers.find((item) => item.server.id == targetId)
 
         const serverIndex = App.state.servers.indexOf(currentServerDetails) 
 
@@ -132,6 +132,30 @@ export default class App
 
         App.eb && App.eb.publish(["update:server", targetId, newDetails])
     }
+
+    static async onDisableServer(targetId) {
+        const item  = 
+            App.state.servers.find((item) => item.server.id == targetId)
+        
+        item.disabled = true; 
+        item.status = "DISABLED"
+
+        await App.saveData() 
+
+        App.eb && App.eb.publish(["disable:server", targetId])
+    } 
+
+    static async onEnableServer(targetId) {
+        const item  = 
+            App.state.servers.find((item) => item.server.id == targetId)
+        
+        item.disabled = false; 
+        item.status = "ENABLED"
+
+        await App.saveData() 
+
+        App.eb && App.eb.publish(["enable:server", targetId])
+    } 
 
     static async onRemoveServer(targetId) {
         const item = App.state.servers.find(item => item.id == targetId)

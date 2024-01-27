@@ -83,6 +83,14 @@ import { Chance } from "chance";
             "specifies that the identifier should be the server's ID"
         )
         .option(
+            "-d, --disable", 
+            "disables alerts for the specified server"
+        )
+        .option(
+            "-e, --enable", 
+            "enables alerts for the specified server"
+        )
+        .option(
             "-i, --ip <ip>", 
             "the ip of the server to add"
         )
