@@ -157,6 +157,7 @@ export default class ConnectionManager
                     server["client-state"].status = "UNPAIRED"
 
                     showDisconnected = false; 
+                    showOnline = true;
                 
                     if(showUnpaired) {
                         showUnpaired = false; 
