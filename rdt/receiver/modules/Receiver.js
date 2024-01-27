@@ -190,7 +190,7 @@ export default class Receiver
 
     async function reconnect() {
         createSocketInt = setTimeout(async () => {
-            // console.log("@ Reconnecting...")
+            createSocketInt && clearTimeout(createSocketInt) 
             await createSocket()
         }, 3000)
     }

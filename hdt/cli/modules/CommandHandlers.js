@@ -29,17 +29,8 @@ import { readFile, stat } from "fs/promises";
 import { existsSync } from "fs";
 import axios from "axios";
 import { Agent } from "https";
-
-async function makeClientOptions() {
-    return {
-        httpsAgent: new Agent({
-            ca: await GeneralInfo.getCACert()
-        }),
-        headers: {
-            "server-secret" : await GeneralInfo.getServerSecret()
-        }
-    }
-}
+import makeClientOptions from "../../../common/utils/makeClientOptions.js";
+import ConnectionManager from "../../../common/utils/ConnectionManager.js";
 
 export default class CommandHandlers 
 {
@@ -495,10 +486,16 @@ export default class CommandHandlers
             ]
         ]
 
+        const connectedIDs = 
+            (await Clients.getConnected()).map(x => x.id)
+
+        console.log(connectedIDs)
+
         for(let client of clients) {
             clientTable.push([
                 client.isPaired ? "YES".green.bold : "NO".red.bold,
-                client.isConnected ? "YES".green.bold : "NO".red.bold,
+                connectedIDs.indexOf(client.id) != -1 ? 
+                    "YES".green.bold : "NO".red.bold, 
                 client.name.bold.blue,
                 detectBrowser(client.userAgent), 
                 client.id, 
@@ -526,7 +523,7 @@ export default class CommandHandlers
                 jumpToDate: startDate, 
                 modifier: modifier, 
                 query: query,
-                cursor: cursor
+                cursor: cursor,
             })
         })  
 

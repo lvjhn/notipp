@@ -350,7 +350,7 @@ export default class CommandHandlers
 
     static async handleNotifs(identifier, options) {
         const hasByIdFlag = options.byId 
-        
+
         // get target id of server to visit
         let targetId; 
         
@@ -381,9 +381,11 @@ export default class CommandHandlers
         else if(identifier == null) {
             const servers = 
                 App.state.servers.filter(item => item.status == "ONLINE")
+                
 
             if(servers.length == 0) {
                 console.log("@ No online servers.".bold.grey)
+                process.exit()
             }
             else {
                 targetId = await ServerIdentificationPrompt.run(

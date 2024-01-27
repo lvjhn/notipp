@@ -29,9 +29,6 @@ export default class WsController
             socket.close() 
         }
 
-        // set connected status of client 
-        await Clients.setConnectedStatus(id)
-
         // check if client should pair
         const client = await Clients.get(id) 
 
@@ -85,9 +82,6 @@ export default class WsController
             WsController.connections[id].slice(index)
 
             console.log("\t> Client disconnected...")
-
-            // set disconnected status of client 
-            await Clients.setDisconnectedStatus(id)
         })
 
         // keep socket alive

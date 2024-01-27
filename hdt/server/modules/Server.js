@@ -18,6 +18,7 @@ import cors from "cors"
 import bodyParser from "body-parser";
 import GeneralInfo from "../../core/modules/GeneralInfo.js";
 import Config from "../../core/modules/Config.js";
+import Database from "../../data/Database.js";
 
 export default class Server 
 {
@@ -107,12 +108,12 @@ export default class Server
     
         // ----- create websocket server
         console.log("\t> Creating websocket server...")
-        
+
         Server.wsServer = new WebSocketServer({ 
             server: Server.httpsServer   
         })
 
-        Server.wsServer.on('connection', async (socket, request) => {
+        Server.wsServer.on("connection", async (socket, request) => {
             await WsController.handleConnection(socket, request)
         });
     

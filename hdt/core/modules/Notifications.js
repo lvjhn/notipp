@@ -17,7 +17,7 @@ export default class Notifications
      * Quick search 
      */
     static async generalSearch({ 
-        query, jumpToDate, perPage, cursor, modifier
+        query, jumpToDate, perPage, cursor, modifier = "before"
     }) {
 
         // get date string

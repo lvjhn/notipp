@@ -64,7 +64,6 @@ export default class Database
             table.string("secret").notNullable()
             table.string("userAgent").notNullable()
             table.integer("lastRead").notNullable()
-            table.boolean("isConnected").notNullable()
             table.boolean("isPaired").notNullable()
         });
     }

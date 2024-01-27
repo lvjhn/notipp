@@ -2,12 +2,14 @@
  * Clients Module 
  */
 
+import axios from "axios";
 import generateSecret from "../../../common/helpers/general/generateSecret.js";
 import DataItems from "../../data/DataItems.js";
 import Database from "../../data/Database.js";
 import Config from "./Config.js";
 import GeneralInfo from "./GeneralInfo.js";
 import Queries from "./Queries.js";
+import makeClientOptions from "../../../common/utils/makeClientOptions.js";
 
 export default class Clients 
 {
@@ -24,7 +26,6 @@ export default class Clients
             details.isPaired = 0
         }
 
-        details.isConnected = 0
         details.lastRead = 0
 
         // check if pairing secret is valid 
@@ -120,25 +121,48 @@ export default class Clients
      * Get disconnected clients.
      */
     static async getDisconnected() {
-        return (
-            await Database.connection("Clients").where("isConnected", 0)
-        )
+        const portNo = 
+            (await Config.getConfig()).server.portNo
+        const clientIds =    
+            (await axios.get(
+                "https://localhost:" + portNo + "/connected-clients",
+                await makeClientOptions()            
+            )).data
+        const clients = 
+            await (Database.connection("Clients")
+                .whereNotIn("id", clientIds)
+            )
+        return clients
     }
 
     /**
      * Get connected clients. 
      */
     static async getConnected() {
-        return (
-            await Database.connection("Clients").where("isConnected", 1)
-        )
+        const portNo = 
+            (await Config.getConfig()).server.portNo
+        const clientIds =    
+            (await axios.get(
+                "https://localhost:" + portNo + "/connected-clients",
+                await makeClientOptions()            
+            )).data
+        const clients = 
+            await (Database.connection("Clients")
+                .whereIn("id", clientIds)
+            )
+        return clients
     }
 
     /**
      * Check if client is connected. 
      */
     static async isConnected(clientId) {
-
+        const clientIds =    
+            (await axios.get(
+                "https://localhost:" + portNo + "/connected-clients",
+                await makeClientOptions()            
+            )).data
+        return clientId in clientIds 
     }
 
     /** 
@@ -341,27 +365,5 @@ export default class Clients
         } 
 
         return true; 
-    }
-
-    /** 
-     * Set connected status. 
-     */
-    static async setConnectedStatus(clientId) {
-        await (
-            Database.connection("Clients") 
-                .update({ isConnected: 1 }) 
-                .where("id", clientId)
-        )
-    }
-
-    /** 
-     * Set disconnected status. 
-     */
-    static async setDisconnectedStatus(clientId) {
-        await (
-            Database.connection("Clients") 
-                .update({ isConnected: 0 }) 
-                .where("id", clientId)
-        )
     }
 }   

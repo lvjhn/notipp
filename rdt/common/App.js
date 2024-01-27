@@ -119,7 +119,7 @@ export default class App
     
     static async onUpdateServer(targetId, newDetails) { 
         const currentServerDetails = 
-            App.state.servers.find((item) => item.server.id == targetId)
+            App.state.serentvers.find((item) => item.server.id == targetId)
 
         const serverIndex = App.state.servers.indexOf(currentServerDetails) 
 

@@ -43,8 +43,7 @@ export default class DatabaseSeeder
                 secret: generateSecret(), 
                 userAgent: randomUserAgent.getRandom(), 
                 lastRead: 0,
-                isPaired: randomGen.pickone([true, false]),
-                isConnected: randomGen.pickone([true, false])
+                isPaired: randomGen.pickone([true, false])
             })
         }
     }

@@ -95,8 +95,6 @@ async function checkClients() {
 
     // // await Clients.remove("9f5142d5-6003-5910-a8a3-52a910a41fff")
     // // await Clients.removeAll() 
-
-    await Clients.setConnectedStatus("75c35894-e74a-48d3-af37-f41cea9df9b3")
 }
 
 
