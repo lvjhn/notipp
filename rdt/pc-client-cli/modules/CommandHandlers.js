@@ -566,7 +566,5 @@ export default class CommandHandlers
 
         process.exit()
     }
-
-
 }   
 
