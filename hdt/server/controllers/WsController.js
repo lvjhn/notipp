@@ -79,13 +79,16 @@ export default class WsController
         // on close 
         socket.on("close", async (socket) => {
             const index = WsController.connections[id].indexOf(socket)
-            WsController.connections[id].slice(index)
-
+            WsController.connections[id].splice(index, 1)
+            clearInterval(kai)
+            if(WsController.connections[id].length == 0) {
+                delete WsController.connections[id]
+            }
             console.log("\t> Client disconnected...")
         })
 
         // keep socket alive
-        await WsController.keepAlive(socket)
+        const kai = await WsController.keepAlive(socket)
     }
 
     /** 
@@ -105,6 +108,7 @@ export default class WsController
             }, 
             keepAliveInterval
         )
+        return keepAliveInterval
     }
 
     /** 

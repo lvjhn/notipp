@@ -489,7 +489,6 @@ export default class CommandHandlers
         const connectedIDs = 
             (await Clients.getConnected()).map(x => x.id)
 
-        console.log(connectedIDs)
 
         for(let client of clients) {
             clientTable.push([

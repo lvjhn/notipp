@@ -53,11 +53,21 @@ export default class ConnectionManager
         let keepAliveInt;
         let hasOpened = false;
         
+        let clientName = ConnectionManager.store.client.name;
+        let serverName = server.server.hostname; 
+
+        let showDisconnected = true;
+        let showUnpaired = true; 
+        let showOnline = true;
+
         async function createSocket() {
+            
 
             socket = new WebSocket(address)
 
             socket.onopen = async () => {
+
+
                 hasOpened = true;
                 clearTimeout(socketTimeout)
                 console.log(`@ ${address} : Opened.`)
@@ -79,8 +89,29 @@ export default class ConnectionManager
                 
                 if((await client.get("/is-paired")).data == "OK") {
                     server["client-state"].status = "ONLINE"
+
+                    navigator.serviceWorker.ready.then((registration) => {
+                        registration.showNotification(
+                            clientName, 
+                            {
+                                body: `Connected to '${servername}'`
+                            }
+                        )
+                    })
                 } else {
                     server["client-state"].status = "UNPAIRED"
+
+                    if(showUnpaired) {
+                        showUnpaired = false; 
+                        navigator.serviceWorker.ready.then((registration) => {
+                            registration.showNotification(
+                                clientName, 
+                                {
+                                    body: `Client must be paired in '${serverName}'`
+                                }
+                            )
+                        })
+                    }
                 }
 
                 /**
@@ -111,14 +142,53 @@ export default class ConnectionManager
 
                 if(server["client-state"].status == "DISABLED") {
                     socket && socket.close()
+
+                    navigator.serviceWorker.ready.then((registration) => {
+                        registration.showNotification(
+                            clientName, 
+                            {
+                                body: `'${serverName}' has been disabled.`
+                            }
+                        )
+                    })
                 }
                     
                 if(message.data == "should:pair") {
                     server["client-state"].status = "UNPAIRED"
+
+                    showDisconnected = false; 
+                
+                    if(showUnpaired) {
+                        showUnpaired = false; 
+                        
+                        navigator.serviceWorker.ready.then((registration) => {
+                            registration.showNotification(
+                                clientName, 
+                                {
+                                    body: `Client must be paired in '${serverName}'`
+                                }
+                            )
+                        })
+                    }
                 } 
 
                 if(message.data == "keep:alive" ) {
+                    showUnpaired = true; 
+                    showDisconnected = true;
+
                     server["client-state"].status = "ONLINE"
+
+                    if(showOnline) {
+                        showOnline = false;
+                        navigator.serviceWorker.ready.then((registration) => {
+                            registration.showNotification(
+                                clientName, 
+                                {
+                                    body: `Connected to '${serverName}'`
+                                }
+                            )
+                        })
+                    }
                 } 
 
                 for(let listener in ConnectionManager.listeners) {
@@ -138,6 +208,18 @@ export default class ConnectionManager
                 if(server["client-state"].status != "UNPAIRED" && 
                    server["client-state"].status != "DISABLED") {
                     server["client-state"].status = "OFFLINE"
+
+                    
+                    if(showDisconnected) {
+                        navigator.serviceWorker.ready.then((registration) => {
+                            registration.showNotification(
+                                clientName, 
+                                {
+                                    body: `Disconnected from '${serverName}'`
+                                }
+                            )
+                        })
+                    }
                 }
 
                 keepAliveInt && clearInterval(keepAliveInt)

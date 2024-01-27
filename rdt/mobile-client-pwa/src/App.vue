@@ -60,7 +60,13 @@ onMounted(() => {
             />
         </div>
         <div class="is-web" v-else>
-            Instructions for computer access... [TODO]
+            <h1>Notipp</h1>
+            <hr style="border: 2px solid grey;"/>
+            <h3>This app is not available on PC.</h3>
+            <h4>
+                Please visit this site on your mobile devices and it 
+                should work as expected.
+            </h4>
         </div>
 
         <Modal :isShown="modalWindow.isShown">
@@ -75,7 +81,7 @@ onMounted(() => {
 <style lang="scss" scoped>
     .is-web {
         width: 1024px;
-        margin: 0 auto;
+        margin: 250px auto;
     }
 
     .is-mobile {
