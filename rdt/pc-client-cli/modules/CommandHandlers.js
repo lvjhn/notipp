@@ -54,6 +54,7 @@ export default class CommandHandlers
         const hasOnlineFlag = options.online
         const hasOfflineFlag = options.offline
         const hasUnpairedFlag = options.unpaired
+        const hasWithUnreadCountFlag = options.unreadCount
 
 
         let servers; 
@@ -82,6 +83,25 @@ export default class CommandHandlers
             process.exit()
         }
 
+        if(hasWithUnreadCountFlag) {
+            for(let server of servers) {
+                const client = 
+                    await ConnectionManager.useHttpClient({
+                        ip: server.server.ip, 
+                        port: server.server.port, 
+                        clientId: App.state.client.id, 
+                        clientSecret: App.state.client.secret
+                    })
+                    
+                const countUnreadRes =
+                    await client.get("/count-unread")
+
+                const countUnread = countUnreadRes.data 
+
+                server.unread = countUnread
+            }
+        }
+
         servers.sort((a, b) => a.name > b.name ? 1 : -1)
 
         function formatStatusText(status) {
@@ -103,15 +123,25 @@ export default class CommandHandlers
         }
 
         for(let serverData of servers) {
-           console.log("| " + serverData.server.hostname.bold + 
-                       " (" + formatStatusText(serverData.status) + ")")
-           console.log("\t" + "ID        : ".bold + serverData.server.id)
-           console.log("\t" + "Username  : ".bold + serverData.notipp.username)
-           console.log("\t" + "IP        : ".bold + serverData.server.ip)
-           console.log("\t" + "Port      : ".bold + serverData.server.port)
-           console.log("\t" + "OS        : ".bold + serverData.server.os)
-           console.log("\t" + "CA-FP     : ".bold + serverData["ca-cert"].fingerprint)
-           console.log("\t" + "CA-EXP    : ".bold + serverData["ca-cert"].expiration)
+            let tail;
+
+            if(hasWithUnreadCountFlag) {
+                tail = `${serverData.unread} new mesages.`.bold.green.italic
+            }
+
+            console.log(
+                "| " + serverData.server.hostname.bold + " " +
+                "(" + formatStatusText(serverData.status) + ")" + 
+                (tail ? "-> " + tail : "")
+            )
+            
+            console.log("\t" + "ID        : ".bold + serverData.server.id)
+            console.log("\t" + "Username  : ".bold + serverData.notipp.username)
+            console.log("\t" + "IP        : ".bold + serverData.server.ip)
+            console.log("\t" + "Port      : ".bold + serverData.server.port)
+            console.log("\t" + "OS        : ".bold + serverData.server.os)
+            console.log("\t" + "CA-FP     : ".bold + serverData["ca-cert"].fingerprint)
+            console.log("\t" + "CA-EXP    : ".bold + serverData["ca-cert"].expiration)
         }
 
         process.exit()
@@ -350,6 +380,7 @@ export default class CommandHandlers
 
     static async handleNotifs(identifier, options) {
         const hasByIdFlag = options.byId 
+        const hasMarkAsReadFlag = options.markAsRead
 
         // get target id of server to visit
         let targetId; 
@@ -365,6 +396,23 @@ export default class CommandHandlers
                         item.status == "ONLINE"
                     )
                 )
+        
+            for(let server of servers) {
+                const client = 
+                    await ConnectionManager.useHttpClient({
+                        ip: server.server.ip, 
+                        port: server.server.port, 
+                        clientId: App.state.client.id, 
+                        clientSecret: App.state.client.secret
+                    })
+                    
+                const countUnreadRes =
+                    await client.get("/count-unread")
+
+                const countUnread = countUnreadRes.data 
+
+                server.unread = countUnread
+            }
             
             if(servers.length == 1) {
                 targetId = servers[0].server.id
@@ -381,7 +429,24 @@ export default class CommandHandlers
         else if(identifier == null) {
             const servers = 
                 App.state.servers.filter(item => item.status == "ONLINE")
-                
+
+            
+            for(let server of servers) {
+                const client = 
+                    await ConnectionManager.useHttpClient({
+                        ip: server.server.ip, 
+                        port: server.server.port, 
+                        clientId: App.state.client.id, 
+                        clientSecret: App.state.client.secret
+                    })
+                    
+                const countUnreadRes =
+                    await client.get("/count-unread")
+
+                const countUnread = countUnreadRes.data 
+
+                server.unread = countUnread
+            }
 
             if(servers.length == 0) {
                 console.log("@ No online servers.".bold.grey)
@@ -389,8 +454,11 @@ export default class CommandHandlers
             }
             else {
                 targetId = await ServerIdentificationPrompt.run(
-                    "Select a server to view notifications from: ", 
-                    servers
+                    `Select a server to ${hasMarkAsReadFlag ? "mark as read" : "view " } notifications from: `, 
+                    servers, 
+                    (server) =>  
+                        server.server.hostname.bold.white +  " " + 
+                        ("[Unread: " + server.unread + "]").bold.green
                 )
             }
         }
@@ -415,6 +483,8 @@ export default class CommandHandlers
         const query = options.query ?? "%%"
         const cursor = options.cursor
 
+        let hasRead = false;
+
         await NotificationsViewer.show({
             startDate, 
             modifier,
@@ -429,7 +499,16 @@ export default class CommandHandlers
                         modifier,
                         cursor
                     }
+                });
+
+
+            if(!hasRead && hasMarkAsReadFlag) {
+                hasRead = true; 
+                await client.put("/sync-last-read", {
+                    lastRead: response.data.data[0].id
                 })
+                process.exit()
+            }
 
             return response.data
         })  
@@ -448,4 +527,45 @@ export default class CommandHandlers
         console.log("@ Changed name.".bold.cyan) 
         process.exit()
     }
+
+    static async handleCountUnread() {
+        const servers = App.state.servers; 
+
+        let total = 0;
+
+        for(let server of servers) {
+            try {
+                const client = 
+                    await ConnectionManager.useHttpClient({
+                        ip: server.server.ip, 
+                        port: server.server.port, 
+                        clientId: App.state.client.id, 
+                        clientSecret: App.state.client.secret
+                    })
+                
+                const countUnreadRes =
+                        await client.get("/count-unread")
+
+                const countUnread = countUnreadRes.data 
+
+                server.unread = countUnread
+                total += server.unread 
+            } catch(e) {
+                server.unread = "<OFFLINE>"
+            }
+            
+        }
+
+        console.log("@ Total Unread: ".bold + total)
+        for(let server of servers) {
+            if(server.unread == "<OFFLINE>" || server.unread == 0) {
+                continue;
+            }
+            console.log(`\t# ${server.server.hostname.green.bold} : ` + server.unread)
+        }
+
+        process.exit()
+    }
+
+
 }   

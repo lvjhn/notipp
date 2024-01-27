@@ -52,6 +52,10 @@ import { Chance } from "chance";
             "-t, --unpaired", 
             "show unpaired servers only"
         )
+        .option(
+            "-c, --unread-count", 
+            "display server with unread count"
+        )
         .action(CommandHandlers.handleServers)
     
     program
@@ -148,13 +152,23 @@ import { Chance } from "chance";
             "-i, --by-id", 
             "specified that the identifier should be the server's ID" 
         )
+        .option(
+            "-r, --mark-as-read", 
+            "mark the messages as read" 
+        )
         .action(CommandHandlers.handleNotifs)
 
     program 
         .command("clear:data") 
         .description("clears the application's data") 
         .action(CommandHandlers.handleClearData)
+
+    program 
+        .command("count:unread") 
+        .description("counts unread messages")
+        .action(CommandHandlers.handleCountUnread)
      
+
     /**
      * Parse program.
      */

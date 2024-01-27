@@ -257,6 +257,7 @@ export default class HttpController
     static async putSyncLastRead(req, res) {
         const clientId = req.headers["client-id"] 
         const lastRead = req.body.lastRead 
+        console.log(lastRead)
         await Clients.update(clientId, { lastRead })
         res.send("OK")
     }
