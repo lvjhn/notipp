@@ -17,6 +17,9 @@ import WsController from "./WsController.js"
 import Database from "../../data/Database.js"
 import GeneralInfo from "../../core/modules/GeneralInfo.js"
 import { WebSocket } from "ws"
+import Config from "../../core/modules/Config.js"
+import base64Encode from "../../../common/helpers/general/base64Encode.js"
+
 
 export default class HttpController 
 {   
@@ -115,7 +118,11 @@ export default class HttpController
     }
 
     static async get(req, res) {
-        res.render("index")
+        res.render("index", { 
+            data: await GeneralInfo.getFullInfo(), 
+            showQR: (await Config.getConfig()).server.homepageQR,
+            qrImage: base64Encode(BASE_PATH + "/outputs/pair-qr.png")
+        }) 
     }
 
     static async getInfo(req, res) {

@@ -1,0 +1,181 @@
+<html lang="en">
+    <head> 
+        <meta charset="utf-8" /> 
+        <title>Notipp-Server</title>
+        <style>
+            body {
+                margin: 0 auto;
+                font-family: arial, calibri;
+                padding-top: 50px;
+                padding-bottom: 100px;
+                width: 960px;
+
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+
+                table {
+                    width: 960px;
+                }
+
+                tr:first-child {
+                    background-color: grey;
+                    color: white;
+                }
+
+                td:first-child {
+                    font-weight: bold;
+                    width: 200px;
+                }
+                
+                td {
+                    padding: 5px 10px;
+                }
+                
+            }
+
+            .header {
+                display: flex; 
+                
+                h1 {
+                    flex: 1;
+                    display: flex;
+                    align-items: center;
+                }
+
+                img {
+                    height: 250px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Notipp-Server</h1>
+            <img src="data:image/png;base64,{{ qrImage }}" />
+        </div>
+
+        <table border="1"> 
+            <tr>
+                <th colspan="2">
+                    NOTIPP-SYSTEM
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    VERSION
+                </td>
+                <td>
+                    {{ data.notipp.version }}
+                </td>
+            </tr> <tr>
+                <td>
+                    USERNAME
+                </td>
+                <td>
+                    {{ data.notipp.username }}
+                </td>
+            </tr>
+        </table>
+
+        <table border="1"> 
+            <tr>
+                <th colspan="2">
+                    NOTIPP-SERVER
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    ID
+                </td>
+                <td>
+                    {{ data.server.id }}
+                </td>
+            </tr> 
+            <tr>
+                <td>
+                    HOSTNAME
+                </td>
+                <td>
+                    {{ data.server.hostname }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    IP
+                </td>
+                <td>
+                    {{ data.server.ip }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    PORT
+                </td>
+                <td>
+                    {{ data.server.port }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    OS
+                </td>
+                <td>
+                    {{ data.server.os }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    SSL-CERT
+                </td>
+                <td>
+                    <table style="width: 760">
+                        <th colspan="2">
+                            CERT-DETAILS
+                        </th>
+                        <tr>
+                            <td>
+                                FINGERPRINT
+                            </td>
+                            <td>
+                                {{ data.server.ssl-cert.gingerprint }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                EXPIRATION
+                            </td>
+                            <td>
+                                {{ data.server.ssl-cert.expiration }}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <table border="1"> 
+            <tr>
+                <th colspan="2">
+                    CA-CERT
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    FINGERPRINT
+                </td>
+                <td>
+                    {{ data.ca-cert.fingerprint }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    EXPIRATION
+                </td>
+                <td>
+                    {{ data.ca-cert.expiration }}
+                </td>
+            </tr>
+        </table>
+    </body>
+</html> 

@@ -65,7 +65,7 @@ export default class Certificates
                 BASE_PATH + "/common/utils" + 
                 "/generators/generate-ca-certificate.sh"
 
-            const username =
+        const username =
                 await GeneralInfo.getUsername()
 
             exec(`bash ${UTIL_PATH} ${username}`, (error, stdout, stderr) => {
