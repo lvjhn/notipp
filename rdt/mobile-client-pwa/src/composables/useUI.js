@@ -1,5 +1,6 @@
 import { computed, ref, shallowRef } from "vue"
 import { useRouter } from "vue-router"
+import { useMainStore } from "../stores/main.store";
 
 const router = useRouter()
 
@@ -13,5 +14,9 @@ function determineIndex() {
 export const navigationRowIndex = computed(() => determineIndex())
 
 export const useUI = () => {
-    
+    const store = useMainStore()
+
+    return {
+        currentPage: ref(store.servers[0])
+    }    
 }

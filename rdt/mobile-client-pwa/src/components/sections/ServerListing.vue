@@ -8,10 +8,10 @@ import UpdateServerModal from '../../modals/UpdateServerModal.vue';
 import QRInstructions from '../../modals/QRInstructions.vue';
 import ConnectionManager from '../../utils/ConnectionManager';
 import ReadStateManager from '../../utils/ReadStateManager.js';
+import { useUI } from '../../composables/useUI.js';
+import { useRouter } from 'vue-router';
 
 const store = useMainStore()
-
-
 
 function sortedServers() {
     return filteredServers.value.sort(
@@ -20,31 +20,43 @@ function sortedServers() {
 }
 
 const filteredServers = computed(() => {
+    let servers = store.servers 
+
+    if(searchTerm.value != "") {
+        servers = 
+            store
+                .servers
+                .filter(
+                    (item) => item.server.hostname.indexOf(searchTerm.value) != -1
+                )
+    }
+
+
     if(filter.value == "ALL") {
-        return store.servers
+        return servers
     }
     else if(filter.value == "ONLINE") {
-        return store.servers.filter(
+        return servers.filter(
             item => item["client-state"].status == "ONLINE"
         )
     }
     else if(filter.value == "OFFLINE") {
-        return store.servers.filter(
+        return servers.filter(
             item => item["client-state"].status == "OFFLINE"
         )
     }
     else if(filter.value == "UNPAIRED") {
-        return store.servers.filter(
+        return servers.filter(
             item => item["client-state"].status == "UNPAIRED"
         )
     }
     else if(filter.value == "DISABLED") {
-        return store.servers.filter(
+        return servers.filter(
             item => item["client-state"].status == "DISABLED"
         )
     }
     else if(filter.value == "ENABLED") {
-        return store.servers.filter(
+        return  servers.filter(
             item => item["client-state"].status != "DISABLED"
         )
     }
@@ -55,6 +67,8 @@ const filteredServers = computed(() => {
 
 const moreOptionsIndex = ref(-1)
 const filter = ref("ALL")
+const searchTerm = ref("")
+const router = useRouter()
 
 function showMoreOptions(event, index) {
     event.preventDefault()
@@ -94,7 +108,12 @@ async function update(index) {
     showModal() 
 }
 
-async function remove(index) {
+async function remove(event, index) {
+    event.preventDefault() 
+    event.stopPropagation()
+    if(useUI().currentPage.value == store.servers[index]) {
+        useUI().currentPage.value = store.servers[0]
+    }
     store.servers.splice(index, 1)
 }
 
@@ -108,6 +127,10 @@ async function enable(index) {
     await ConnectionManager.connect(store.servers[index].server.id)
 }
 
+async function handleServerItemClick(server)  {
+    currentServer.value = server 
+    router.push("/logs")
+}
 
 </script>
 
@@ -140,6 +163,12 @@ async function enable(index) {
             </div>
         </div>
         <div class="filters">
+            <input 
+                type="form-input" 
+                placeholder="Enter search term..."
+                style="padding: 5px 10px;"
+                v-model="searchTerm"
+            />
             <select v-model="filter" class="form-select">
                 <option value="ALL">All</option>
                 <option value="ONLINE">Online</option>
@@ -150,7 +179,11 @@ async function enable(index) {
             </select>
         </div>
         <div class="servers" v-if="store.servers.length > 0">
-            <div class="server-item" v-for="server, index in sortedServers()">
+            <div 
+                class="server-item" 
+                v-for="server, index in sortedServers()"
+                @click="handleServerItemClick(server)"
+            >
                 <div class="status-indicator">
                     <div
                         :class="{
@@ -207,7 +240,7 @@ async function enable(index) {
                         </div>
                         <div 
                             class="more-options-item"
-                            @click="remove(index)"
+                            @click="remove($event, index)"
                         >
                             Remove
                         </div>
@@ -233,10 +266,22 @@ async function enable(index) {
         height: auto;
         margin-top: 50px;;
 
+        .filters {
+            display: flex;
+            gap: 5px;
+
+            input {
+                width: 200px;
+                border: 1px solid grey; 
+                border-radius: 5px;
+            }
+        }
+
         .servers {
             display: flex;
             flex-direction: column; 
             gap: 10px; 
+            user-select: none;
 
             .server-item {
                 width: 80%; 
@@ -353,6 +398,10 @@ async function enable(index) {
                 }   
                 
             }
+        }
+
+        .server-item:active {
+            opacity: 0.5;
         }
 
         .controls {

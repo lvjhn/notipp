@@ -69,7 +69,7 @@ const total = computed(() => {
 
       
         <div class="show-details-button">
-            <button class="btn" @click="toggleClientDetails">
+            <button class="btn btn-primary" @click="toggleClientDetails">
                 {{ isClientDetailsShown ? 'Hide' : 'Show More' }} Details
             </button>
         </div>

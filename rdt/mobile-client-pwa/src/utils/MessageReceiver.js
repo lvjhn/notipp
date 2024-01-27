@@ -1,4 +1,5 @@
 import ConnectionManager from "./ConnectionManager";
+import ReadStateManager from "./ReadStateManager";
 
 export default class MessageReceiver 
 {
@@ -33,6 +34,7 @@ export default class MessageReceiver
         try {
             const data = JSON.parse(message.data.toString()).details.data
             console.log("#Data: " + data)
+            ReadStateManager.unread.value[serverId] += 1
             navigator.serviceWorker.ready.then((registration) => {
                 registration.showNotification(
                     data.title, 
