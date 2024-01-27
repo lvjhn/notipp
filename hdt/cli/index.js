@@ -97,7 +97,7 @@ import GeneralInfo from "../core/modules/GeneralInfo.js";
 
     
     program
-        .command("show:clients")
+        .command("clients")
         .description("shows clients that are registered in the server") 
         .option(
             "-c, --connected", 
@@ -118,7 +118,7 @@ import GeneralInfo from "../core/modules/GeneralInfo.js";
         .action(CommandHandlers.handleShowClients)
 
     program 
-        .command("show:notifs") 
+        .command("notifs") 
         .description("show notifications history") 
         .option(
             "-q, --query <queryString>", 
