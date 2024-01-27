@@ -71,7 +71,18 @@ the guide below.
      * must show something (like a path)
    * `notipp-server is:up`
      * must show "YES" as a response
-6. (Optional) Self-add the server.
+6. **(Optional)** Self-add the server and test a notification.
+
+  * This step will self-connect a computer to itself acting both as a sender and recipient. While this seems impractical for actual usage, it is a good method to test whether there are problems with the server and client communication process.
+   * First, add the server.
+     * `notipp-client add:server -i 127.0.0.1 -p 10443`
+   * Then, emit pair the client in the server.
+     * `notipp-client pair`
+   * Then, try to emit a notification which should display a notification alert on the computer.
+     * `notipp-server emit:notif "hello"`
+   * Finally, disable or remove the server.
+     * Disable: `notipp-client remove `
+     * Remove:
 
 ## Usage
 

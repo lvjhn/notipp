@@ -86,7 +86,8 @@ export default class Receiver
             )
             await Receiver.closeServerSocket(targetId)
             const index = App.state.servers.indexOf(server)
-            App.state.servers.slice(index, 1)
+            App.state.servers.splice(index, 1)
+            await App.saveData()
         }
         else if(event == "change:name") {
             App.state.client.name = data[0]

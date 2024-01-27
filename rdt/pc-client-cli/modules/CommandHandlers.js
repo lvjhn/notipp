@@ -187,7 +187,7 @@ export default class CommandHandlers
                 process.exit()
             }
             
-            console.log("@ Added server.".cyan.bold)
+            console.log("@ Added server [".cyan.bold +  info.data.server.hostname.bold.green + "].".cyan.bold)
             process.exit()
         }
         else {
