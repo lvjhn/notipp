@@ -105,7 +105,7 @@ export default class Receiver
             await App.init() 
         }
         else if(event == "disable:server") {
-            App.state.servers[data[0]].disabled = true 
+            App.state.servers[data[0]].status == "DISABLED"
             await App.saveData() 
             if(!(data[0] in App.sockets)) {
                 return;
@@ -114,7 +114,7 @@ export default class Receiver
             delete App.sockets[data[0]]
         }
         else if(event == "enable:server") {
-            App.state.servers[data[0]].disabled = false 
+            App.state.servers[data[0]].status = "ENABLED"
             await App.saveData() 
             if(!(data[0] in App.sockets)) {
                 return;

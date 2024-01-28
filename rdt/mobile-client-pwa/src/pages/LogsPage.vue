@@ -133,7 +133,7 @@ onMounted(async () => {
                     :value="server.notipp.username"
                 />
             </div>
-            <div class="notifications"> 
+            <div class="notifications" v-if="server['client-state'].status == 'ONLINE'"> 
                 <div class="title">
                     <b>Notifications</b>
                     <template v-if="ReadStateManager.unread.value[server.server.id] > 0">
@@ -172,17 +172,24 @@ onMounted(async () => {
                             {{ formatDate(new Date(notif.createdAt)) }}
                         </div>
                     </div>
+                    <div class="load-more">
+                        <button 
+                            class="btn btn-primary"
+                            style="width: 100%" 
+                            @click="loadMoreNotifications()"
+                        >
+                            Load More
+                        </button>
+                    </div>
                 </div>
-                <div class="load-more">
-                    <button 
-                        class="btn btn-primary"
-                        style="width: 100%" 
-                        @click="loadMoreNotifications()"
-                    >
-                        Load More
-                    </button>
-                </div>
-            </div>
+                   
+        </div>
+        <div class="not-online" v-else>
+            <div class="text">
+                <b>Cannot fetch notifications.</b> <br />
+                Server not online.
+            </div> 
+        </div>
         </div>
         <div class="no-servers" v-else> 
             You must add at least one server to 
@@ -280,6 +287,7 @@ onMounted(async () => {
         }
 
 
+
         .notifications {
             margin-top: 20px;
             border-radius: 5px;
@@ -355,6 +363,22 @@ onMounted(async () => {
 
                 }
             }
+        }
+
+
+        .not-online {
+            color: grey;
+            border: 2px solid grey; 
+            width: 90%;
+            height: 20vh;
+            border-radius: 8px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;  
+            margin: 20px auto;
+            padding: 20px;
+            text-align: center;
+            background-color: rgb(234, 234, 234);
         }
     }
 </style>

@@ -37,7 +37,8 @@ Notipp is a simple - prototypal/proof-of-concept - project. It is a web-based no
 
 ### Installation
 
-Please follow the instruction on the video below.
+You can quickly install notipp by running: 
+
 
 If you prefer to read through the instructions, you can proceed with
 the guide below.
