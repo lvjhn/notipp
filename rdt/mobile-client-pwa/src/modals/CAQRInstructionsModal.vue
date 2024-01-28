@@ -18,7 +18,7 @@ function handleButtonTap(buttonLabel) {
 
 <template>
     <ModalWindow
-        title="Pair using QR"
+        title="Download CA Certificate"
         class="qr-instructions-modal"
         :buttons="[ 'close' ]"
         @onButtonTap="handleButtonTap"
