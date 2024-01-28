@@ -6,10 +6,15 @@
 # Description: 
 #   Generate SSL certificate for the server.
 # 
-
+source ~/.bashrc
 
 # build certificate
-NOTIPP_PATH=$(notipp-server base-path)
+if [ "$(notipp-server base-path)" != "" ] ; then 
+    NOTIPP_PATH="$(notipp-server base-path)"
+else 
+    NOTIPP_PATH="$(pwd)"
+fi 
+
 
 cd $NOTIPP_PATH
 

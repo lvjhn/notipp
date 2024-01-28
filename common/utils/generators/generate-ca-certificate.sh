@@ -6,8 +6,14 @@
 # Description: 
 #   Generates/regenerates CA certificate for the sytem.
 # 
+source ~/.bashrc
 
-NOTIPP_PATH=$(notipp-server base-path)
+if [ "$(notipp-server base-path)" != "" ] ; then 
+    NOTIPP_PATH="$(notipp-server base-path)"
+else 
+    NOTIPP_PATH="$(pwd)"
+fi 
+
 
 cd $NOTIPP_PATH
 
