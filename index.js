@@ -1,4 +1,3 @@
-import Chance from 'chance'
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -8,8 +7,6 @@ import { fileURLToPath } from 'url'
 export const BASE_PATH = 
     dirname(fileURLToPath(import.meta.url))
 
-export const randomGen = 
-    new Chance()
 
 export default {
     randomGen
