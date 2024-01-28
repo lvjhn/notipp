@@ -8,7 +8,8 @@
 # 
 source ~/.bashrc
 
-if [ "$(notipp-server base-path)" != "" ] ; then 
+if [ "$(which notipp-server)" != "" ] && 
+   [ "$(notipp-server base-path)" != "" ] ; then 
     NOTIPP_PATH="$(notipp-server base-path)"
 else 
     NOTIPP_PATH="$(pwd)"
