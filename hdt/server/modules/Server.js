@@ -19,6 +19,7 @@ import bodyParser from "body-parser";
 import GeneralInfo from "../../core/modules/GeneralInfo.js";
 import Config from "../../core/modules/Config.js";
 import Database from "../../data/Database.js";
+import { execSync } from "child_process";
 
 export default class Server 
 {
@@ -68,7 +69,16 @@ export default class Server
         // create ping page   
         Server.app.get("/ping", (req, res) => {
             res.send("PONG")
-        })
+        }) 
+
+        // output ca-qr image 
+        const ip = await GeneralInfo.getServerIp() 
+        const port = await GeneralInfo.getServerPort()
+        const address = `https://${ip}:${port}/ca`
+        execSync(
+            `qrcode '${address}' -o ` + 
+            `${BASE_PATH}/outputs/ca-qr.png -d 100 -w 300`
+        )
     }
 
     /** 

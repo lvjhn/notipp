@@ -3,7 +3,7 @@
         "portNo": "10443",
         "autoPair": false,
         "keepAliveInterval": 1, 
-        "homepageQR" : false
+        "homepagePairQr" : true
     },
     "client": {
         "keepAliveInterval": 1,

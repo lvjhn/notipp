@@ -9,6 +9,7 @@
                 padding-top: 50px;
                 padding-bottom: 100px;
                 width: 960px;
+      
 
                 display: flex;
                 flex-direction: column;
@@ -16,6 +17,8 @@
 
                 table {
                     width: 960px;
+                    border-spacing: 0px; 
+                    border-collapse: separate;
                 }
 
                 tr:first-child {
@@ -28,14 +31,16 @@
                     width: 200px;
                 }
                 
-                td {
+                th, td {
                     padding: 5px 10px;
+                    outline: 1px solid hsl(0, 0%, 0%);
                 }
                 
             }
 
             .header {
                 display: flex; 
+                gap: 10px;
                 
                 h1 {
                     flex: 1;
@@ -45,6 +50,19 @@
 
                 img {
                     height: 250px;
+                    padding: 0px;
+                }
+
+                h3 {
+                    margin: 0;
+                    padding: 0;
+                    text-align: center;
+                }
+
+                > div {
+                    border: 2px solid grey;
+                    border-radius: 5px;
+                    padding: 20px;
                 }
             }
         </style>
@@ -52,10 +70,19 @@
     <body>
         <div class="header">
             <h1>Notipp-Server</h1>
-            <img src="data:image/png;base64,{{ qrImage }}" />
+            <div class="ca">
+                <h3>CA DOWNLOAD</h3>
+                <img src="data:image/png;base64,{{ caQrImage }}" />
+            </div> 
+            {{#if showPairQr}}
+                <div class="pairing">
+                    <h3>PAIRING</h3>
+                    <img src="data:image/png;base64,{{ pairQrImage }}" />
+                </div>
+            {{/if}}
         </div>
 
-        <table border="1"> 
+        <table class="info-table"> 
             <tr>
                 <th colspan="2">
                     NOTIPP-SYSTEM

@@ -8,8 +8,8 @@ export const BROWSER_CHAIN = [
     "vivaldi",
     "edge",
     "opera",
-    "firefox",
     "chrome",
+    "firefox",
     "safari", 
     "notipp-client.pc-cli"
 ]
@@ -20,10 +20,15 @@ export const BROWSER_CHAIN = [
  */
 export default function detectBrowser(userAgent = "") {
    
+    console.log("------------------------------")
+    
     const userAgentLower = userAgent.toLowerCase()
 
-    for(let browserNeedle of BROWSER_CHAIN) {
+    for(let i = 0; i < BROWSER_CHAIN.length; i++) {
+        const browserNeedle = BROWSER_CHAIN[i]
+        console.log(userAgentLower, browserNeedle, userAgentLower.indexOf(browserNeedle))
         if(userAgentLower.indexOf(browserNeedle) != -1) { 
+            console.log("Checking", browserNeedle, userAgentLower)
             return browserNeedle 
         }
     }

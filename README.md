@@ -1,10 +1,10 @@
-## notipp
+# notipp
 
 Web-Based Notification System for Linux and Android Devices in a LAN/WLAN
 
 ### Description
 
-Notipp is a simple (prototypal/proof-of-concept) project. It is a web-based notification system designed for devices on a WLAN/LAN. The main purpose of the app is to send notifications from a **host device** to a **receiving device**. The host device can be any Linux system (distro) based on Ubuntu and Fedora. The system does not need to be connected to the internet and only requires Wi-Fi connectivity to work.
+Notipp is a simple - prototypal/proof-of-concept - project. It is a web-based notification system designed for devices on a WLAN/LAN. The main purpose of the app is to send notifications from a **host device** to a **receiving device**. The host device can be any Linux distribution based on Ubuntu or Fedora. The system does not need to be connected to the internet and only requires Wi-Fi connectivity to work compared to Push Notifications which typically requires the internet to function.
 
 ## Installation
 
@@ -17,6 +17,7 @@ Notipp is a simple (prototypal/proof-of-concept) project. It is a web-based noti
     * *dnf* package manager
   * for **Both**:
     * Node.js (preferrably via **Node Version Manager (NVM)**
+    * NPM and Yarn (make sure to update the `PATH` variable in `.bashrc`or`.bash_profile`)
     * Bash (installed by default)
     * Git
 * **Receiving Device/s** - Linux or Android-based systems
@@ -89,8 +90,51 @@ the guide below.
   * **Disable**: `notipp-client update:server <server-name> --disable`
   * **Remove**: `notipp-client remove <server-name>`
 
-## Usage
+## Usage (when Receiving Device is a Mobile Device)
 
-> Please refer to the **Installation** section for instructions on how to install.
+> Please refer to the **Installation** section for instructions on how to install for the **host device**
 
-Once installed, you can now connect mobile devices on your the **host computer** that was set up in the **Installation** section. To connect a device to a **host computer**, simply visit `notipp.bitballoon.com` and install the **PWA** app on your phone.
+Once Notipp is installed on the host device, you can now connect mobile devices on your the **host computer** that was set up in the **Installation** section. To connect a device to a **host computer, follow the steps below.
+
+#### Stage 1: Install PWA
+
+1. Visit `notipp.bitballoon.com`.
+2. Install the **PWA** app on your phone (search for the "Install App") on the browser's menu.
+3. Then, once the app is installed go to the `App Info` of the PWA and enable notification alerts (preferably, enable pop-up alerts).
+4. Launch the **PWA** app (or visit the `notipp.bitballoon.com` on the browser).
+5. **Lock** the app as a background process so that it keeps running. This prevents accidental closing of the app.
+
+#### Stage 2: Install PWA
+
+1. On your host device, visit the target PC's homepage **https://127.0.0.1:10443/**.
+2. Then scan the QR code on your mobile device using your phone's QR code scanner. This should open your browser to download the CA certificate.
+3. Install the **CA certificate** on your mobile phone using your Phone's system settings.
+
+> You only need to do this once per device assuming that you will not connect to devices from another person.
+
+#### Stage 3: Add Server and Pair Client
+
+1. Go back to the `notipp.bitballon.com`. On the **Servers** page, click `+ Add`. Then, enter the target server's details, namely the **IP** and **Port** of the server to add.
+
+   * You may also pair using QR code. Just visit `https://127.0.0.1:10443` on the host computer and scan the QR code found there.
+2. Wait for the server to connect.
+
+   * To check for successful connection, the server indicator beside the server's name must turn to yellow. This indicates that the client has successfully contacted the server and just needs to be paired.
+   * If it takes time to turn to yello, you may try to reload the page.
+3. On the host device, run `notipp-server pair` to pair the device.
+4. Then, on the receiving device's side, wait for the circle beside the name to turn to green.
+
+#### Stage 4: Send Notifications
+
+1. On the host device, again, run `notipp-server emit:notif "Testing..."` to check for notification.
+2. Wait for the notification to arrive on the receiving device, this shouldn't take so much time since the set-up is designed for WLAN/LAN.
+
+## Usage (when Receiving Device is a Linux Device)
+
+These steps should be performed when the receiving device is a Linux device running on another computer.
+
+Generally, you need to  perform the same steps as in the **Instructions** section step except for the disabling part.
+
+However, change the **IP** and **Port** in the system to the target server which is on another computer.
+
+You don't need to manually install the CA when the receiving device is a computer running Linux.

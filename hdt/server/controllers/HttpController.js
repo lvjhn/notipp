@@ -120,8 +120,9 @@ export default class HttpController
     static async get(req, res) {
         res.render("index", { 
             data: await GeneralInfo.getFullInfo(), 
-            showQR: (await Config.getConfig()).server.homepageQR,
-            qrImage: base64Encode(BASE_PATH + "/outputs/pair-qr.png")
+            showPairQr: (await Config.getConfig()).server.homepagePairQr,
+            pairQrImage: base64Encode(BASE_PATH + "/outputs/pair-qr.png"),
+            caQrImage: base64Encode(BASE_PATH + "/outputs/ca-qr.png")
         }) 
     }
 

@@ -162,6 +162,7 @@ async function handleServerItemClick(server)  {
                 </button>
             </div>
         </div>
+
         <div class="filters">
             <input 
                 type="form-input" 
