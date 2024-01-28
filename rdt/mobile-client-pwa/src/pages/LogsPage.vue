@@ -56,7 +56,8 @@ async function syncLastRead() {
     await client.put("/sync-last-read", {
         lastRead: notifications.value.at(0).id  
     })
-    window.location.reload()
+    ReadStateManager.unread.value[server.id] = 0
+    
 }
 
 
@@ -136,8 +137,8 @@ onMounted(async () => {
             <div class="notifications" v-if="server['client-state'].status == 'ONLINE'"> 
                 <div class="title">
                     <b>Notifications</b>
-                    <template v-if="ReadStateManager.unread.value[server.server.id] > 0">
-                        ({{ ReadStateManager.unread.value[server.server.id] }} unread)
+                    <template v-if="store.unread[server.server.id] > 0">
+                        ({{ store.unread[server.server.id] }} unread)
                     </template>
                 </div>
                 <div class="controls">

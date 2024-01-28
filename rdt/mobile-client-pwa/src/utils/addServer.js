@@ -50,7 +50,8 @@ export default async function addServer({
         // patch info with additional details 
         info["client-state"] = {
             "status" : "IDENTIFIED", 
-            "lastRead" : 0
+            "lastRead" : 0, 
+            "isEnabled" : true
         }
 
         /**
@@ -122,9 +123,7 @@ export default async function addServer({
         }
 
         // patch info with additional details 
-        info["client-state"] = {
-            "status" : "REGISTERED"
-        }
+        info["client-state"]["status"] = "REGISTERED"
 
        
 }

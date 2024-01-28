@@ -199,9 +199,11 @@ async function handleServerItemClick(server)  {
                 <div class="identifier">
                     <div class="name">
                         {{ server.server.hostname }} 
-                        <span v-if="ReadStateManager.unread.value[server.server.id] > 0"> 
-                            ({{ ReadStateManager.unread.value[server.server.id]  }})
-                        </span>
+                        <template v-if="store.unread && server.server.id in store.unread">
+                            <span v-if="store.unread[server.server.id] > 0"> 
+                                ({{ store.unread[server.server.id]  }})
+                            </span>
+                        </template>
                     </div>
                     <div class="address">
                         {{ server.server.ip + ":" + server.server.port }}

@@ -38,15 +38,7 @@ function getBrowser() {
     return capitalize(detectBrowser(navigator.userAgent))
 }
 
-const total = computed(() => {
-    if(ReadStateManager.unread.value.length == 0) {
-        return 0
-    }
-    else {
-        return Object.values(ReadStateManager.unread.value)
-                     .reduce((a, b) => a + b, 0)
-    }
-})
+
 
 function addCACertificate() {
     setModal(CAQRInstructionsModal, {})
@@ -70,8 +62,9 @@ function addCACertificate() {
             </div>
         </div>
 
+
         <div class="unread-messages" v-if="total > 0">
-                {{ total }} new events!
+            {{ ReadStateManager.countAll() }} new events!
         </div> 
 
       

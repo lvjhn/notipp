@@ -71,6 +71,10 @@ function enableTimeoutInput() {
     isTimeoutInputDisabled.value = false
 }
 
+function setMetaIsEnabled() {
+    store.meta.isEnabled = false;
+}
+
 </script>
 
 <template>

@@ -6,7 +6,7 @@ export default class ReadStateManager
 {
     static connections = {}
     static store = null;
-    static unread = ref({})
+   
 
     static async makeClient(server) {
         return axios.create({
@@ -27,6 +27,7 @@ export default class ReadStateManager
         console.log("@ Initializing connections.")
         const servers = ReadStateManager.store.servers; 
 
+
         for(let server of servers) {
             console.log("@ Connecting to " + server.server.id)
             ReadStateManager.getForServer(server)
@@ -36,12 +37,12 @@ export default class ReadStateManager
     static async getForServer(server) {
         const client = await ReadStateManager.makeClient(server)  
         const unread = await client.get("/count-unread") 
-        ReadStateManager.unread.value[server.server.id] = 
+        ReadStateManager.store.unread[server.server.id] = 
             parseInt(unread.data)
     }
 
     static async clearServer(server) {
-        delete ReadStateManager.unread.value[server.server.id];
+        delete ReadStateManager.store.unread[server.server.id];
     }
 
     static async markAllAsRead(server, latestId) {
@@ -53,9 +54,9 @@ export default class ReadStateManager
         })
     }
 
-    static async countAll() {
+    static countAll() {
         let count = 0 
-        for(let item of Object.values(ReadStateManager.unread.value)) {
+        for(let item of Object.values(ReadStateManager.store.unread)) {
             count += item; 
         }
         return count;

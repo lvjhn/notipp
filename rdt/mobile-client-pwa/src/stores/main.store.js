@@ -22,7 +22,10 @@ export const useMainStore = defineStore("mainStore", {
         },
         servers: [
                
-        ]
+        ], 
+        unread : {
+            
+        }
     }), 
 
     getters: {
