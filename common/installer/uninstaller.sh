@@ -8,6 +8,8 @@
 # 
 source ./utils/preload.sh
 
+sudo echo -n ""
+
 # display script header
 display_header "### Uninstalling... ###\n" 
 

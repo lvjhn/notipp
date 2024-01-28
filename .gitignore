@@ -1,2 +1,3 @@
 node_modules/
 common/helpers/file-storage/data/*
+common/installer/.install-status
