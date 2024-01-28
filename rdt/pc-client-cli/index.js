@@ -10,7 +10,6 @@ import { Command, program } from "commander"
 import CommandHandlers from "./modules/CommandHandlers.js";
 import GeneralInfo from "../../hdt/core/modules/GeneralInfo.js";
 import App from "../common/App.js"
-import Base from "notipp"
 import { Chance } from "chance";
 
 (async () => {

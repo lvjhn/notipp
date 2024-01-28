@@ -6,7 +6,7 @@
  *  tables in the database. 
  */
 import knex from "knex"
-import { BASE_PATH } from "notipp"
+import { BASE_PATH } from "../../index.js";
 import fs from "fs"
 
 export const DATABASE_PATH = 

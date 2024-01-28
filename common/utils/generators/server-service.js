@@ -6,8 +6,8 @@
 
 import { execSync } from "child_process";
 import fs from "fs" 
-import { BASE_PATH } from "notipp"
 import Core from "../../../hdt/core/Core.js";
+import { BASE_PATH } from "../../../index.js";
 
 const TEMPLATE_FILE = "./common/utils/templates/node.service"
 const TEMPLATE_CONTENT = fs.readFileSync(TEMPLATE_FILE)

@@ -50,39 +50,42 @@ git clone https://github.com/lvjhn/notipp $PWD
 echo "@ Running install script..." 
 source uninstall.sh
 source install.sh 
-souce common/helpers/shell/shell-helpers.sh
+source common/helpers/shell/shell-helpers.sh
 
-echo "### CHECKING COMPONENTS ###"
+echo 
+echo
+
+display_header "### CHECKING COMPONENTS ###\n"
 
 # check if okay 
-if [ "$(sudo systemctl is-enabled notipp-server)" == "enabled"] ; then 
-    echo "-> Notipp-Server system service is okay"
+if [ "$(sudo systemctl is-enabled notipp-server)" == "enabled" ] ; then 
+    c_echo BOLD GREEN "-> Notipp-Server system service is okay\n"
 else 
-    c_echo BOLD RED "-> Notipp-Server system service is NOT okay."
+    c_echo BOLD RED "-> Notipp-Server system service is NOT okay.\n"
 fi 
 
-if [ "$(sudo systemctl is-enabled notipp-client)" == "enabled"] ; then 
-    echo "-> Notipp-Client system service is okay"
+if [ "$(sudo systemctl is-enabled notipp-client)" == "enabled" ] ; then 
+    c_echo BOLD GREEN "-> Notipp-Client system service is okay\n"
 else 
-    c_echo BOLD RED "-> Notipp-Client system service is NOT okay."
+    c_echo BOLD RED "-> Notipp-Client system service is NOT okay.\n"
 fi 
 
-if [ "$(which notipp-server)" != ""] ; then 
-    echo "-> Notipp-Server command is okay"
+if [ "$(which notipp-server)" != "" ] ; then 
+    c_echo BOLD GREEN "-> Notipp-Server command is okay\n"
 else 
-    c_echo BOLD RED "-> Cannot find notipp-server command."
+    c_echo BOLD RED "-> Cannot find notipp-server command.\n"
 fi  
 
-if [ "$(which notipp-client)" != ""] ; then 
-    echo "-> Notipp-Client command is okay"
+if [ "$(which notipp-client)" != "" ] ; then 
+    c_echo BOLD GREEN "-> Notipp-Client command is okay\n"
 else 
-    c_echo BOLD RED "-> Cannot find notipp-client command."
+    c_echo BOLD RED "-> Cannot find notipp-client command.\n"
 fi  
 
 
-if [ "$(notipp-server is up)" == "YES"] ; then 
-    echo "-> Notipp-Server is Up"
+if [ "$(notipp-server is:up)" == "YES" ] ; then 
+    c_echo BOLD GREEN "-> Notipp-Server is up\n"
 else 
-    c_echo BOLD RED "-> Notipp-Server is Down."
+    c_echo BOLD RED "-> Notipp-Server is down.\n"
 fi  
 
