@@ -8,8 +8,9 @@
 import HttpController from "../controllers/HttpController.js";
 import WsController from "../controllers/WsController.js";
 import express from "express"
-import { WebSocketServer} from "ws"
+import { WebSocketServer } from "ws"
 import https from "https"
+import http from "http"
 import fs from "fs/promises"
 import { BASE_PATH } from "../../../index.js";
 import Core from "../../core/Core.js";
@@ -66,6 +67,9 @@ export default class Server
         Server.app.set('view engine', 'hbs')
         Server.app.set('views', BASE_PATH + "/hdt/server/views")
 
+        Server.httpApp.set('view engine', 'hbs')
+        Server.httpApp.set('views', BASE_PATH + "/hdt/server/views")
+
         // create ping page   
         Server.app.get("/ping", (req, res) => {
             res.send("PONG")
@@ -73,8 +77,8 @@ export default class Server
 
         // output ca-qr image 
         const ip = await GeneralInfo.getServerIp() 
-        const port = await GeneralInfo.getServerPort()
-        const address = `https://${ip}:${port}/ca`
+        const httpPortNo = (await Config.getConfig()).server.httpPortNo
+        const address = `https://${ip}:${httpPortNo}/ca`
         execSync(
             `qrcode '${address}' -o ` + 
             `${BASE_PATH}/outputs/ca-qr.png -d 100 -w 300`
@@ -107,6 +111,7 @@ export default class Server
         // ----- create express app
         console.log("\t> Creating express app...")
         Server.app = express() 
+        Server.httpApp = express()
 
         await Server.setupPlugins()
         await Server.setupRoutes()
@@ -115,8 +120,16 @@ export default class Server
         console.log("\t> Creating https server...")
         Server.httpsServer = 
             https.createServer(await Server.loadCertificates(), Server.app)
-    
-        // ----- create websocket server
+        
+        // ----- create http server
+        console.log("\t> Creating https server...")
+        Server.httpServer = 
+            http.createServer(Server.httpApp)
+        
+        Server.httpApp.get("/", HttpController.get) 
+        Server.httpApp.get("/ca", HttpController.getCA)
+
+        // ----- create websocket server`
         console.log("\t> Creating websocket server...")
 
         Server.wsServer = new WebSocketServer({ 
@@ -137,6 +150,20 @@ export default class Server
                 const addressPort = address + ":" + portNo
                 console.log(
                     ("\t>> Notipp-Server is listening on " + 
+                         addressPort + 
+                     " <<").cyan.bold 
+                ) 
+                Server.isStarting = false
+                Server.isListening = true
+            }
+        )
+
+        const httpPortNo = (await Config.getConfig()).server.httpPortNo
+        Server.httpServer.listen(
+            httpPortNo, address, async () => {
+                const addressPort = address + ":" + httpPortNo
+                console.log(
+                    ("\t>> Notipp-Http-Server is listening on " + 
                          addressPort + 
                      " <<").cyan.bold 
                 ) 

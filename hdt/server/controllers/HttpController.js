@@ -121,6 +121,7 @@ export default class HttpController
         res.render("index", { 
             data: await GeneralInfo.getFullInfo(), 
             showPairQr: (await Config.getConfig()).server.homepagePairQr,
+            pairingSecret: await Clients.getPairingSecret(),
             pairQrImage: base64Encode(BASE_PATH + "/outputs/pair-qr.png"),
             caQrImage: base64Encode(BASE_PATH + "/outputs/ca-qr.png")
         }) 
