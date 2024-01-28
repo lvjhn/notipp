@@ -25,6 +25,7 @@ export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 source ~/.bashrc
+nvm install --lts
 nvm use --lts
 
 # install yarn 
@@ -59,32 +60,6 @@ echo
 echo
 
 display_header "### CHECKING COMPONENTS ###\n"
-
-# check if okay 
-if [ "$(sudo systemctl is-enabled notipp-server)" == "enabled" ] ; then 
-    c_echo BOLD GREEN "-> Notipp-Server system service is okay\n"
-else 
-    c_echo BOLD RED "-> Notipp-Server system service is NOT okay.\n"
-fi 
-
-if [ "$(sudo systemctl is-enabled notipp-client)" == "enabled" ] ; then 
-    c_echo BOLD GREEN "-> Notipp-Client system service is okay\n"
-else 
-    c_echo BOLD RED "-> Notipp-Client system service is NOT okay.\n"
-fi 
-
-if [ "$(which notipp-server)" != "" ] ; then 
-    c_echo BOLD GREEN "-> Notipp-Server command is okay\n"
-else 
-    c_echo BOLD RED "-> Cannot find notipp-server command.\n"
-fi  
-
-if [ "$(which notipp-client)" != "" ] ; then 
-    c_echo BOLD GREEN "-> Notipp-Client command is okay\n"
-else 
-    c_echo BOLD RED "-> Cannot find notipp-client command.\n"
-fi  
-
 
 if [ "$(notipp-server is:up)" == "YES" ] ; then 
     c_echo BOLD GREEN "-> Notipp-Server is up\n"
