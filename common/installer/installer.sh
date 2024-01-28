@@ -153,6 +153,7 @@ function install_node_modules {
     display_header "| @ Installing node modules...\n"
     echo "|"
     yarn 
+    sudo npm install -g qrcode
     echo "|"
 }
 

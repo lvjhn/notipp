@@ -53,6 +53,8 @@ source uninstall.sh
 source install.sh 
 source common/helpers/shell/shell-helpers.sh
 
+source ~/.bashrc
+
 echo 
 echo
 
