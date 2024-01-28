@@ -6,7 +6,7 @@ After=network.target
 [Service]
 Environment=
 Type=simple
-User=sudo
+Group=sudo
 ExecStart=<<NODE_EXEC>> <<TARGET_MODULE>>
 WorkingDirectory=<<WORKING_DIRECTORY>>
 Restart=always

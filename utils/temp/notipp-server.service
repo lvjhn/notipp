@@ -6,7 +6,7 @@ After=network.target
 [Service]
 Environment=
 Type=simple
-User=sudo
+Group=sudo
 ExecStart=/home/lvjhn/.nvm/versions/node/v20.11.0/bin/node /home/lvjhn/Documents/Projects/notipp/hdt/server/index.js
 WorkingDirectory=/home/lvjhn/Documents/Projects/notipp
 Restart=always
