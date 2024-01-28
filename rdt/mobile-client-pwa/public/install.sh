@@ -59,11 +59,4 @@ source ~/.bashrc
 echo 
 echo
 
-display_header "### CHECKING COMPONENTS ###\n"
-
-if [ "$(notipp-server is:up)" == "YES" ] ; then 
-    c_echo BOLD GREEN "-> Notipp-Server is up\n"
-else 
-    c_echo BOLD RED "-> Notipp-Server is down.\n"
-fi  
 
