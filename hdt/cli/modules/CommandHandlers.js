@@ -151,19 +151,13 @@ export default class CommandHandlers
         if(hasRegenerateFlag) {
             await Clients.generatePairingSecret()
             if(!hasQRFlag) {
+                console.log("@ Regenerated Pairing QR Code.")
                 process.exit()
             }
         }
 
         // handle qr pairing
         if(hasQRFlag) {
-            const qrData = 
-                await Clients.generateQRData()
-
-            execSync(
-                `qrcode '${JSON.stringify(qrData)}' -o ` + 
-                `${BASE_PATH}/outputs/pair-qr.png -d 100 -w 300`
-            )
             execSync(`display ${BASE_PATH}/outputs/pair-qr.png`)
             process.exit()
         }

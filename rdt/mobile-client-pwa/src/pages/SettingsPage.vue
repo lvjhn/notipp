@@ -6,6 +6,7 @@ import generateDeviceName from "../../../../common/helpers/general/generateDevic
 import Switch from "../components/widgets/Switch.vue";
 import { setModal, showModal } from "../composables/useModal";
 import ResetDataModal from "../modals/ResetDataModal.vue";
+import createClient from "../utils/createClient";
 
 currentPage.value = "Settings"
 
@@ -22,10 +23,14 @@ function randomizeName() {
     isNameInputDisabled.value = false
 }
 
-function saveName() {
+async function saveName() {
     store.client.name = nameInput.value
     isNameInputDisabled.value = true
     isNameSavedMessageShown.value = true
+
+    for(let server of store.servers) {
+        server["client-state"].mustUpdateName = true; 
+    }
     
     setTimeout(() => {
         isNameSavedMessageShown.value = false

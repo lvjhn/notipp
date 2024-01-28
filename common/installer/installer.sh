@@ -305,7 +305,7 @@ function create_empty_database {
 
 function generate_pairing_secret {
     display_header "| @ Generating pairing secret...\n" 
-    node common/utils/generators/generate-pairing-secret.js
+    notipp-server pair --regenerate
     echo "|"
 }
 

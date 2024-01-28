@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useMainStore } from "../stores/main.store";
+import createClient from "./createClient";
 
 export default class ConnectionManager 
 {
@@ -21,6 +22,16 @@ export default class ConnectionManager
             console.log("@ Connecting to " + server.server.id)
 
             ConnectionManager.connect(server.server.id);
+
+            setInterval(async () => {
+                if(server["client-state"].mustUpdateName) {
+                    const client = createClient(server, ConnectionManager.store) 
+                    await client.put("/clients/name", {
+                        name: ConnectionManager.store.client.name
+                    }) 
+                    delete server["client-state"].mustUpdateName
+                }
+            }, 1000) 
         }
     }
 
@@ -122,8 +133,11 @@ export default class ConnectionManager
 
                 keepAliveInt = 
                     setInterval(
-                        () => {
+                        async () => {
                             socket && socket.send("keep:alive")
+                         
+                        
+                
                         }, 
                         keepAliveInterval
                     )
@@ -134,7 +148,7 @@ export default class ConnectionManager
                 }
             }
 
-            socket.onmessage = (message) => {
+            socket.onmessage = async (message) => {
                 console.log(
                     `@ ${address} : Received message -> ` + 
                     message.data.toString()
@@ -194,12 +208,12 @@ export default class ConnectionManager
 
                 for(let listener in ConnectionManager.listeners) {
                     const listenerFn = ConnectionManager.listeners[listener] 
-                    listenerFn("message", message, serverId, socket)
+                    await listenerFn("message", message, serverId, socket)
                 }
 
             }
 
-            socket.onclose = () => {
+            socket.onclose = async () => {
                 hasOpened = false
                 console.log(`@ ${address} : Closed.`)
                 
@@ -237,11 +251,11 @@ export default class ConnectionManager
 
                 for(let listener in ConnectionManager.listeners) {
                     const listenerFn = ConnectionManager.listeners[listener] 
-                    listenerFn("close", null, serverId, socket)
+                    await listenerFn("close", null, serverId, socket)
                 }
             }
             
-            socket.onerror = (error) => {
+            socket.onerror = async (error) => {
                 keepAliveInt && clearInterval(keepAliveInt)
                 console.error(error)
 
@@ -251,7 +265,7 @@ export default class ConnectionManager
 
                 for(let listener in ConnectionManager.listeners) {
                     const listenerFn = ConnectionManager.listeners[listener] 
-                    listenerFn("error", null, serverId, socket)
+                    await listenerFn("error", null, serverId, socket)
                 }
             }
 

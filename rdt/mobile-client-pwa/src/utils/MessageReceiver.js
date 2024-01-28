@@ -3,34 +3,36 @@ import ReadStateManager from "./ReadStateManager";
 
 export default class MessageReceiver 
 {
-    static start() {
+    static async start() {
         ConnectionManager.addMessageListener(
-            (state, message, serverId, socket) => {
+            async (state, message, serverId, socket) => {
                 if(state == "message") {
-                    MessageReceiver.onMessage(serverId, message, socket)
+                   await MessageReceiver.onMessage(serverId, message, socket)
                 }
                 else if(state == "open") {
-                    MessageReceiver.onOpened(serverId, socket)
+                    await MessageReceiver.onOpened(serverId, socket)
                 }
                 else if(state == "closed") {
-                    MessageReceiver.onClosed(serverId, socket)
+                    await MessageReceiver.onClosed(serverId, socket)
                 }
                 else if(state == "error") {
-                    MessageReceiver.onError(serverId, socket)
+                    await MessageReceiver.onError(serverId, socket)
                 }
             }
         )
     }
 
-    static onOpened(serverId, socket) {
+    static async onOpened(serverId, socket) {
         
     }
 
-    static onClosed(serverId, socket) {
+    static async onClosed(serverId, socket) {
 
     }
 
-    static onMessage(serverId, message, socket) {
+    static async onMessage(serverId, message, socket) {
+
+
         try {
             const data = JSON.parse(message.data.toString()).details.data
             console.log("#Data: " + data)

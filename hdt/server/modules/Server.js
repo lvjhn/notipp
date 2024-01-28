@@ -78,7 +78,7 @@ export default class Server
         // output ca-qr image 
         const ip = await GeneralInfo.getServerIp() 
         const httpPortNo = (await Config.getConfig()).server.httpPortNo
-        const address = `https://${ip}:${httpPortNo}/ca`
+        const address = `http://${ip}:${httpPortNo}/download-ca`
         execSync(
             `qrcode '${address}' -o ` + 
             `${BASE_PATH}/outputs/ca-qr.png -d 100 -w 300`
@@ -128,6 +128,9 @@ export default class Server
         
         Server.httpApp.get("/", HttpController.get) 
         Server.httpApp.get("/ca", HttpController.getCA)
+        Server.httpApp.get("/download-ca", (req, res) => {
+            res.render("download-ca", {})
+        })
 
         // ----- create websocket server`
         console.log("\t> Creating websocket server...")

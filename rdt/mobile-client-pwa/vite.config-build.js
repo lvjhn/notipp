@@ -8,14 +8,10 @@ import path from 'path'
 export default defineConfig({
   plugins: [
     VitePWA({
-      registerType: 'autoUpdate',
       includeAssets: ["**/*"],
-      devOptions: {
-        enabled: true
+      workbox: {
+          globPatterns: ["**/*"],
       },
-      strategies: 'injectManifest',
-      srcDir: 'public',
-      filename: 'sw.js',
       manifest: {
         name: 'Notipp',
         short_name: 'Notipp',
@@ -39,11 +35,7 @@ export default defineConfig({
   ],
   server: {
     host: '0.0.0.0',
-    port: 5173,
-    https: {
-      key: fs.readFileSync('./certificate/client-ssl.key'),
-      cert: fs.readFileSync('./certificate/client-ssl.pem'),
-    }
+    port: 5173
   },
   resolve: {
       alias: {

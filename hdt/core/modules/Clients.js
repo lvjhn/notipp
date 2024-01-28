@@ -10,6 +10,8 @@ import Config from "./Config.js";
 import GeneralInfo from "./GeneralInfo.js";
 import Queries from "./Queries.js";
 import makeClientOptions from "../../../common/utils/makeClientOptions.js";
+import { execSync } from "child_process"
+import { BASE_PATH } from "../../../index.js";
 
 export default class Clients 
 {
@@ -328,7 +330,7 @@ export default class Clients
      * Generate pairing secret. 
      */
     static async generatePairingSecret() {
-        await DataItems.setItem("PAIRING-SECRET", generateSecret())
+        execSync(`node "${BASE_PATH}/common/utils/generators/generate-pairing-secret.js"`)
     }
 
     /** 

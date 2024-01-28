@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Download CA Certificate</title>
+        <style>
+            body {
+                padding: 20px;
+                font-family: arial;
+                text-align: center;
+            }
+
+            .download-btn {
+                margin-top: 20px;
+                width: 100%;
+                background-color: rgb(50, 70, 80);
+                padding: 10px 10px;
+                border-radius: 5px;
+                color: white;
+                border: none;
+                font-size: 20px;
+                font-weight: bold;
+            }
+
+            .download-btn:active {
+                opacity: 0.8;
+            }
+
+            .instructions {
+                font-size: 20px;
+                color: rgb(50, 50, 50);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1 style="font-size: 100px;">🧾</h1> 
+            <h1>Downloading CA Certificate...</h1>
+            <hr /> 
+            <div class="instructions">
+                The CA certificate should now be downloading.
+                <br /><br />
+                Click the button below if it didn't start downloading.
+                <br />
+                <a href="/ca" target="_blank">
+                    <button class="download-btn" id="download-btn">
+                        Download Again
+                    </button>
+                </a>
+            </div>
+        </div>
+
+        <script> 
+            window.open("/ca", "_blank")
+        </script>
+    </body>
+</html> 

@@ -201,6 +201,7 @@ onMounted(async () => {
 <style lang="scss">
     .logs-page {
         margin: 0 20px;
+        padding-top: 50px;
 
         > .title {
             text-align: center;

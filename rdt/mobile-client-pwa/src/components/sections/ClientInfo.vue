@@ -6,6 +6,8 @@ import isMobile from '../../../../../common/helpers/general/isMobile';
 import detectBrowser from '../../../../../common/helpers/general/detectBrowser';
 import capitalize from '../../../../../common/helpers/general/capitalize';
 import ReadStateManager from '../../utils/ReadStateManager.js';
+import { setModal, showModal } from '../../composables/useModal';
+import CAQRInstructionsModal from '@/modals/CAQRInstructionsModal.vue' 
 
 const store = useMainStore();
 
@@ -46,6 +48,11 @@ const total = computed(() => {
     }
 })
 
+function addCACertificate() {
+    setModal(CAQRInstructionsModal, {})
+    showModal()
+}
+
 
 </script>
 
@@ -69,9 +76,22 @@ const total = computed(() => {
 
       
         <div class="show-details-button">
-            <button class="btn btn-primary" @click="toggleClientDetails">
-                {{ isClientDetailsShown ? 'Hide' : 'Show More' }} Details
-            </button>
+            <div class="btn btn-primary" @click="toggleClientDetails">
+                <div class="icon">
+                    ℹ️ 
+                </div>
+                <div class="label">
+                    {{ isClientDetailsShown ? 'Hide' : 'Show More' }} Details
+                </div>
+            </div>
+            <div class="btn btn-primary" @click="addCACertificate()">
+                <div class="icon">
+                    🧾 
+                </div>
+                <div class="label">
+                    Get CA Certificate
+                </div>
+            </div>
         </div>
 
         <div class="client-details" v-if="isClientDetailsShown">
@@ -122,6 +142,30 @@ const total = computed(() => {
         .device-name {
             font-size: 25px;
             font-weight: bold;
+        }
+
+        .show-details-button {
+            width: 80%; 
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+
+            > div {
+                display: flex; 
+
+                .icon {
+
+                }
+
+                .label {
+                    flex: 1;
+                    background-color: transparent;
+                    color: white; 
+                }
+            }
+
         }
 
         .client-details {

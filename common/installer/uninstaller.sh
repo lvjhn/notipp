@@ -19,7 +19,7 @@ rm -rf node_modules/
 rm -rf rft/mobile-client-pwa/node_modules
 
 # back up dists/ folder 
-emphasize "> Backing up dists folder..." 
+emphasize "> Backing up dists folder...\n" 
 BACKUP_FOLDER="backup/$(date '+%Y-%m-%d %H:%M:%S')"
 mkdir "$BACKUP_FOLDER"
 cp -r "./dist/" "$BACKUP_FOLDER"

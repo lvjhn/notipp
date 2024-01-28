@@ -32,3 +32,7 @@ requestNotificationPermission()
 
 // initialize message counts
 ReadStateManager.initialize()
+
+window.showStore = () => {
+    console.log(JSON.parse(localStorage.getItem("mainStore")))
+}
