@@ -150,7 +150,7 @@ function get_username_from_user {
 }
 
 function install_node_modules {
-    display_header "| @ Installing node modules..."
+    display_header "| @ Installing node modules...\n"
     echo "|"
     yarn 
     echo "|"
@@ -251,8 +251,8 @@ function create_client_system_service {
     display_header "| @ Creating system service for notipp-client...\n" 
 
     echo -e "|\t> Creating service file..." 
-    node ./common/utils/generators/client-service.js 
-    sudo cp ./utils/temp/notipp-client.service /etc/systemd/system 
+    node $NOTIPP_PATH/common/utils/generators/client-service.js 
+    sudo cp $NOTIPP_PATH/utils/temp/notipp-client.service /etc/systemd/system 
 
     echo -e "|\t> Reloading systemd..." 
     sudo systemctl daemon-reload
@@ -267,10 +267,10 @@ function generate_server_id_and_secret {
     display_header "| @ Generating server id and secret...\n" 
 
     echo -e "|\t> Generating server id..." 
-    echo $(node ./common/utils/generators/uuid.js) > ./hdt/info/server-id
+    echo $(node $NOTIPP_PATH/common/utils/generators/uuid.js) > ./hdt/info/server-id
 
     echo -e "|\t> Generating server secret..." 
-    echo $(node ./common/utils/generators/secret-key.js) > ./hdt/info/server-secret
+    echo $(node $NOTIPP_PATH/common/utils/generators/secret-key.js) > ./hdt/info/server-secret
 
     echo "|"
 }
@@ -279,8 +279,8 @@ function create_server_system_service {
     display_header "| @ Creating system service for notipp-server...\n" 
     
     echo -e "|\t> Creating service file..." 
-    node ./common/utils/generators/server-service.js 
-    sudo cp ./utils/temp/notipp-server.service /etc/systemd/system 
+    node $NOTIPP_PATH/common/utils/generators/server-service.js 
+    sudo cp $NOTIPP_PATH/utils/temp/notipp-server.service /etc/systemd/system 
 
     echo -e "|\t> Reloading systemd..." 
     sudo systemctl daemon-reload
