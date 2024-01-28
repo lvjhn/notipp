@@ -7,8 +7,3 @@ import { fileURLToPath } from 'url'
 export const BASE_PATH = 
     dirname(fileURLToPath(import.meta.url))
 
-
-export default {
-    randomGen
-}
-    
