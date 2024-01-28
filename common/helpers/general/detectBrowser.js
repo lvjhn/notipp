@@ -20,8 +20,6 @@ export const BROWSER_CHAIN = [
  */
 export default function detectBrowser(userAgent = "") {
    
-    console.log("------------------------------")
-    
     const userAgentLower = userAgent.toLowerCase()
 
     for(let i = 0; i < BROWSER_CHAIN.length; i++) {
