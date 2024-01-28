@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /** 
  * hdt/server/index.js 
  * 

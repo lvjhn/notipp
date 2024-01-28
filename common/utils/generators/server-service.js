@@ -9,7 +9,7 @@ import fs from "fs"
 import Core from "../../../hdt/core/Core.js";
 import { BASE_PATH } from "../../../index.js";
 
-const TEMPLATE_FILE = "./common/utils/templates/node.service"
+const TEMPLATE_FILE = "./common/utils/templates/node-server.service"
 const TEMPLATE_CONTENT = fs.readFileSync(TEMPLATE_FILE)
 
 fs.writeFileSync(
@@ -30,6 +30,10 @@ fs.writeFileSync(
         .replace(
             /<<WORKING_DIRECTORY>>/g, 
             process.cwd()
+        )
+        .replace(
+            /<<USERNAME>>/g, 
+            execSync("echo $USER").toString().trim()
         )
    
 )

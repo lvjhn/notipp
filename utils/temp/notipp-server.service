@@ -1,19 +1,15 @@
 [Unit]
 Description=System service for server background process of notipp.
 Documentation=http://github.com/lvjhn/notipp
-After=After=systemd-user-sessions.service,systemd-journald.service
+After=network.target
 
 [Service]
 Environment=
 Type=simple
-Group=sudo
+User=sudo
 ExecStart=/home/lvjhn/.nvm/versions/node/v20.11.0/bin/node /home/lvjhn/Documents/Projects/notipp/hdt/server/index.js
+WorkingDirectory=/home/lvjhn/Documents/Projects/notipp
 Restart=always
-RestartSec=1
-KillMode=process
-IgnoreSIGPIPE=no
-RemainAfterExit=yes
-Environment="DISPLAY=:0" "XAUTHORITY=/home/<<USERNAME>>/.Xauthority"
 
 [Install]
 WantedBy=multi-user.target
