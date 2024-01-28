@@ -113,7 +113,7 @@ function check_if_already_installed {
     elif [ "$INSTALL_STATUS" == "INSTALLING" ] ; then
         echo -e "|\t> Last install was interrupted, reinstalling."
         echo ""
-        bash ./common/installer/uninstaller.sh 
+        source ./common/installer/uninstaller.sh 
         echo ""
     
     elif [ "$INSTALL_STATUS" == "INSTALLED" ] ; then
@@ -228,7 +228,7 @@ function install_os_dependencies {
 function create_ca_certificate {
     display_header "| @ Creating CA certificate...\n" 
 
-    bash \
+    source \
         $(pwd)/common/utils/generators/generate-ca-certificate.sh \
         $USERNAME
 
@@ -239,9 +239,8 @@ function create_ca_certificate {
 function create_server_and_client_ssl_certificate {
     display_header "| @ Creating server and client SSL certificate...\n" 
 
-    bash \
+    source \
         $(pwd)/common/utils/generators/generate-server-and-client-ssl-certificate.sh \
-        $USERNAME
     
     echo -e -n "\n"
     echo "|"
