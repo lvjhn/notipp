@@ -94,7 +94,7 @@ export default class ConnectionManager
                         registration.showNotification(
                             clientName, 
                             {
-                                body: `Connected to '${servername}'`
+                                body: `Connected to '${serverName}'`
                             }
                         )
                     })
@@ -158,7 +158,7 @@ export default class ConnectionManager
 
                     showDisconnected = false; 
                     showOnline = true;
-                
+                    
                     if(showUnpaired) {
                         showUnpaired = false; 
                         

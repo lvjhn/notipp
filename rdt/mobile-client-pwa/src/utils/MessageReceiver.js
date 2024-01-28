@@ -23,7 +23,7 @@ export default class MessageReceiver
     }
 
     static onOpened(serverId, socket) {
-
+        
     }
 
     static onClosed(serverId, socket) {
@@ -34,13 +34,15 @@ export default class MessageReceiver
         try {
             const data = JSON.parse(message.data.toString()).details.data
             console.log("#Data: " + data)
-            ReadStateManager.unread.value[serverId] += 1
-            navigator.serviceWorker.ready.then((registration) => {
-                registration.showNotification(
-                    data.title, 
-                    data.options
-                )
-            })
+            if(ConnectionManager.store.meta.isEnabled) {
+                ReadStateManager.unread.value[serverId] += 1
+                navigator.serviceWorker.ready.then((registration) => {
+                    registration.showNotification(
+                        data.title, 
+                        data.options
+                    )
+                })
+            }
         } catch(e) {
             
         }

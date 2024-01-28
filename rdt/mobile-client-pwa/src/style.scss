@@ -9,6 +9,11 @@ body {
     src: url("/fonts/Roboto/Roboto-Regular.ttf");
 }
 
+@font-face {
+    font-family: Nunito;
+    src: url("/fonts/Nunito/Nunito-Regular.ttf");
+}
+
 * {
     font-family: Roboto; 
 }

@@ -18,7 +18,7 @@ const notifications = ref([])
 const searchTerm = ref("")
  
 async function fetchNotifications(query = "", cursor = null, override = false) {
-    const client = createClient(server, store) 
+    const client = createClient(server.value, store) 
     const notifsResponse = 
         await client.get("/notifications", {
             params: {
@@ -52,7 +52,7 @@ function formatDate(date) {
 }
 
 async function syncLastRead() {
-    const client = createClient(server, store) 
+    const client = createClient(server.value, store) 
     await client.put("/sync-last-read", {
         lastRead: notifications.value.at(0).id  
     })
@@ -243,6 +243,9 @@ onMounted(async () => {
                         padding-left: 10px;
                         border-top-right-radius: 5px; 
                         border-bottom-right-radius: 5px;
+                        border-top: 2px solid black;
+                        border-right: 2px solid black;
+                        border-bottom: 2px solid black;
                     }
                 }
             }
@@ -254,6 +257,7 @@ onMounted(async () => {
         }
 
         .other-info {
+            margin-top: 20px;
             display: flex; 
             flex-direction: column;
             gap: 10px;

@@ -128,7 +128,7 @@ async function enable(index) {
 }
 
 async function handleServerItemClick(server)  {
-    currentServer.value = server 
+    useUI().currentServer.value = server 
     router.push("/logs")
 }
 

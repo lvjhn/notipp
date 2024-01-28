@@ -17,6 +17,6 @@ export const useUI = () => {
     const store = useMainStore()
 
     return {
-        currentPage: ref(store.servers[0])
+        currentServer: ref(store.servers[0])
     }    
 }
