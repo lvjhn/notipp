@@ -1,17 +1,21 @@
 
 
 sudo echo -n ""
-
 set -e 
 
-echo "@ Removing previous installation..."
-if [ -d "~/.notipp" ] ; then 
-    cd ~/.notipp 
-    bash uninstall.sh 
-    cd -
+if [ ! -d "$HOME/.notipp" ] ; then 
+    mkdir "$HOME/.notipp"
 fi
 
-rm -rf ~/.notipp
+cd ~/.notipp
+
+echo "@ Removing previous installation..."
+if [ -d "$HOME/.notipp" ] && [ -f "uninstall.sh" ]; then 
+    source uninstall.sh 
+fi
+
+rm -rf *
+
 
 # install nvm
 echo "@ Installing NVM..."
@@ -36,13 +40,16 @@ fi
 
 # cloning project repository 
 echo "@ Cloning project repository..."
-git clone https://github.com/lvjhn/notipp ~/.notipp 
-cd ~/.notipp
+PWD="$(pwd)"
+rm -rf "$PWD" 
+mkdir "$PWD"
+cd $PWD
+git clone https://github.com/lvjhn/notipp $PWD
 
 # run install script
 echo "@ Running install script..." 
-bash uninstall.sh
-bash install.sh 
+source uninstall.sh
+source install.sh 
 souce common/helpers/shell/shell-helpers.sh
 
 echo "### CHECKING COMPONENTS ###"

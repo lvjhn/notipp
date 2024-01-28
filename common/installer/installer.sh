@@ -151,7 +151,8 @@ function get_username_from_user {
 
 function install_node_modules {
     display_header "| @ Installing node modules..."
-    yarn
+    echo "|"
+    yarn 
     echo "|"
 }
 
