@@ -111,8 +111,10 @@ async function update(index) {
 async function remove(event, index) {
     event.preventDefault() 
     event.stopPropagation()
-    if(useUI().currentPage.value == store.servers[index]) {
-        useUI().currentPage.value = store.servers[0]
+    if(useUI().currentServer.value != null) {
+        if(useUI().currentServer.value == store.servers[index]) {
+            useUI().currentServer.value = store.servers[0]
+        }
     }
     store.servers.splice(index, 1)
 }
