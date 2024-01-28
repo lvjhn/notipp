@@ -251,6 +251,8 @@ function create_client_system_service {
     display_header "| @ Creating system service for notipp-client...\n" 
 
     echo -e "|\t> Creating service file..." 
+
+    cd $NOTIPP_PATH
     node $NOTIPP_PATH/common/utils/generators/client-service.js 
     sudo cp $NOTIPP_PATH/utils/temp/notipp-client.service /etc/systemd/system 
 
@@ -279,6 +281,8 @@ function create_server_system_service {
     display_header "| @ Creating system service for notipp-server...\n" 
     
     echo -e "|\t> Creating service file..." 
+
+    cd $NOTIPP_PATH
     node $NOTIPP_PATH/common/utils/generators/server-service.js 
     sudo cp $NOTIPP_PATH/utils/temp/notipp-server.service /etc/systemd/system 
 
