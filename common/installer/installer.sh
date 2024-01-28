@@ -269,10 +269,10 @@ function generate_server_id_and_secret {
     display_header "| @ Generating server id and secret...\n" 
 
     echo -e "|\t> Generating server id..." 
-    echo $(node $NOTIPP_PATH/common/utils/generators/uuid.js) > ./hdt/info/server-id
+    echo $(node ./common/utils/generators/uuid.js) > ./hdt/info/server-id
 
     echo -e "|\t> Generating server secret..." 
-    echo $(node $NOTIPP_PATH/common/utils/generators/secret-key.js) > ./hdt/info/server-secret
+    echo $(node ./common/utils/generators/secret-key.js) > ./hdt/info/server-secret
 
     echo "|"
 }
