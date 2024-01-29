@@ -68,7 +68,6 @@ export default class Server
      */
     static async turnOff() {
         execSync("sudo systemctl stop notipp-server")
-        console.log("@ Turned off server.")
     }
 
     /** 
@@ -76,7 +75,6 @@ export default class Server
      */
     static async turnOn() {
         execSync("sudo systemctl start notipp-server")
-        console.log("@ Turned on server.")
     }
 
     /** 
