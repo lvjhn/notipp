@@ -544,7 +544,7 @@ export default class CommandHandlers
         await App.onChangeName(name)
         console.log("@ Changed name.".bold.cyan) 
         process.exit()
-    }
+    }a
 
     static async handleCountUnread() {
         const servers = App.state.servers; 
@@ -583,6 +583,11 @@ export default class CommandHandlers
         }
 
         process.exit()
+    }
+
+    static async handleRestartReceiver() {
+        execSync("sudo systemctl restart notipp-client") 
+        console.log("@ Restarted notipp-client (receiver)".bold.cyan)
     }
 }   
 

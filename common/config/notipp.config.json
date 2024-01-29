@@ -3,11 +3,12 @@
         "portNo": "10443",
         "httpPortNo": "10444",
         "autoPair": false,
-        "keepAliveInterval": 1, 
+        "keepAliveInterval": 1000, 
         "homepagePairQr" : true
     },
     "client": {
-        "keepAliveInterval": 1,
-        "eventBusPort": 11443
+        "keepAliveInterval": 1000,
+        "eventBusPort": 11443, 
+        "connectionTimeout": 1000
     }
 }

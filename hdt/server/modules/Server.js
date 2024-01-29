@@ -21,6 +21,7 @@ import GeneralInfo from "../../core/modules/GeneralInfo.js";
 import Config from "../../core/modules/Config.js";
 import Database from "../../data/Database.js";
 import { execSync } from "child_process";
+import Clients from "../../core/modules/Clients.js";
 
 export default class Server 
 {
@@ -107,6 +108,12 @@ export default class Server
             console.log("\t> Cannot start server. Server is already up.".bold.red)
             return;
         }
+
+        // ----- qr code regeneratiion
+        execSync(
+            `qrcode '${JSON.stringify(qrData)}' -o ` + 
+            `${BASE_PATH}/outputs/pair-qr.png -d 100 -w 300`
+        )
 
         // ----- create express app
         console.log("\t> Creating express app...")

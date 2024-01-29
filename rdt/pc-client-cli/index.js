@@ -116,7 +116,7 @@ import App from "../common/App.js"
         .action(CommandHandlers.handleRemoveServer)
 
     program 
-        .command("change:name <name>") 
+        .command("change:name") 
         .description("change client name") 
         .argument("[name]", "the new name of the client")
         .action(CommandHandlers.handleChangeName)
@@ -140,17 +140,17 @@ import App from "../common/App.js"
         .action(CommandHandlers.handleConfigSet)
     
     program 
-        .command("turn:on") 
+        .command("enable") 
         .description("enables alerts (pop-up) notifications" )
         .action(CommandHandlers.handleTurnOn)
 
     program 
-        .command("turn:off") 
+        .command("disable") 
         .description("disables alerts (pop-up) notifications" )
         .action(CommandHandlers.handleTurnOff)
     
     program 
-        .command("is:on") 
+        .command("is:enabled") 
         .description("checks if client (receiver) is enabled" )
         .action(CommandHandlers.handleIsOn)
         
@@ -177,6 +177,11 @@ import App from "../common/App.js"
         .command("count:unread") 
         .description("counts unread messages")
         .action(CommandHandlers.handleCountUnread)
+    
+    program 
+        .command("restart:receiver") 
+        .description("restarts the receiver of the notipp client")
+        .action(CommandHandlers.handleRestartReceiver)
      
 
     /**

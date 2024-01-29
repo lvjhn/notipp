@@ -176,7 +176,7 @@ export default class Receiver
             socket.on("open", async () => {
                 console.log("@ Connected to: " + address)
                 const keepAliveInterval = 
-                    (await Config.getConfig()).client.keepAliveInterval * 1000
+                    (await Config.getConfig()).client.keepAliveInterval
 
                 clearInterval(createSocketInt)
                 Receiver.sockets[serverId] = socket
@@ -211,11 +211,14 @@ export default class Receiver
         }   
 
     async function reconnect() {
-        createSocketInt = setTimeout(async () => {
-            createSocketInt && clearTimeout(createSocketInt) 
-            await createSocket()
-        }, 3000)
-    }
+        createSocketInt = 
+            setTimeout(async () => {
+                createSocketInt && clearTimeout(createSocketInt) 
+                await createSocket()
+            }, 
+                (await Config.getConfig()).client.connectionTimeout
+            )
+        }
 
     await reconnect()
 }

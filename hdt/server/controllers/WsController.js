@@ -100,8 +100,6 @@ export default class WsController
                 .server
                 .keepAliveInterval 
 
-        keepAliveInterval *= 1000
-
         setInterval(
             () => {
                 socket.send("keep:alive")
