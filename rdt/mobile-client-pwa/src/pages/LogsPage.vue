@@ -56,8 +56,7 @@ async function syncLastRead() {
     await client.put("/sync-last-read", {
         lastRead: notifications.value.at(0).id  
     })
-    ReadStateManager.unread.value[server.id] = 0
-    
+    store.unread[server.value.server.id] = 0
 }
 
 

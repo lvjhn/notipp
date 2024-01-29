@@ -34,8 +34,8 @@ export default class MessageReceiver
         try {
             const data = JSON.parse(message.data.toString()).details.data
             console.log("# Data: " + data)
-            if(true || ConnectionManager.store.meta.isEnabled) {
-                ReadStateManager.store.unread[serverId] += 1
+            if(ConnectionManager.store.meta.isEnabled) {
+                ReadStateManager.store.unrepad[serverId] += 1
                 navigator.serviceWorker.ready.then((registration) => {
                     registration.showNotification(
                         data.title, 
