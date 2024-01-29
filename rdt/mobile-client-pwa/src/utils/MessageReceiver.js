@@ -33,9 +33,9 @@ export default class MessageReceiver
     static async onMessage(serverId, message, socket) {
         try {
             const data = JSON.parse(message.data.toString()).details.data
+            ReadStateManager.store.unread[serverId] += 1
             console.log("# Data: " + data)
             if(ConnectionManager.store.meta.isEnabled) {
-                ReadStateManager.store.unread[serverId] += 1
                 navigator.serviceWorker.ready.then((registration) => {
                     registration.showNotification(
                         data.title, 

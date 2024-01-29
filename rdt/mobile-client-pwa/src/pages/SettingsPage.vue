@@ -104,7 +104,7 @@ function setMetaIsEnabled() {
                     <div class="controls">
                         <button
                             class="generate-random btn"
-                            @click="randomize()"
+                            @click="randomizeName()"
                         > 
                             Randomize
                         </button>

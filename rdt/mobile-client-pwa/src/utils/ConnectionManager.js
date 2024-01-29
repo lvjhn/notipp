@@ -275,7 +275,7 @@ export default class ConnectionManager
                 }
             }, 1009)
 
-            return socket
+            return socketCon
         }
 
         socket = await createSocket()   
