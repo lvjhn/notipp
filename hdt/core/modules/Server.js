@@ -67,20 +67,16 @@ export default class Server
      * Turn off server. 
      */
     static async turnOff() {
-        return await fs.writeFile(
-            BASE_PATH + "/hdt/server/switch", 
-            "OFF:" + (new Date()).getTime()
-        )
+        execSync("sudo systemctl stop notipp-server")
+        console.log("@ Turned off server.")
     }
 
     /** 
      * Turn on server.
      */
     static async turnOn() {
-        return await fs.writeFile(
-            BASE_PATH + "/hdt/server/switch", 
-            "ON:" + (new Date()).getTime()
-        )
+        execSync("sudo systemctl start notipp-server")
+        console.log("@ Turned on server.")
     }
 
     /** 

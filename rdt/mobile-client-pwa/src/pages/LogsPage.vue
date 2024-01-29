@@ -62,6 +62,7 @@ async function syncLastRead() {
 
 
 onMounted(async () => {
+    notifications.value = []
     await fetchNotifications()
 })
 

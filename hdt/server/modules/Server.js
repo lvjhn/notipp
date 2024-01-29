@@ -189,7 +189,7 @@ export default class Server
 
         Server.isStopping = true
 
-        // sotp server
+        // stop server
         if(Server.wsServer) {
             console.log("\t> Stopping websockets server...")
             await Server.wsServer.close()
@@ -197,6 +197,10 @@ export default class Server
         if(Server.httpsServer) { 
             console.log("\t> Stopping htts server...")
             await Server.httpsServer.close()
+        }
+        if(Server.httpServer) { 
+            console.log("\t> Stopping htts server...")
+            await Server.httpServer.close()
         }
 
         console.log("\t> Stopped server.".bold.italic.grey)

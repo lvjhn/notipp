@@ -135,9 +135,6 @@ export default class ConnectionManager
                     setInterval(
                         async () => {
                             socket && socket.send("keep:alive")
-                         
-                        
-                
                         }, 
                         keepAliveInterval
                     )
@@ -219,11 +216,14 @@ export default class ConnectionManager
                 
 
                 clearInterval(keepAliveInt)
+
+                socket.close()
                 
                 if(server["client-state"].status != "UNPAIRED" && 
-                   server["client-state"].status != "DISABLED") {
+                   server["client-state"].status != "DISABLED" && 
+                   server["client-state"].status != "OFFLINE") {
+                    
                     server["client-state"].status = "OFFLINE"
-
                     
                     if(showDisconnected) {
                         navigator.serviceWorker.ready.then((registration) => {
@@ -236,8 +236,6 @@ export default class ConnectionManager
                         })
                     }
                 }
-
-                keepAliveInt && clearInterval(keepAliveInt)
 
                 socketTimeout = setTimeout(async () => {
                     if(server["client-state"].status == "DISABLED") {
@@ -256,7 +254,8 @@ export default class ConnectionManager
             }
             
             socket.onerror = async (error) => {
-                keepAliveInt && clearInterval(keepAliveInt)
+
+                clearInterval(keepAliveInt)
                 console.error(error)
 
                 if(server["client-state"].status != "DISABLED") {
@@ -269,10 +268,19 @@ export default class ConnectionManager
                 }
             }
 
+
+            socket.keepClosedInterval = setInterval(() => {
+                if(socket.readyState == WebSocket.CLOSED) {
+                    server["client-state"].status == "OFFLINE"
+                }
+            }, 1009)
+
             return socket
         }
 
         socket = await createSocket()   
+
+     
 
     }
 

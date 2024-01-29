@@ -303,9 +303,10 @@ export default class HttpController
 
     static async postClientPair(req, res) {
         const pairingSecret = await GeneralInfo.pairingSecret; 
-        
+        const clientId = req.headers["client-id"]
+
         if(pairingSecret == req.body.pairingSecret) {
-            await Clients.pair(req.headers["client-id"])
+            await Clients.pair(clientId)
 
             if(!(clientId in WsController.connections)) {
                 res.send("NOT_CONNECTED");

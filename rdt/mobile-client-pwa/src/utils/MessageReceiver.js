@@ -35,7 +35,7 @@ export default class MessageReceiver
             const data = JSON.parse(message.data.toString()).details.data
             console.log("# Data: " + data)
             if(ConnectionManager.store.meta.isEnabled) {
-                ReadStateManager.store.unrepad[serverId] += 1
+                ReadStateManager.store.unread[serverId] += 1
                 navigator.serviceWorker.ready.then((registration) => {
                     registration.showNotification(
                         data.title, 
@@ -44,7 +44,9 @@ export default class MessageReceiver
                 })
             }
         } catch(e) {
-            console.error(e)   
+            if(message.data != "keep:alive") {
+                console.error(e)  
+            } 
         }
     }
 
