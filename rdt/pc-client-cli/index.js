@@ -43,7 +43,7 @@ import App from "../common/App.js"
             "show offline servers only"
         )
         .option(
-            "-u, ---online",
+            "-u, --online",
             "show online servers only"
         )
         .option(
@@ -60,7 +60,7 @@ import App from "../common/App.js"
         .command("add:server") 
         .description("adds a new server to the client") 
         .option(
-            "-i, --ip <ip<", 
+            "-i, --ip <ip>", 
             "the ip of the server to add"
         )
         .option(
@@ -90,11 +90,11 @@ import App from "../common/App.js"
         )
         .option(
             "-i, --ip <ip>", 
-            "the ip of the server to add"
+            "the new ip of the server to update"
         )
         .option(
             "-p, --port <port>", 
-            "the port of the server to add"
+            "the new port of the server to update"
         )
         .action(CommandHandlers.handleUpdateServer)
             
@@ -104,6 +104,10 @@ import App from "../common/App.js"
         .argument(
             "[identifier]", 
             "the name of the server to remove"
+        )
+        .option(
+            "-a, --all", 
+            "specifies that all servers should be removed"
         )
         .option(
             "-i, --by-id",  

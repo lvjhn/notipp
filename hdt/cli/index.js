@@ -79,7 +79,7 @@ import GeneralInfo from "../core/modules/GeneralInfo.js";
         .action(CommandHandlers.handleUnpair)
 
     program 
-        .command("remove") 
+        .command("remove:client") 
         .description("unpairs a specified client")
         .argument(
             "[identifier]", 

@@ -101,7 +101,9 @@ async function removeAll() {
     showModal()
 }
 
-async function update(index) {
+async function update(event, index) {
+    event.preventDefault() 
+    event.stopPropagation()
     setModal(UpdateServerModal, {
         server: store.servers[index]
     }) 
@@ -119,12 +121,16 @@ async function remove(event, index) {
     store.servers.splice(index, 1)
 }
 
-async function disable(index) {
+async function disable(event, index) {
+    event.preventDefault() 
+    event.stopPropagation()
     store.servers[index]['client-state'].status = "DISABLED"
     await ConnectionManager.disconnect(store.servers[index].server.id)
 }
 
-async function enable(index) {
+async function enable(event, index) {
+    event.preventDefault() 
+    event.stopPropagation()
     store.servers[index]['client-state'].status = "IDENTIFIED"
     await ConnectionManager.connect(store.servers[index].server.id)
 }
@@ -225,20 +231,20 @@ async function handleServerItemClick(server)  {
                     >
                         <div 
                             class="more-options-item"
-                            @click="update(index)"
+                            @click="update($event, index)"
                         >
                             Update
                         </div>
                         <div 
                             class="more-options-item"
-                            @click="enable(index)"
+                            @click="enable($event, index)"
                             v-if="server['client-state'].status == 'DISABLED'"
                         >
                             Enable
                         </div>
                         <div 
                             class="more-options-item"
-                            @click="disable(index)"
+                            @click="disable($event, index)"
                             v-else
                         >
                             Disable

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useMainStore } from "../stores/main.store";
 import createClient from "./createClient";
+import ReadStateManager from "./ReadStateManager.js";
 
 export default class ConnectionManager 
 {
@@ -86,6 +87,7 @@ export default class ConnectionManager
                 console.log(server["client-state"].status)
 
                 ConnectionManager.connections[serverId] = socket;
+                
 
                 const client = axios.create({
                     baseURL: `https://${ip}:${port}/`,
@@ -100,6 +102,8 @@ export default class ConnectionManager
                 
                 if((await client.get("/is-paired")).data == "OK") {
                     server["client-state"].status = "ONLINE"
+
+                    await ReadStateManager.getForServer(server)
 
                     navigator.serviceWorker.ready.then((registration) => {
                         registration.showNotification(
@@ -275,7 +279,7 @@ export default class ConnectionManager
                 }
             }, 1009)
 
-            return socketCon
+            return socket
         }
 
         socket = await createSocket()   

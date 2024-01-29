@@ -33,12 +33,18 @@ export default class MessageReceiver
     static async onMessage(serverId, message, socket) {
         try {
             const data = JSON.parse(message.data.toString()).details.data
+            
+            const server = 
+                ConnectionManager.store.servers.find(server => server.server.id == serverId)
+            
             ReadStateManager.store.unread[serverId] += 1
+
             console.log("# Data: " + data)
-            if(ConnectionManager.store.meta.isEnabled) {
+
+            if(ConnectionManager.store.meta.isEnabled && server["client-state"].status != "DISABLED") {
                 navigator.serviceWorker.ready.then((registration) => {
                     registration.showNotification(
-                        data.title, 
+                        data.title  , 
                         data.options
                     )
                 })
