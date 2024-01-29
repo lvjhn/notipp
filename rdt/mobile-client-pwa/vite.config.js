@@ -40,10 +40,10 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
-    // https: {
-    //   key: fs.readFileSync('./certificate/client-ssl.key'),
-    //   cert: fs.readFileSync('./certificate/client-ssl.pem'),
-    // }
+    https: {
+      key: fs.readFileSync('./certificate/client-ssl.key'),
+      cert: fs.readFileSync('./certificate/client-ssl.pem'),
+    }
   },
   resolve: {
       alias: {
